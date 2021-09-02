@@ -1,0 +1,7 @@
+**/doxygen/*/
+**/bin/**
+**/obj/**
+*.exe
+*.pdb
+*.o
+*.bak
