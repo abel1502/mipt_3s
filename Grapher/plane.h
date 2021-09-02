@@ -2,6 +2,7 @@
 #define PLANE_H
 
 #include "general.h"
+#include "vector2.h"
 
 
 class Plane {
@@ -25,7 +26,11 @@ public:
 
     bool drawBase() const;
 
-    bool drawGraph(double (*func)(double))
+    bool drawGraph(double (*func)(double)) const;
+
+    bool drawVector(const BoundVector2 *vec) const;
+
+    bool drawArrow(const BoundVector2 *vec) const;
 
 protected:
     unsigned leftX, topY;

@@ -14,6 +14,14 @@ public:
 
     void dtor();
 
+    inline double getX() const {
+        return x;
+    }
+
+    inline double getY() const {
+        return y;
+    }
+
 protected:
     double x, y;
 
