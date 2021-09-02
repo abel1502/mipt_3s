@@ -1,0 +1,27 @@
+# depslib dependency file v1.0
+1620308853 source:d:\workspace\.mipt\s3\grapher\general.cpp
+	<cstdio>
+	<cstdarg>
+	<cerrno>
+	"general.h"
+
+1621274521 d:\workspace\.mipt\s3\grapher\general.h
+	<new>
+
+1630615377 source:d:\workspace\.mipt\s3\grapher\main.cpp
+	"general.h"
+
+1630597949 source:d:\workspace\.mipt\s3\grapher\plane.cpp
+	"plane.h"
+
+1630599897 d:\workspace\.mipt\s3\grapher\plane.h
+	"general.h"
+	"vector2.h"
+
+1630615026 d:\workspace\.mipt\s3\grapher\vector2.h
+	"general.h"
+
+1630615242 source:d:\workspace\.mipt\s3\grapher\vector2.cpp
+	<cassert>
+	"vector2.h"
+
