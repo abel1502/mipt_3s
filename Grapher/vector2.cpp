@@ -1,9 +1,12 @@
 #include <cassert>
+#include <cmath>
 
 #include "vector2.h"
 
 
 const Vector2 Vector2::ZERO{0.0d, 0.0d};
+const Vector2 Vector2::ONE_X{1.0d, 0.0d};
+const Vector2 Vector2::ONE_Y{0.0d, 1.0d};
 
 
 bool Vector2::ctor() {
@@ -13,20 +16,16 @@ bool Vector2::ctor() {
     return false;
 }
 
-bool Vector2::ctor(double new_x, double new_y) {
+void Vector2::ctor(double new_x, double new_y) {
     x = new_x;
     y = new_y;
-
-    return false;
 }
 
-bool Vector2::ctor(const Vector2 *other) {
+void Vector2::ctor(const Vector2 *other) {
     assert(other);
 
     x = other->x;
     y = other->y;
-
-    return false;
 }
 
 void Vector2::dtor() {}
@@ -57,6 +56,10 @@ void Vector2::idiv(double val) {
     y /= val;
 }
 
+double Vector2::length() const {
+    return hypot(x, y);
+}
+
 //--------------------------------------------------------------------------------
 
 bool BoundVector2::ctor() {
@@ -66,20 +69,16 @@ bool BoundVector2::ctor() {
     return false;
 }
 
-bool BoundVector2::ctor(const Vector2 *new_start, const Vector2 *new_vec) {
+void BoundVector2::ctor(const Vector2 *new_start, const Vector2 *new_vec) {
     start = new_start;
     vec = new_vec;
-
-    return false;
 }
 
-bool BoundVector2::ctor(const BoundVector2 *other) {
+void BoundVector2::ctor(const BoundVector2 *other) {
     assert(other);
 
     start = other->start;
     vec = other->vec;
-
-    return false;
 }
 
 void BoundVector2::dtor() {
@@ -90,8 +89,10 @@ void BoundVector2::dtor() {
 void BoundVector2::getEnd(Vector2 *dest) const {
     assert(dest);
 
-    dest->dtor();  // Just in case
-    REQUIRE(!dest->ctor(start));  // It should be unconditionally true, so we can afford an assertion-check
+    /*dest->dtor();  // Just in case
+    REQUIRE(!dest->ctor(start));  // It should be unconditionally true, so we can afford an assertion-check*/
+    // Now that Vector2 is molecular, this got a lot easier
+    dest->ctor(start);
     dest->iadd(vec);
 }
 

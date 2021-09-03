@@ -30,10 +30,22 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-m32" />
 			<Add option="-std=c++03" />
+			<Add directory="SDL/include" />
 		</Compiler>
+		<Linker>
+			<Add option="-m32" />
+			<Add library="mingw32" />
+			<Add library="SDL2main" />
+			<Add library="SDL2" />
+			<Add directory="SDL/lib" />
+			<Add directory="SDL/bin" />
+		</Linker>
 		<Unit filename="general.cpp" />
 		<Unit filename="general.h" />
+		<Unit filename="gui.cpp" />
+		<Unit filename="gui.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="vector2.cpp" />
 		<Unit filename="vector2.h" />

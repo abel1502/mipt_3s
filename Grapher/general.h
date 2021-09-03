@@ -4,6 +4,26 @@
 #include <new>
 
 
+/**
+ * Essentially, this just claims the class is trivial enough.
+ * (Not as strong of a claim as atomic, though :) )
+ * (This is an engineering decision to simplify my life)
+ *
+ * Such objects' dtors don't do any cleanup and may not
+ * be called at all. Their ctors will never fail and may
+ * be called without checks (or may even be declared void,
+ * except the default). They may, generally speaking,
+ * be handled just like c-structs with extra benefits.
+ *
+ * Beware that if you have the slightest suspicion the class might
+ * at some point require cleanup, AVOID using this.
+ *
+ * The macro doesn't do anything but symbolize the class is symbolic
+ *
+ */
+#define MOLECULAR_CLASS class
+
+
 #define ERR(msg, ...) err_(__func__, __LINE__, msg, ##__VA_ARGS__)
 
 
