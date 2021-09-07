@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstdio>
 
 
 #define GUI_COLOR_BG        0xe0, 0xe0, 0xe0
@@ -31,10 +32,10 @@ bool Plane::ctor(SDL_Renderer *rend, int new_leftX, int new_topY, int new_width,
                  int new_centerX, int new_centerY, double new_ppuH, double new_ppuV) {
     assert(rend);
 
-    viewport.x = new_leftX;
-    viewport.y = new_topY;
-    viewport.w = new_width;
-    viewport.h = new_height;
+    clipRect.x = new_leftX;
+    clipRect.y = new_topY;
+    clipRect.w = new_width;
+    clipRect.h = new_height;
     centerX = new_centerX;
     centerY = new_centerY;
     ppuH = new_ppuH;
@@ -43,7 +44,7 @@ bool Plane::ctor(SDL_Renderer *rend, int new_leftX, int new_topY, int new_width,
     renderer = rend;
 
     TRY_B(SDL_SetRenderDrawColor(renderer, PLANE_COLOR_BG, SDL_ALPHA_OPAQUE));
-    TRY_B(SDL_RenderSetViewport(renderer, &viewport));
+    TRY_B(SDL_RenderSetClipRect(renderer, &clipRect));
 
     return false;
 }
@@ -53,10 +54,10 @@ void Plane::dtor() {
 }
 
 bool Plane::shiftBox(int deltaX, int deltaY) {
-    viewport.x += deltaX;
-    viewport.y += deltaY;
+    clipRect.x += deltaX;
+    clipRect.y += deltaY;
 
-    return SDL_RenderSetViewport(renderer, &viewport);
+    return SDL_RenderSetClipRect(renderer, &clipRect);
 }
 
 void Plane::scale(double byH, double byV) {
@@ -67,81 +68,133 @@ void Plane::scale(double byH, double byV) {
 void Plane::pointToPos(const Vector2 *point, int *x, int *y) const {
     assert(point);
 
-    if (x)  *x = point->x * ppuH + centerX + viewport.x;
-    if (y)  *y = point->y * ppuV + centerY + viewport.y;
+    if (x)  *x = point->x * ppuH + centerX + clipRect.x;
+    if (y)  *y = -point->y * ppuV + centerY + clipRect.y;
 }
 
 void Plane::posToPoint(int x, int y, Vector2 *point) const {
     assert(point);
 
-    point->ctor((double)(x - viewport.x - centerX) / ppuH, (double)(y - viewport.y - centerY) / ppuV);
+    point->ctor((double)(x - clipRect.x - centerX) / ppuH, -(double)(y - clipRect.y - centerY) / ppuV);
 }
 
 bool Plane::drawBase() const {
     assert(renderer);
 
     TRY_B(SDL_SetRenderDrawColor(renderer, PLANE_COLOR_BG, SDL_ALPHA_OPAQUE));
-    TRY_B(SDL_RenderFillRect(renderer, &viewport));
+    TRY_B(SDL_RenderSetClipRect(renderer, &clipRect));
+
+    TRY_B(SDL_RenderFillRect(renderer, &clipRect));
 
     TRY_B(SDL_SetRenderDrawColor(renderer, PLANE_COLOR_LEGEND, SDL_ALPHA_OPAQUE));
-    TRY_B(SDL_RenderDrawLine(renderer, viewport.x, viewport.y + centerY, viewport.x + viewport.w, viewport.y + centerY));
-    TRY_B(SDL_RenderDrawLine(renderer, viewport.x + centerY, viewport.y, viewport.x + centerY, viewport.y + viewport.h));
+    TRY_B(SDL_RenderDrawLine(renderer, clipRect.x, clipRect.y + centerY, clipRect.x + clipRect.w, clipRect.y + centerY));
+    TRY_B(SDL_RenderDrawLine(renderer, clipRect.x + centerX, clipRect.y, clipRect.x + centerX, clipRect.y + clipRect.h));
 
-    TRY_B(drawCircle_(&Vector2::ZERO));
+    TRY_B(drawBall_(&Vector2::ZERO));
     TRY_B(drawDash_(&Vector2::ONE_X, false, 5));
-
-    Vector2 ONE_Y{};
-    ONE_Y.ctor(&Vector2::ONE_Y);
-    ONE_Y.imul(-1.0d);
-    TRY_B(drawDash_(&ONE_Y, true, 5));
-
-    SDL_RenderPresent(renderer);
+    TRY_B(drawDash_(&Vector2::ONE_Y, true, 5));
 
     return false;
 }
 
-bool Plane::drawGraph(double (*func)(double)) const {
-    constexpr unsigned STEPS = 100;
+static inline bool isFinite(double val) {
+    return std::isfinite(val) && std::abs(val) < 1e8;
+}
 
-    assert(renderer);
+bool Plane::drawGraph(double (*func)(double)) const {
+    constexpr unsigned STEPS = 10000;
+
+    assert(renderer && func);
 
     TRY_B(SDL_SetRenderDrawColor(renderer, PLANE_COLOR_FG, SDL_ALPHA_OPAQUE));
+    TRY_B(SDL_RenderSetClipRect(renderer, &clipRect));
 
-    double screenWidth  = (double)viewport.w / ppuH;
-    double centerOffset = (double)(centerX - viewport.x) / ppuH;
-    double startX       = -centerOffset - screenWidth;
-    double step         = screenWidth / STEPS;
+    double screenWidth  = (double)clipRect.w / ppuH;
+    double padding      = screenWidth * 0.01d;  // To get rid of the gaps on the sides
+    double centerOffset = (double)centerX / ppuH;
+    double step         = (screenWidth + 2 * padding) / STEPS;
+    double startX       = -centerOffset - padding;
+
+    //DBG("Screen width: %lg", screenWidth);
 
     unsigned curPointIdx = 1;
     int x = 0, y = 0;
 
     Vector2 points[2];
-    Vector2 delta;
+    Vector2 delta{};
 
-    points[0].ctor(startX - step, 0.0d);
-    points[1].ctor(startX - step, 0.0d);
+    points[0].ctor(startX, func(startX));
+    points[1].ctor(startX + step, 0.0d);
 
-    for (unsigned i = 0; i < STEPS; ++i) {
-        points[curPointIdx].x += step;
+    //points[0].ctor(startX, 1.0d);
+    //points[1].ctor(startX + screenWidth * 2, 1.0d);
+    //TRY_B(drawLine_(&points[0], &points[1]));
 
+    for (unsigned i = 0; i < STEPS; ++i, curPointIdx = 1 - curPointIdx) {
         pointToPos(&points[curPointIdx], &x, &y);
 
         points[curPointIdx].y = func(points[curPointIdx].x);
 
-        TRY_B(drawLine_(&points[1 - curPointIdx], &points[curPointIdx]));
+        //DBG("Step %u: %lg %lg", i, points[curPointIdx].x, points[curPointIdx].y);
 
-        curPointIdx = 1 - curPointIdx;
-        points[curPointIdx].x += step;
+        if (isFinite(points[0].y) && isFinite(points[1].y))
+            TRY_B(drawLine_(&points[0], &points[1]));
+
+        points[1 - curPointIdx].x += 2 * step;
     }
-
-    SDL_RenderPresent(renderer);
 
     return false;
 }
 
-/*bool Plane::drawVector(const BoundVector2 *vec) const;
+bool Plane::drawVector(const BoundVector2 *vec) const {
+    assert(renderer && vec);
 
-bool Plane::drawArrow(const BoundVector2 *vec) const;*/
+    TRY_B(SDL_SetRenderDrawColor(renderer, PLANE_COLOR_FG, SDL_ALPHA_OPAQUE));
+    TRY_B(SDL_RenderSetClipRect(renderer, &clipRect));
+
+    TRY_B(drawLine_(vec));
+
+    Vector2 end{};
+    vec->getEnd(&end);
+
+    TRY_B(drawBall_(&end));
+
+    return false;
+}
+
+bool Plane::drawArrow(const BoundVector2 *vec) const {
+    constexpr double ARROW_HEAD_ANGLE = 15.0d;  // Degrees
+    constexpr double ARROW_HEAD_SCALE = 0.1d;
+
+    assert(renderer && vec);
+
+    TRY_B(SDL_SetRenderDrawColor(renderer, PLANE_COLOR_FG, SDL_ALPHA_OPAQUE));
+    TRY_B(SDL_RenderSetClipRect(renderer, &clipRect));
+
+    TRY_B(drawLine_(vec));
+
+    Vector2 end{};
+    vec->getEnd(&end);
+
+    Vector2 arrowHead{};
+    arrowHead.ctor(vec->getVec());
+    arrowHead.scaleBy(-ARROW_HEAD_SCALE);
+
+    BoundVector2 bndArrowHead{};
+    bndArrowHead.ctor(&end, &arrowHead);
+
+    arrowHead.rotateDegrees(-ARROW_HEAD_ANGLE);
+    TRY_B(drawLine_(&bndArrowHead));
+
+    arrowHead.rotateDegrees(2 * ARROW_HEAD_ANGLE);
+    TRY_B(drawLine_(&bndArrowHead));
+
+    return false;
+}
+
+void Plane::update() const {
+    SDL_RenderPresent(renderer);
+}
 
 bool Plane::drawLine_(const BoundVector2 *vec) const {
     assert(renderer && vec);
@@ -172,7 +225,7 @@ bool Plane::drawLine_(const Vector2 *start, const Vector2 *end) const {
     return false;
 }
 
-bool Plane::drawCircle_(const Vector2 *pos, unsigned radius) const {
+bool Plane::drawBall_(const Vector2 *pos, unsigned radius) const {
     assert(renderer);
 
     int x = 0, y = 0;

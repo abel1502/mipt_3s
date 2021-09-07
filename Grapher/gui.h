@@ -44,8 +44,10 @@ public:
 
     bool drawArrow(const BoundVector2 *vec) const;
 
+    void update() const;
+
 protected:
-    SDL_Rect viewport;
+    SDL_Rect clipRect;
     int centerX, centerY;
     double ppuH, ppuV;  // Pixels per Unit on Horizontal and Vertical axis
 
@@ -57,7 +59,7 @@ protected:
 
     bool drawLine_(const Vector2 *start, const Vector2 *end) const;
 
-    bool drawCircle_(const Vector2 *pos, unsigned radius = 2) const;
+    bool drawBall_(const Vector2 *pos, unsigned radius = 2) const;
 
     bool drawDash_(const Vector2 *pos, bool horizontal, unsigned length) const;
 

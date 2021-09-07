@@ -7,15 +7,15 @@
 
 int verbosity = 0;
 
-void err_(const char *funcName, int lineNo, const char *msg, ...) {
+void dbg_(bool isError, int level, const char *funcName, int lineNo, const char *msg, ...) {
     va_list args = {};
     va_start(args, msg);
 
-    if (::verbosity >= 1) {
-        fprintf(stderr, "[ERROR in %s() on #%d] ", funcName, lineNo);
+    if (::verbosity >= level) {
+        fprintf(stderr, "[%s in %s() on #%d] ", isError ? "ERROR" : "DBG", funcName, lineNo);
         vfprintf(stderr, msg, args);
         fprintf(stderr, "\n");
-        if (errno != 0) {
+        if (errno != 0 && isError) {
             perror("System error:");
         }
     }

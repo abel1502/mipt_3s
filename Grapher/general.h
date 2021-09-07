@@ -24,7 +24,8 @@
 #define MOLECULAR_CLASS class
 
 
-#define ERR(msg, ...) err_(__func__, __LINE__, msg, ##__VA_ARGS__)
+#define ERR(msg, ...) dbg_(true,  1, __func__, __LINE__, msg, ##__VA_ARGS__)
+#define DBG(msg, ...) dbg_(false, 2, __func__, __LINE__, msg, ##__VA_ARGS__)
 
 
 /*  Alright, with new requirements come new standards.
@@ -122,7 +123,7 @@
 
 extern int verbosity;
 
-void err_(const char *funcName, int lineNo, const char *msg, ...);
+void dbg_(bool isError, int level, const char *funcName, int lineNo, const char *msg, ...);
 
 unsigned long long randLL();
 

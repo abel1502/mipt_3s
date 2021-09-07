@@ -1,6 +1,9 @@
 #ifndef VECTOR2_H
 #define VECTOR2_H
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include "general.h"
 
 
@@ -34,7 +37,28 @@ public:
 
     void idiv(double val);
 
+    void scaleBy(double coeff);
+
+    inline bool scaleTo(double len) {
+        if (isZero())
+            return true;
+
+        scaleBy(len / length());
+
+        return false;
+    }
+
+    void rotateRadians(double radians);
+
+    inline void rotateDegrees(double degrees) {
+        rotateRadians(degrees / 180.d * M_PI);
+    }
+
     double length() const;
+
+    inline bool isZero() const {
+        return x == 0 && y == 0;
+    }
 
 protected:
     // Not for actual use, but for unavoidable implicit purposes. Pretty much not used anywhere

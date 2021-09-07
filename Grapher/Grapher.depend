@@ -1,15 +1,16 @@
 # depslib dependency file v1.0
-1620308853 source:d:\workspace\.mipt\s3\grapher\general.cpp
+1630752281 source:d:\workspace\.mipt\s3\grapher\general.cpp
 	<cstdio>
 	<cstdarg>
 	<cerrno>
 	"general.h"
 
-1630702166 d:\workspace\.mipt\s3\grapher\general.h
+1630752102 d:\workspace\.mipt\s3\grapher\general.h
 	<new>
 
-1630699688 source:d:\workspace\.mipt\s3\grapher\main.cpp
+1630995075 source:d:\workspace\.mipt\s3\grapher\main.cpp
 	"SDL2/SDL.h"
+	<cassert>
 	"general.h"
 	"gui.h"
 
@@ -23,12 +24,12 @@
 	"vector2.h"
 	"SDL2/SDL.h"
 
-1630702179 d:\workspace\.mipt\s3\grapher\vector2.h
+1630938092 d:\workspace\.mipt\s3\grapher\vector2.h
+	<cmath>
 	"general.h"
 
-1630702477 source:d:\workspace\.mipt\s3\grapher\vector2.cpp
+1630938086 source:d:\workspace\.mipt\s3\grapher\vector2.cpp
 	<cassert>
-	<cmath>
 	"vector2.h"
 
 1628610834 d:\workspace\.mipt\s3\grapher\sdl\include\sdl2\sdl.h
@@ -403,12 +404,13 @@
 	"begin_code.h"
 	"close_code.h"
 
-1630699576 source:d:\workspace\.mipt\s3\grapher\gui.cpp
+1630995748 source:d:\workspace\.mipt\s3\grapher\gui.cpp
 	"gui.h"
 	<cassert>
 	<cmath>
+	<cstdio>
 
-1630703702 d:\workspace\.mipt\s3\grapher\gui.h
+1630995706 d:\workspace\.mipt\s3\grapher\gui.h
 	"general.h"
 	"vector2.h"
 	"SDL2/SDL.h"

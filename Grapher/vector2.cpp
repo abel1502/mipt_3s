@@ -1,5 +1,4 @@
 #include <cassert>
-#include <cmath>
 
 #include "vector2.h"
 
@@ -54,6 +53,19 @@ void Vector2::idiv(double val) {
 
     x /= val;
     y /= val;
+}
+
+void Vector2::scaleBy(double coeff) {
+    assert(std::isfinite(coeff));
+
+    x *= coeff;
+    y *= coeff;
+}
+
+void Vector2::rotateRadians(double radians) {
+    double new_x = cos(radians) * x - sin(radians) * y;
+    y = sin(radians) * x + cos(radians) * y;
+    x = new_x;
 }
 
 double Vector2::length() const {
