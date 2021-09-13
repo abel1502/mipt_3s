@@ -1,0 +1,38 @@
+# depslib dependency file v1.0
+1631516543 source:d:\workspace\.mipt\s3\raycaster\main.cpp
+	"ACL/general.h"
+
+1631435905 d:\workspace\.mipt\s3\acl\include\acl\general.h
+
+1631516626 source:d:\workspace\.mipt\s3\raycaster\raycaster.cpp
+	"raycaster.h"
+
+1631522564 d:\workspace\.mipt\s3\raycaster\raycaster.h
+	"ACL/general.h"
+	"ACL/math/vector.h"
+	"color.h"
+
+1631519617 source:d:\workspace\.mipt\s3\raycaster\color.cpp
+	"color.h"
+
+1631521201 d:\workspace\.mipt\s3\raycaster\color.h
+	"ACL/general.h"
+	"ACL/math/vector.h"
+
+1631518933 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
+	<cmath>
+	<stdexcept>
+	<type_traits>
+	<initializer_list>
+	"ACL/general.h"
+	"ACL/error.h"
+	"ACL/math/vector.tpl.h"
+	"ACL/math/vector.tpl.h"
+	"ACL/math/vector.tpl.h"
+	"ACL/math/vector.tpl.h"
+
+1631300113 d:\workspace\.mipt\s3\acl\include\acl\error.h
+	"general.h"
+
+1631518896 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+
