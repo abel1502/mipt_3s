@@ -1,36 +1,34 @@
 #ifndef ACL_MATH_VECTOR_H
 #define ACL_MATH_VECTOR_H
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-#include <stdexcept>
 #include <type_traits>
 #include <initializer_list>
 
-#include "ACL/general.h"
-#include "ACL/error.h"
+#include <ACL/general.h>
+#include <ACL/math/cmath.h>
 
 
 namespace abel {
 namespace math {
 
 
-DECLARE_ERROR(vector_error, abel::error)
+// Not used anywhere
+// DECLARE_ERROR(vector_error, abel::error)
 
 
 // Vector1
 #define NAME_   Vector1
 #define N_      1
 #define EXTRA_                                                  \
-    constexpr T &x() {                                          \
+    constexpr T &x() noexcept {                                 \
         return values[0];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &x() const {                              \
+    constexpr const T &x() const noexcept {                     \
         return values[0];                                       \
     }                                                           \
                                                                 \
-    constexpr Vector1(T new_x) :                                \
+    constexpr Vector1(T new_x) noexcept :                       \
         values{new_x} {}
 
 #include "ACL/math/vector.tpl.h"
@@ -40,64 +38,66 @@ DECLARE_ERROR(vector_error, abel::error)
 #define NAME_   Vector2
 #define N_      2
 #define EXTRA_                                                  \
-    constexpr T &x() {                                          \
+    constexpr T &x() noexcept {                                 \
         return values[0];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &x() const {                              \
+    constexpr const T &x() const noexcept {                     \
         return values[0];                                       \
     }                                                           \
                                                                 \
-    constexpr T &y() {                                          \
+    constexpr T &y() noexcept {                                 \
         return values[1];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &y() const {                              \
+    constexpr const T &y() const noexcept {                     \
         return values[1];                                       \
     }                                                           \
                                                                 \
-    constexpr Vector2(T new_x, T new_y) :                       \
+    constexpr Vector2(T new_x, T new_y) noexcept :              \
         values{new_x, new_y} {}                                 \
                                                                 \
     /* Vector multiplication */                                 \
-    constexpr T operator&(const Vector2 &other) const {         \
+    constexpr T operator&(const Vector2 &other) const noexcept {\
         return x() * other.y() - y() * other.x();               \
     }                                                           \
                                                                 \
-    constexpr Vector2 &orthogonalize() {                        \
+    constexpr Vector2 &orthogonalize() noexcept {               \
         std::swap(x(), y());                                    \
         y() *= (T)-1;                                           \
                                                                 \
         return *this;                                           \
     }                                                           \
                                                                 \
-    constexpr Vector2 orthogonalized() const {                  \
+    constexpr Vector2 orthogonalized() const noexcept {         \
         Vector2 result{*this};                                  \
                                                                 \
         return result.orthogonalize();                          \
     }                                                           \
                                                                 \
-    constexpr Vector2 &rotateRadians(double radians) {          \
+    constexpr Vector2 &rotateRadians(double radians) noexcept { \
         T new_x = (T)(cos(radians) * x() - sin(radians) * y()); \
-        y() = (T)(sin(radians) * x() + cos(radians) * y());     \
+        y() =     (T)(sin(radians) * x() + cos(radians) * y()); \
         x() = new_x;                                            \
                                                                 \
         return *this;                                           \
     }                                                           \
                                                                 \
-    constexpr Vector2 &rotateDegrees(double degrees) {          \
+    constexpr Vector2 &rotateDegrees(double degrees) noexcept { \
         rotateRadians(degrees / 180.d * M_PI);                  \
                                                                 \
         return *this;                                           \
     }                                                           \
                                                                 \
-    constexpr Vector2 rotatedRadians(double radians) const {    \
+    constexpr Vector2 rotatedRadians(double radians) const      \
+                                                     noexcept { \
         Vector2 result{*this};                                  \
                                                                 \
         return result.rotateRadians(radians);                   \
     }                                                           \
                                                                 \
-    constexpr Vector2 rotatedDegrees(double degrees) const {    \
+    constexpr Vector2 rotatedDegrees(double degrees) const      \
+                                                     noexcept { \
         return rotatedRadians(degrees / 180.d * M_PI);          \
     }
 
@@ -108,35 +108,36 @@ DECLARE_ERROR(vector_error, abel::error)
 #define NAME_   Vector3
 #define N_      3
 #define EXTRA_                                                  \
-    constexpr T &x() {                                          \
+    constexpr T &x() noexcept {                                 \
         return values[0];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &x() const {                              \
+    constexpr const T &x() const noexcept {                     \
         return values[0];                                       \
     }                                                           \
                                                                 \
-    constexpr T &y() {                                          \
+    constexpr T &y() noexcept {                                 \
         return values[1];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &y() const {                              \
+    constexpr const T &y() const noexcept {                     \
         return values[1];                                       \
     }                                                           \
                                                                 \
-    constexpr T &z() {                                          \
+    constexpr T &z() noexcept {                                 \
         return values[2];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &z() const {                              \
+    constexpr const T &z() const noexcept {                     \
         return values[2];                                       \
     }                                                           \
                                                                 \
-    constexpr Vector3(T new_x, T new_y, T new_z) :              \
+    constexpr Vector3(T new_x, T new_y, T new_z) noexcept  :    \
         values{new_x, new_y, new_z} {}                          \
                                                                 \
     /* Vector multiplication */                                 \
-    constexpr Vector3 operator&(const Vector3 &other) const {   \
+    constexpr Vector3 operator&(const Vector3 &other) const     \
+                                                      noexcept {\
         return Vector3(y() * other.z() - z() * other.y(),       \
                        z() * other.x() - x() * other.z(),       \
                        x() * other.y() - y() * other.x());      \
@@ -149,39 +150,40 @@ DECLARE_ERROR(vector_error, abel::error)
 #define NAME_   Vector4
 #define N_      4
 #define EXTRA_                                                  \
-    constexpr T &x() {                                          \
+    constexpr T &x() noexcept {                                 \
         return values[0];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &x() const {                              \
+    constexpr const T &x() const noexcept {                     \
         return values[0];                                       \
     }                                                           \
                                                                 \
-    constexpr T &y() {                                          \
+    constexpr T &y() noexcept {                                 \
         return values[1];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &y() const {                              \
+    constexpr const T &y() const noexcept {                     \
         return values[1];                                       \
     }                                                           \
                                                                 \
-    constexpr T &z() {                                          \
+    constexpr T &z() noexcept {                                 \
         return values[2];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &z() const {                              \
+    constexpr const T &z() const noexcept {                     \
         return values[2];                                       \
     }                                                           \
                                                                 \
-    constexpr T &w() {                                          \
+    constexpr T &w() noexcept {                                 \
         return values[3];                                       \
     }                                                           \
                                                                 \
-    constexpr const T &w() const {                              \
+    constexpr const T &w() const noexcept {                     \
         return values[3];                                       \
     }                                                           \
                                                                 \
-    constexpr Vector4(T new_x, T new_y, T new_z, T new_w) :     \
+    constexpr Vector4(T new_x, T new_y, T new_z, T new_w)       \
+                                                    noexcept :  \
         values{new_x, new_y, new_z, new_w} {}
 
 #include "ACL/math/vector.tpl.h"

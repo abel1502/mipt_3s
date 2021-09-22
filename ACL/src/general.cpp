@@ -2,7 +2,7 @@
 #include <cstdarg>
 #include <cerrno>
 
-#include "ACL/general.h"
+#include <ACL/general.h>
 
 
 namespace abel {
@@ -19,7 +19,7 @@ void dbg_(bool isError, int level, const char *funcName, int lineNo, const char 
         vfprintf(stderr, msg, args);
         fprintf(stderr, "\n");
         if (errno != 0 && isError) {
-            perror("System error:");
+            perror("System error");
         }
     }
 

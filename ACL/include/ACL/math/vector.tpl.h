@@ -17,16 +17,16 @@ public:
 
     T values[DIM];
 
-    constexpr NAME_() :
+    constexpr NAME_() noexcept :
         values{} {}
 
-    constexpr NAME_(const NAME_ &other) {
+    constexpr NAME_(const NAME_ &other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] = other.values[i];
         }
     }
 
-    constexpr NAME_ &operator=(const NAME_ &other) {
+    constexpr NAME_ &operator=(const NAME_ &other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] = other.values[i];
         }
@@ -34,7 +34,7 @@ public:
         return *this;
     }
 
-    constexpr NAME_ &operator+=(const NAME_ &other) {
+    constexpr NAME_ &operator+=(const NAME_ &other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] += other.values[i];
         }
@@ -42,7 +42,7 @@ public:
         return *this;
     }
 
-    constexpr NAME_ &operator-=(const NAME_ &other) {
+    constexpr NAME_ &operator-=(const NAME_ &other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] -= other.values[i];
         }
@@ -50,24 +50,24 @@ public:
         return *this;
     }
 
-    constexpr NAME_ &operator*=(double other) {
+    constexpr NAME_ &operator*=(double other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
-            values[i] *= other;
+            values[i] *= (T)other;
         }
 
         return *this;
     }
 
-    constexpr NAME_ &operator/=(double other) {
+    constexpr NAME_ &operator/=(double other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
-            values[i] /= other;
+            values[i] /= (T)other;
         }
 
         return *this;
     }
 
     /// Scalar multiplication
-    constexpr T operator*(const NAME_ &other) const {
+    constexpr T operator*(const NAME_ &other) const noexcept {
         T result{};
 
         for (unsigned i = 0; i < DIM; ++i) {
@@ -77,22 +77,45 @@ public:
         return result;
     }
 
-    NAME_ &normalize() {
+    constexpr NAME_ &normalize() noexcept {
         double length_ = length();
 
-        if (length_ == 0.d)
-            throw new vector_error("Zero division");
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wfloat-equal"
+        if (length_ == 0.d) {
+            DBG("Zero-vector normalization. Ignoring");
+            return *this;
+        }
+        #pragma GCC diagnostic pop
 
         return *this *= 1 / length_;
     }
 
-    NAME_ normalized() const {
+    constexpr NAME_ normalized() const noexcept {
         NAME_ result{*this};
 
         return result.normalize();
     }
 
-    constexpr double length() const {
+    constexpr NAME_ &mirror(const NAME_ &against) noexcept {
+        return *this = mirrored(against);
+    }
+
+    constexpr NAME_ mirrored(const NAME_ &against) const noexcept {
+        return (against.normalized() * *this) * 2 - *this;
+    }
+
+    constexpr NAME_ &project(const NAME_ &onto) noexcept {
+        return *this *= onto.normalized();
+    }
+
+    constexpr NAME_ projected(const NAME_ &onto) const noexcept {
+        NAME_ result{*this};
+
+        return result.project(onto);
+    }
+
+    constexpr double length() const noexcept {
         if constexpr (DIM == 1)
             return (double)values[0];
         if constexpr (DIM == 2)
@@ -102,7 +125,7 @@ public:
         return std::sqrt((double)magnitude());
     }
 
-    constexpr T magnitude() const {
+    constexpr T magnitude() const noexcept {
         T result{};
 
         for (unsigned i = 0; i < DIM; ++i)
@@ -111,7 +134,7 @@ public:
         return result;
     }
 
-    constexpr bool isZero() const {
+    constexpr bool isZero() const noexcept {
         for (unsigned i = 0; i < DIM; ++i)
             if (values[i])
                 return false;
@@ -119,28 +142,40 @@ public:
         return true;
     }
 
-    constexpr friend NAME_ operator+(NAME_ self, const NAME_ &other) {
+    constexpr friend NAME_ operator+(NAME_ self, const NAME_ &other) noexcept {
         return self += other;
     }
 
-    constexpr friend NAME_ operator-(NAME_ self, const NAME_ &other) {
+    constexpr friend NAME_ operator-(NAME_ self, const NAME_ &other) noexcept {
         return self -= other;
     }
 
-    constexpr friend NAME_ operator*(NAME_ self, T other) {
+    constexpr friend NAME_ operator*(NAME_ self, T other) noexcept {
         return self *= other;
     }
 
-    constexpr friend NAME_ operator/(NAME_ self, T other) {
+    constexpr friend NAME_ operator/(NAME_ self, T other) noexcept {
         return self /= other;
     }
 
-    constexpr friend NAME_ operator-(NAME_ self) {
+    constexpr friend NAME_ operator-(NAME_ self) noexcept {
         return self *= -1.d;
     }
 
+    constexpr bool operator==(const NAME_ &other) const noexcept {
+        for (unsigned i = 0; i < DIM; ++i)
+            if (values[i] != other.values[i])
+                return false;
+
+        return true;
+    }
+
+    constexpr bool operator!=(const NAME_ &other) const noexcept {
+        return !operator==(other);
+    }
+
     template <typename OTHER_T>
-    constexpr explicit operator NAME_<OTHER_T>() const {
+    constexpr explicit operator NAME_<OTHER_T>() const noexcept {
         NAME_<OTHER_T> result{};
 
         for (unsigned i = 0; i < DIM; ++i)
