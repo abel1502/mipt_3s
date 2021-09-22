@@ -6,22 +6,61 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="build/dbg/bin/Raycaster" prefix_auto="1" extension_auto="1" />
-				<Option object_output="build/dbg/obj/" />
+			<Target title="SDL2 Debug">
+				<Option output="build/sdl2/dbg/bin/Raycaster" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/sdl2/dbg/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DRAYCASTER_GUI_FRAMEWORK=RGF_SDL2" />
+					<Add directory="../Grapher++/SDL/include" />
+				</Compiler>
+				<Linker>
+					<Add library="mingw32" />
+					<Add library="SDL2main" />
+					<Add library="SDL2" />
+					<Add directory="../Grapher++/SDL/lib" />
+					<Add directory="../Grapher++/SDL/bin" />
+				</Linker>
+			</Target>
+			<Target title="TXLib Debug">
+				<Option output="build/txlib/dbg/bin/Raycaster" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/txlib/dbg/obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DRAYCASTER_GUI_FRAMEWORK=RGF_TXLIB" />
 				</Compiler>
 			</Target>
-			<Target title="Release">
-				<Option output="build/bin/Raycaster" prefix_auto="1" extension_auto="1" />
-				<Option object_output="build/obj/" />
+			<Target title="SDL2 Release">
+				<Option output="build/sdl2/bin/Raycaster" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/sdl2/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DRAYCASTER_GUI_FRAMEWORK=RGF_SDL2" />
+					<Add directory="../Grapher++/SDL/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="mingw32" />
+					<Add library="SDL2main" />
+					<Add library="SDL2" />
+					<Add directory="../Grapher++/SDL/lib" />
+					<Add directory="../Grapher++/SDL/bin" />
+				</Linker>
+			</Target>
+			<Target title="TXLib Release">
+				<Option output="build/txlib/bin/Raycaster" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/txlib/obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DRAYCASTER_GUI_FRAMEWORK=RGF_TXLIB" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -30,13 +69,32 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-m32" />
 			<Add directory="../ACL/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="../ACL/build/lib" />
+			<Add option="-m32" />
+			<Add library="ACL" />
+			<Add directory="../ACL/build/lib32" />
 		</Linker>
-		<Unit filename="color.cpp" />
-		<Unit filename="color.h" />
+		<Unit filename="gui/gui.cpp" />
+		<Unit filename="gui/gui.h" />
+		<Unit filename="gui/gui_sdl2.cpp">
+			<Option target="SDL2 Debug" />
+			<Option target="SDL2 Release" />
+		</Unit>
+		<Unit filename="gui/gui_sdl2.h">
+			<Option target="SDL2 Debug" />
+			<Option target="SDL2 Release" />
+		</Unit>
+		<Unit filename="gui/gui_txlib.cpp">
+			<Option target="TXLib Debug" />
+			<Option target="TXLib Release" />
+		</Unit>
+		<Unit filename="gui/gui_txlib.h">
+			<Option target="TXLib Debug" />
+			<Option target="TXLib Release" />
+		</Unit>
 		<Unit filename="main.cpp" />
 		<Unit filename="raycaster.cpp" />
 		<Unit filename="raycaster.h" />
