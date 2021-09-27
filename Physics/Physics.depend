@@ -1,0 +1,102 @@
+# depslib dependency file v1.0
+1632325748 source:d:\workspace\.mipt\s3\physics\gui\gui_txlib.cpp
+	"gui.h"
+	<algorithm>
+	<cassert>
+
+1632662364 d:\workspace\.mipt\s3\physics\gui\gui.h
+	<TXLib.h>
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<ACL/gui/color.h>
+	<type_traits>
+	"gui_sdl2.h"
+	"gui_txlib.h"
+
+1632130287 d:\workspace\.mipt\s3\acl\include\acl\general.h
+	<stdexcept>
+	<string>
+
+1632325041 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
+	<type_traits>
+	<initializer_list>
+	<ACL/general.h>
+	<ACL/math/cmath.h>
+	"ACL/math/vector.tpl.h"
+	"ACL/math/vector.tpl.h"
+	"ACL/math/vector.tpl.h"
+	"ACL/math/vector.tpl.h"
+
+1632301309 d:\workspace\.mipt\s3\acl\include\acl\math\cmath.h
+	<cmath>
+
+1632320335 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+
+1632320562 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<cstdint>
+
+1632320041 d:\workspace\.mipt\s3\physics\gui\gui_sdl2.h
+	<SDL2/SDL.h>
+	<ACL/vector.h>
+
+1632150031 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+	<ACL/general.h>
+	<algorithm>
+	<initializer_list>
+	<cassert>
+	<cstdlib>
+	<memory>
+
+1632324330 d:\workspace\.mipt\s3\physics\gui\gui_txlib.h
+	<ACL/math/cmath.h>
+
+1632662760 source:d:\workspace\.mipt\s3\physics\main.cpp
+	"gui/gui.h"
+	<ACL/general.h>
+
+1632671210 source:d:\workspace\.mipt\s3\physics\event.cpp
+	"event.h"
+
+1632672756 d:\workspace\.mipt\s3\physics\event.h
+
+1632670992 source:d:\workspace\.mipt\s3\physics\molecule.cpp
+	"molecule.h"
+
+1632731291 d:\workspace\.mipt\s3\physics\molecule.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	"components/physics.h"
+	"components/render.h"
+	"components/chemistry.h"
+
+1632731133 d:\workspace\.mipt\s3\physics\components\physics.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	"component.h"
+
+1632727901 d:\workspace\.mipt\s3\physics\components\component.h
+
+1632731231 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
+	"physics.h"
+	<typeinfo>
+
+1632677434 source:d:\workspace\.mipt\s3\physics\components\component.cpp
+	"component.h"
+	"../molecule.h"
+
+1632730832 d:\workspace\.mipt\s3\physics\components\render.h
+	"component.h"
+
+1632730670 d:\workspace\.mipt\s3\physics\components\chemistry.h
+	<ACL/general.h>
+	"component.h"
+
+1632677498 source:d:\workspace\.mipt\s3\physics\components\chemistry.cpp
+	"chemistry.h"
+
+1632730609 source:d:\workspace\.mipt\s3\physics\components\render.cpp
+	"../gui/gui.h"
+	"render.h"
+
