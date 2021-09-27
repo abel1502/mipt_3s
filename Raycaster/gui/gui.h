@@ -2,15 +2,15 @@
 #define GUI_H
 
 
-#ifndef RAYCASTER_GUI_FRAMEWORK
-#error "Specify a gui framework via RAYCASTER_GUI_FRAMEWORK: SDL2 or TXLib"
+#ifndef UNDERLYING_GUI_FRAMEWORK
+#error "Specify a gui framework via UNDERLYING_GUI_FRAMEWORK: UGF_SDL2 or UGF_TXLIB"
 #endif
 
-#define RGF_SDL2   1
-#define RGF_TXLIB  2
+#define UGF_SDL2   1
+#define UGF_TXLIB  2
 
 
-#if RAYCASTER_GUI_FRAMEWORK == RGF_TXLIB
+#if UNDERLYING_GUI_FRAMEWORK == UGF_TXLIB
 #define TX_CONSOLE_MODE SW_SHOW
 #include <TXLib.h>  // Because it demands being included first
 #endif
@@ -163,14 +163,14 @@ public:
 #define MAIN_DECL \
     int main()
 
-#if RAYCASTER_GUI_FRAMEWORK == RGF_SDL2
+#if UNDERLYING_GUI_FRAMEWORK == UGF_SDL2
 
 #include "gui_sdl2.h"
 #undef MAIN_DECL
 #define MAIN_DECL \
     extern "C" int main(int, char **)
 
-#elif RAYCASTER_GUI_FRAMEWORK == RGF_TXLIB
+#elif UNDERLYING_GUI_FRAMEWORK == UGF_TXLIB
 
 #include "gui_txlib.h"
 

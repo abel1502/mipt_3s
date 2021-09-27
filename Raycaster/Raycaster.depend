@@ -8,7 +8,7 @@
 	<stdexcept>
 	<string>
 
-1632324845 source:d:\workspace\.mipt\s3\raycaster\raycaster.cpp
+1632327082 source:d:\workspace\.mipt\s3\raycaster\raycaster.cpp
 	"raycaster.h"
 	<ACL/math/binpow.h>
 	<limits>
@@ -67,7 +67,7 @@
 1632070231 source:d:\workspace\.mipt\s3\raycaster\gui\gui.cpp
 	"gui.h"
 
-1632322112 d:\workspace\.mipt\s3\raycaster\gui\gui.h
+1632662364 d:\workspace\.mipt\s3\raycaster\gui\gui.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
