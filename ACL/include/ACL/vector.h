@@ -243,10 +243,13 @@ protected:
     }
 
     void destroy() noexcept {
-        for (unsigned i = 0; i < size; ++i) {
-            buf[i].~T();
+        if (buf) {
+            for (unsigned i = 0; i < size; ++i) {
+                buf[i].~T();
+            }
+
+            free(buf);
         }
-        free(buf);
 
         buf = nullptr;
         size = 0;

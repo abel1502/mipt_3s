@@ -106,13 +106,13 @@ public:
     }
 
     constexpr NAME_ &project(const NAME_ &onto) noexcept {
-        return *this *= onto.normalized();
+        return *this = projected(onto);
     }
 
     constexpr NAME_ projected(const NAME_ &onto) const noexcept {
-        NAME_ result{*this};
+        NAME_ ontoN = onto.normalized();
 
-        return result.project(onto);
+        return ontoN * (*this * ontoN);
     }
 
     constexpr double length() const noexcept {
