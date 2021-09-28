@@ -148,7 +148,7 @@ public:
 
     ~Texture() noexcept;
 
-    Color *getBuf();
+    PackedColor *getBuf();
 
     void update();
 
