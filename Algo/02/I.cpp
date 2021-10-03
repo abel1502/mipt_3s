@@ -1,9 +1,3 @@
-/*
-    I guess I'll stop copying the task texts, by the way.
-    If I still should, tell me.
-*/
-
-
 #include <cstdlib>
 #include <cstdio>
 #include <cassert>
