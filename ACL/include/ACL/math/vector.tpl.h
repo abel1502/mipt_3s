@@ -9,9 +9,10 @@
 template <typename T>
 class NAME_ {
     static_assert(1 <= N_ && N_ <= 4);
-    static_assert(std::is_signed<T>::value);
+    //static_assert(std::is_signed_v<T>);  // May theoretically be removed, because constexpr would still work
 
 public:
+    using TYPE = T;
     static constexpr unsigned DIM = N_;
     static constexpr NAME_<T> ZERO{};
 
@@ -97,12 +98,20 @@ public:
         return result.normalize();
     }
 
-    constexpr NAME_ &mirror(const NAME_ &against) noexcept {
-        return *this = mirrored(against);
+    constexpr NAME_ &mirrorAgainst(const NAME_ &against) noexcept {
+        return *this = mirroredAgainst(against);
     }
 
-    constexpr NAME_ mirrored(const NAME_ &against) const noexcept {
-        return (against.normalized() * *this) * 2 - *this;
+    constexpr NAME_ mirroredAgainst(const NAME_ &against) const noexcept {
+        return against * (against * *this) * 2 / against.magnitude() - *this;
+    }
+
+    constexpr NAME_ &mirrorAlong(const NAME_ &along) noexcept {
+        return *this = mirroredAlong(along);
+    }
+
+    constexpr NAME_ mirroredAlong(const NAME_ &along) const noexcept {
+        return *this - projected(along) * 2;
     }
 
     constexpr NAME_ &project(const NAME_ &onto) noexcept {
@@ -110,9 +119,7 @@ public:
     }
 
     constexpr NAME_ projected(const NAME_ &onto) const noexcept {
-        NAME_ ontoN = onto.normalized();
-
-        return ontoN * (*this * ontoN);
+        return onto * (*this * onto) / onto.magnitude();
     }
 
     constexpr double length() const noexcept {

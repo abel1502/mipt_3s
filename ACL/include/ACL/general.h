@@ -62,6 +62,10 @@ void dbg_(bool isError, int level, const char *funcName, int lineNo, const char 
 
 unsigned long long randLL();
 
+inline unsigned long long randLL(unsigned long long max) {
+    return randLL() % max;
+}
+
 
 }
 

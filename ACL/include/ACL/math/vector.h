@@ -1,7 +1,7 @@
 #ifndef ACL_MATH_VECTOR_H
 #define ACL_MATH_VECTOR_H
 
-#include <type_traits>
+#include <ACL/type_traits.h>
 #include <initializer_list>
 
 #include <ACL/general.h>

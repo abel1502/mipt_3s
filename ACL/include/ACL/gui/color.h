@@ -34,6 +34,9 @@ static_assert(offsetof(PackedColor, A) == 3);
 
 class Color : public abel::math::Vector3f {
 public:
+    static const Color BLACK, WHITE, RED, ORANGE, YELLOW, GREEN, LBLUE, BLUE, PURPLE;
+
+
     constexpr Color() noexcept :
         abel::math::Vector3f() {}
 
@@ -118,6 +121,17 @@ public:
     }
 
 };
+
+
+inline constexpr Color Color::BLACK  {0.d, 0.d, 0.d};
+inline constexpr Color Color::WHITE  {1.d, 1.d, 1.d};
+inline constexpr Color Color::RED    {1.d, 0.d, 0.d};
+inline constexpr Color Color::ORANGE {1.d, .5d, 0.d};
+inline constexpr Color Color::YELLOW {1.d, 1.d, 0.d};
+inline constexpr Color Color::GREEN  {0.d, 1.d, 0.d};
+inline constexpr Color Color::LBLUE  {0.d, 1.d, 1.d};
+inline constexpr Color Color::BLUE   {0.d, 0.d, 1.d};
+inline constexpr Color Color::PURPLE {1.d, 0.d, 1.d};
 
 
 }

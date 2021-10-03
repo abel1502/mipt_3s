@@ -7,7 +7,7 @@
 
 #include <algorithm>
 #include <cassert>
-#include <type_traits>
+#include <ACL/type_traits.h>
 
 
 #error "Unfinished"
@@ -19,7 +19,7 @@ namespace math {
 
 template <typename T>
 class Matrix {
-    static_assert(std::is_arithmetic<T>::value);
+    //static_assert(std::is_arithmetic_v<T>);
 
 public:  // TODO: Finish
     Matrix() :
