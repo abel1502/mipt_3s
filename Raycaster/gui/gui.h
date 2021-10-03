@@ -19,6 +19,7 @@
 #include <ACL/general.h>
 #include <ACL/math/vector.h>
 #include <ACL/gui/color.h>
+#include <ACL/gui/rect.h>
 
 #include <type_traits>
 
@@ -29,59 +30,7 @@ DECLARE_ERROR(gui_error, std::runtime_error)
 using abel::math::Vector2i;
 using abel::gui::Color;
 using abel::gui::PackedColor;
-
-
-template <typename T>
-class Rect {
-    static_assert(std::is_arithmetic<T>::value);
-
-public:
-    Rect<T>() noexcept :
-        x_{0}, y_{0}, w_{0}, h_{0} {}
-
-    /// Width-Height
-    Rect<T>(T new_x, T new_y, T new_w, T new_h) noexcept {
-        x(new_x);
-        y(new_y);
-        w(new_w);
-        h(new_h);
-    }
-
-    /// Start-end
-    Rect<T>(T new_x0, T new_y0, T new_x1, T new_y1, int) noexcept {
-        x0(new_x0);
-        y0(new_y0);
-        x1(new_x1);
-        y1(new_y1);
-    }
-
-    inline T  x() const noexcept { return x_; }
-    inline T  y() const noexcept { return y_; }
-    inline T  w() const noexcept { return w_; }
-    inline T  h() const noexcept { return h_; }
-    inline T x0() const noexcept { return x_; }
-    inline T y0() const noexcept { return y_; }
-    inline T x1() const noexcept { return x_ + w_; }
-    inline T y1() const noexcept { return y_ + h_; }
-
-    inline void  x(T val) noexcept { x_ = val; }
-    inline void  y(T val) noexcept { y_ = val; }
-    inline void  w(T val) noexcept { w_ = val; }
-    inline void  h(T val) noexcept { h_ = val; }
-    inline void x0(T val) noexcept { x_ = val; }
-    inline void y0(T val) noexcept { y_ = val; }
-    inline void x1(T val) noexcept { w_ = val - x_; }
-    inline void y1(T val) noexcept { h_ = val - y_; }
-
-    template <typename T2>
-    operator Rect<T2>() const {
-
-    }
-
-protected:
-    T x_, y_, w_, h_;
-
-};
+using abel::gui::Rect;
 
 
 class Window;

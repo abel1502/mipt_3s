@@ -4,7 +4,7 @@
 	<ACL/general.h>
 	"raycaster.h"
 
-1632130287 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1632902801 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
 
@@ -43,7 +43,7 @@
 	<string>
 	"general.h"
 
-1632755455 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+1632899171 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
 
 1632301309 d:\workspace\.mipt\s3\acl\include\acl\math\cmath.h
 	<cmath>
@@ -67,11 +67,12 @@
 1632070231 source:d:\workspace\.mipt\s3\raycaster\gui\gui.cpp
 	"gui.h"
 
-1632848428 d:\workspace\.mipt\s3\raycaster\gui\gui.h
+1632927312 d:\workspace\.mipt\s3\raycaster\gui\gui.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<ACL/gui/color.h>
+	<ACL/gui/rect.h>
 	<type_traits>
 	"gui_sdl2.h"
 	"gui_txlib.h"
@@ -469,4 +470,8 @@
 	"gui.h"
 	<algorithm>
 	<cassert>
+
+1632927074 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+	<type_traits>
+	<ACL/math/vector.h>
 
