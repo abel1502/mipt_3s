@@ -2,6 +2,7 @@
 #define ABEL_MATH_BINPOW_H
 
 #include <ACL/general.h>
+#include <ACL/type_traits.h>
 #include <ACL/math/getneutral.h>
 
 
@@ -10,17 +11,35 @@ namespace math {
 
 
 template <typename T>
-T binPow(T base, unsigned power) {
-    T result = getNeutral<T>();
+constexpr T binPow(T base, unsigned power) {
+    T result = getMulNeutral<T>();
 
     while (power) {
-        if (!(power & 1)) {
-            base = base * base;
-            power >>= 1;
-        } else {
+        if (power & 1) {
             result *= base;
             --power;
         }
+
+        base = base * base;
+        power >>= 1;
+    }
+
+    return result;
+}
+
+
+template <typename T, typename U = T>
+constexpr T binPow(T base, unsigned power, U mod) {
+    T result = getMulNeutral<T>();
+
+    while (power) {
+        if (power & 1) {
+            result = result * base % mod;
+            --power;
+        }
+
+        base = base * base % mod;
+        power >>= 1;
     }
 
     return result;

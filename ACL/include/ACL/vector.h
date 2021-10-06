@@ -29,7 +29,7 @@ public:
         size{0},
         capacity{0} {
 
-        resize(DEFAULT_CAPACITY);
+        reserve(DEFAULT_CAPACITY);
     }
 
     vector(std::initializer_list<T> values) :
@@ -37,7 +37,7 @@ public:
         size{0},
         capacity{0} {
 
-        resize(values.size());
+        reserve(values.size());
 
         extend(values);
     }
@@ -45,14 +45,14 @@ public:
     vector(unsigned new_size) :
         vector() {
 
-        resize(new_size);
+        reserve(new_size);
         size = new_size;
     }
 
     vector(unsigned new_size, const T &value) :
         vector() {
 
-        resize(new_size);
+        reserve(new_size);
         for (unsigned i = 0; i < new_size; ++i) {
             append(value);
         }
@@ -61,7 +61,7 @@ public:
     vector(const vector &other) :
         vector() {
 
-        resize(other.capacity);
+        reserve(other.capacity);
         for (unsigned i =0; i < other.size; ++i) {
             append(other[i]);
         }
@@ -70,7 +70,7 @@ public:
     vector &operator=(const vector &other) {
         destroy();
 
-        resize(other.capacity);
+        reserve(other.capacity);
 
         for (unsigned i =0; i < other.size; ++i) {
             append(other[i]);
@@ -110,50 +110,63 @@ public:
         return const_cast<vector *>(this)->operator[](idx);
     }
 
-    void append() {
-        if (size >= capacity) {
-            resize(capacity * 2);
+    /// The following methods return whether the buffer was moved
 
-            assert(capacity > size);
-        }
-
-        T *newSpot = new (&buf[size++]) T();
-        assert(newSpot == &buf[size - 1]);
+    #define DECLARE_APPEND_BODY_(CTOR_ARGS) {           \
+        bool moved = false;                             \
+                                                        \
+        if (size >= capacity) {                         \
+            moved = reserve(capacity * 2);              \
+                                                        \
+            assert(capacity > size);                    \
+        }                                               \
+                                                        \
+        T *newSpot = new (&buf[size++]) T(CTOR_ARGS);   \
+        assert(newSpot == &buf[size - 1]);              \
+                                                        \
+        return moved;                                   \
     }
 
-    void append(const T &value) {
-        if (size >= capacity) {
-            resize(capacity * 2);
-
-            assert(capacity > size);
-        }
-
-        T *newSpot = new (&buf[size++]) T(value);
-        assert(newSpot == &buf[size - 1]);
+    bool append() {
+        DECLARE_APPEND_BODY_()
     }
 
-    void append(const T &&value) {
-        if (size >= capacity) {
-            resize(capacity * 2);
-
-            assert(capacity > size);
-        }
-
-        T *newSpot = new (&buf[size++]) T(std::move(value));
-        assert(newSpot == &buf[size - 1]);
+    bool append(const T &value) {
+        DECLARE_APPEND_BODY_(value)
     }
 
-    void extend(unsigned count) {
-        for (unsigned i = 0; i < count; ++i) {
-            append(T{});
-        }
+    bool append(T &&value) {
+        DECLARE_APPEND_BODY_(std::move(value))
     }
 
-    void extend(std::initializer_list<T> values) {
-        for (const T &val : values) {
-            append(val);
-        }
+    template <typename ... Ts>
+    bool appendEmplace(Ts ... args) {
+        DECLARE_APPEND_BODY_(args...)
     }
+
+    #undef DECLARE_APPEND_BODY_
+
+    #define DECLARE_EXTEND_BODY_(FOR_CODE, APPEND_CALL) {       \
+        bool moved = false;                                     \
+                                                                \
+        for (FOR_CODE) {                                        \
+            /* Intentionally not boolean or, because we   */    \
+            /* don't want shortcutting to take place here */    \
+            moved |= !!(APPEND_CALL);                           \
+        }                                                       \
+                                                                \
+        return moved;                                           \
+    }
+
+    bool extend(unsigned count) {
+        DECLARE_EXTEND_BODY_(unsigned i = 0; i < count; ++i, appendEmplace())
+    }
+
+    bool extend(std::initializer_list<T> values) {
+        DECLARE_EXTEND_BODY_(const T &val : values, append(val))
+    }
+
+    #undef DECLARE_EXTEND_BODY_
 
     T popVal() {
         if (isEmpty())
@@ -215,17 +228,13 @@ public:
         return buf + size;
     }
 
-protected:
-    T *buf;
-    unsigned size;
-    unsigned capacity;
-
-    void resize(unsigned new_capacity) {
+    /// Returns whether the buffer was moved
+    bool reserve(unsigned new_capacity) {
         if (new_capacity == 0)
             new_capacity = DEFAULT_CAPACITY;
 
         if (new_capacity <= capacity)
-            return;
+            return false;
 
         T *newBuf = (T *)calloc(new_capacity, sizeof(T));
 
@@ -240,7 +249,14 @@ protected:
 
         buf = newBuf;
         capacity = new_capacity;
+
+        return true;
     }
+
+protected:
+    T *buf;
+    unsigned size;
+    unsigned capacity;
 
     void destroy() noexcept {
         if (buf) {

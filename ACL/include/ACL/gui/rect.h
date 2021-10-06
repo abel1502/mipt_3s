@@ -17,12 +17,16 @@ public:
     constexpr Rect<T>() noexcept :
         x_{0}, y_{0}, w_{0}, h_{0} {}
 
-    /// Width-Height
+    /// Width-height
     constexpr Rect<T>(T new_x, T new_y, T new_w, T new_h) noexcept {
         x(new_x);
         y(new_y);
         w(new_w);
         h(new_h);
+    }
+
+    static constexpr Rect<T> wh(T x, T y, T w, T h) noexcept {
+        return Rect(x, y, w, h);
     }
 
     /// Start-end
@@ -31,6 +35,10 @@ public:
         y0(new_y0);
         x1(new_x1);
         y1(new_y1);
+    }
+
+    static constexpr Rect<T> se(T x0, T y0, T x1, T y1) noexcept {
+        return Rect(x0, y0, x1, y1, 0);
     }
 
     constexpr T  x() const noexcept { return x_; }
@@ -68,6 +76,7 @@ public:
                         y() + yCoord * h());
     }
 
+    /// Width-height, vector
     constexpr Rect<T>(Vector2T from, Vector2T size) noexcept {
         x(from.x());
         y(from.y());
@@ -75,12 +84,20 @@ public:
         h(size.y());
     }
 
-    /// Start-end
+    static constexpr Rect<T> wh(Vector2T from, Vector2T size) noexcept {
+        return Rect(from, size);
+    }
+
+    /// Start-end, vector
     constexpr Rect<T>(Vector2T from, Vector2T to, int) noexcept {
         x0(from.x());
         y0(from.y());
         x1(to.x());
         y1(to.y());
+    }
+
+    static constexpr Rect<T> se(Vector2T start, Vector2T end) noexcept {
+        return Rect(start, end, 0);
     }
 
 protected:

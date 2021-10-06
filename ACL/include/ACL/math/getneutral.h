@@ -9,12 +9,20 @@ namespace abel {
 namespace math {
 
 
-/// Overload this for your type
+/// Overload these for your type
+
 template <typename T>
-T getNeutral() {
+constexpr T getMulNeutral() {
     static_assert(std::is_arithmetic_v<T>);
 
     return (T)1;
+}
+
+template <typename T>
+constexpr T getAddNeutral() {
+    static_assert(std::is_arithmetic_v<T>);
+
+    return (T)0;
 }
 
 

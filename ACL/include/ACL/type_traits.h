@@ -28,6 +28,22 @@ CHANGE_SIGNEDNESS_(signed, unsigned)
 #undef CHANGE_SIGNEDNESS_
 
 
+template <typename T, typename = void>
+struct arg_type {
+    using type = T &;
+};
+
+template <typename T>
+struct arg_type<T, std::enable_if_t<std::is_fundamental_v<T> ||
+                                    std::is_pointer_v    <T> ||
+                                    std::is_reference_v  <T>>> {
+    using type = T;
+};
+
+template <typename T>
+using arg_type_t = typename arg_type<T>::type;
+
+
 }
 
 

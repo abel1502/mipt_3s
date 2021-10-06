@@ -13,6 +13,7 @@ class NAME_ {
 
 public:
     using TYPE = T;
+    using ARG_TYPE = abel::arg_type_t<T>;
     static constexpr unsigned DIM = N_;
     static constexpr NAME_<T> ZERO{};
 
@@ -26,6 +27,15 @@ public:
             values[i] = other.values[i];
         }
     }
+
+    // Because for N == 1 this is equivalent to the complete constructor
+    #if N_ > 1
+    constexpr NAME_(ARG_TYPE val) noexcept {
+        for (unsigned i = 0; i < DIM; ++i) {
+            values[i] = val;
+        }
+    }
+    #endif
 
     constexpr NAME_ &operator=(const NAME_ &other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
@@ -51,17 +61,40 @@ public:
         return *this;
     }
 
-    constexpr NAME_ &operator*=(double other) noexcept {
+    template <typename U>
+    constexpr NAME_ &operator*=(U other) noexcept {
+        static_assert(std::is_arithmetic_v<U>);
+
         for (unsigned i = 0; i < DIM; ++i) {
-            values[i] *= (T)other;
+            values[i] = (T)(values[i] * other);
         }
 
         return *this;
     }
 
-    constexpr NAME_ &operator/=(double other) noexcept {
+    template <typename U>
+    constexpr NAME_ &operator/=(U other) noexcept {
+        static_assert(std::is_arithmetic_v<U>);
+
         for (unsigned i = 0; i < DIM; ++i) {
-            values[i] /= (T)other;
+            values[i] = (T)(values[i] / other);
+        }
+
+        return *this;
+    }
+
+    constexpr NAME_ &operator*=(ARG_TYPE other) noexcept {
+        for (unsigned i = 0; i < DIM; ++i) {
+            values[i] *= other;
+        }
+
+        return *this;
+    }
+
+
+    constexpr NAME_ &operator/=(ARG_TYPE other) noexcept {
+        for (unsigned i = 0; i < DIM; ++i) {
+            values[i] /= other;
         }
 
         return *this;
@@ -143,7 +176,7 @@ public:
 
     constexpr bool isZero() const noexcept {
         for (unsigned i = 0; i < DIM; ++i)
-            if (values[i])
+            if (abel::sgnDbl(values[i]))
                 return false;
 
         return true;
@@ -157,12 +190,16 @@ public:
         return self -= other;
     }
 
-    constexpr friend NAME_ operator*(NAME_ self, T other) noexcept {
+    constexpr friend NAME_ operator*(NAME_ self, ARG_TYPE other) noexcept {
         return self *= other;
     }
 
-    constexpr friend NAME_ operator/(NAME_ self, T other) noexcept {
+    constexpr friend NAME_ operator/(NAME_ self, ARG_TYPE other) noexcept {
         return self /= other;
+    }
+
+    constexpr friend NAME_ operator*(ARG_TYPE other, NAME_ self) noexcept {
+        return self *= other;
     }
 
     constexpr friend NAME_ operator-(NAME_ self) noexcept {
@@ -171,7 +208,7 @@ public:
 
     constexpr bool operator==(const NAME_ &other) const noexcept {
         for (unsigned i = 0; i < DIM; ++i)
-            if (values[i] != other.values[i])
+            if (abel::cmpDbl(values[i], other.values[i]))
                 return false;
 
         return true;
@@ -181,12 +218,12 @@ public:
         return !operator==(other);
     }
 
-    template <typename OTHER_T>
-    constexpr explicit operator NAME_<OTHER_T>() const noexcept {
-        NAME_<OTHER_T> result{};
+    template <typename U>
+    constexpr explicit operator NAME_<U>() const noexcept {
+        NAME_<U> result{};
 
         for (unsigned i = 0; i < DIM; ++i)
-            result.values[i] = (OTHER_T)values[i];
+            result.values[i] = (U)values[i];
 
         return result;
     }
@@ -194,6 +231,7 @@ public:
     EXTRA_
 
 };
+
 
 #define CONCAT_INNER_(A, B)  A##B
 #define CONCAT_(A, B)  CONCAT_INNER_(A, B)

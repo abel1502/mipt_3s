@@ -9,6 +9,12 @@
 #define MACROFUNC(...) do {__VA_ARGS__} while (0)
 
 
+#define MACROCOMMA  ,
+
+
+#define MACROARGS(...)  __VA_ARGS__
+
+
 #define ERR(msg, ...) abel::dbg_(true,  1, __func__, __LINE__, msg, ##__VA_ARGS__)
 #define DBG(msg, ...) abel::dbg_(false, 2, __func__, __LINE__, msg, ##__VA_ARGS__)
 
@@ -29,9 +35,11 @@
 
 
 #define NODEFAULT                       \
-    default:                            \
+    default: {                          \
         ERR("Shouldn't be reachable");  \
-        abort();
+        abort();                        \
+    }
+
 
 #define MAIN_TRY(...)  MAIN_TRY_R(1, __VA_ARGS__)
 
@@ -65,6 +73,34 @@ unsigned long long randLL();
 inline unsigned long long randLL(unsigned long long max) {
     return randLL() % max;
 }
+
+inline double randDouble(double max = 1.d) {
+    constexpr unsigned DISCRETENESS = 1'000'000;
+
+    return max * (double)randLL(DISCRETENESS) / (double)DISCRETENESS;
+}
+
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+
+inline bool isZero(double val) {
+    return val == 0.d;
+}
+
+constexpr double EPSILON = 1e-30d;
+
+inline int sgnDbl(double val) {
+    if (val >=  EPSILON) return  1;
+    if (val <= -EPSILON) return -1;
+    return 0;
+}
+
+inline int cmpDbl(double a, double b) {
+    return sgnDbl(a - b);
+}
+
+#pragma GCC diagnostic pop
 
 
 }
