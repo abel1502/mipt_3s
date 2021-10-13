@@ -68,11 +68,13 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-flto" />
 			<Add option="-Wall" />
 			<Add option="-m32" />
 			<Add directory="../ACL/include" />
 		</Compiler>
 		<Linker>
+			<Add option="-flto" />
 			<Add option="-m32" />
 			<Add library="ACL" />
 			<Add directory="../ACL/build/lib32" />
@@ -106,6 +108,8 @@
 			<Option target="TXLib Release" />
 		</Unit>
 		<Unit filename="main.cpp" />
+		<Unit filename="manager.cpp" />
+		<Unit filename="manager.h" />
 		<Unit filename="molecule.cpp" />
 		<Unit filename="molecule.h" />
 		<Extensions>

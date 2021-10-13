@@ -1,24 +1,25 @@
 # depslib dependency file v1.0
-1632325748 source:d:\workspace\.mipt\s3\physics\gui\gui_txlib.cpp
+1633520182 source:d:\workspace\.mipt\s3\physics\gui\gui_txlib.cpp
 	"gui.h"
 	<algorithm>
 	<cassert>
 
-1632662364 d:\workspace\.mipt\s3\physics\gui\gui.h
+1633512779 d:\workspace\.mipt\s3\physics\gui\gui.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<ACL/gui/color.h>
+	<ACL/gui/rect.h>
 	<type_traits>
 	"gui_sdl2.h"
 	"gui_txlib.h"
 
-1632130287 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1633964029 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
 
-1632325041 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
-	<type_traits>
+1633935492 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
+	<ACL/type_traits.h>
 	<initializer_list>
 	<ACL/general.h>
 	<ACL/math/cmath.h>
@@ -30,18 +31,18 @@
 1632301309 d:\workspace\.mipt\s3\acl\include\acl\math\cmath.h
 	<cmath>
 
-1632320335 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+1633511127 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
 
-1632320562 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
+1633197772 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<cstdint>
 
-1632320041 d:\workspace\.mipt\s3\physics\gui\gui_sdl2.h
+1633193401 d:\workspace\.mipt\s3\physics\gui\gui_sdl2.h
 	<SDL2/SDL.h>
 	<ACL/vector.h>
 
-1632150031 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1633356221 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
 	<algorithm>
 	<initializer_list>
@@ -49,54 +50,490 @@
 	<cstdlib>
 	<memory>
 
-1632324330 d:\workspace\.mipt\s3\physics\gui\gui_txlib.h
+1633773996 d:\workspace\.mipt\s3\physics\gui\gui_txlib.h
 	<ACL/math/cmath.h>
 
-1632662760 source:d:\workspace\.mipt\s3\physics\main.cpp
+1633963067 source:d:\workspace\.mipt\s3\physics\main.cpp
 	"gui/gui.h"
 	<ACL/general.h>
+	<typeinfo>
+	"manager.h"
+	"molecule.h"
 
 1632671210 source:d:\workspace\.mipt\s3\physics\event.cpp
 	"event.h"
 
 1632672756 d:\workspace\.mipt\s3\physics\event.h
 
-1632670992 source:d:\workspace\.mipt\s3\physics\molecule.cpp
+1634120772 source:d:\workspace\.mipt\s3\physics\molecule.cpp
 	"molecule.h"
+	"manager.h"
+	<typeinfo>
 
-1632731291 d:\workspace\.mipt\s3\physics\molecule.h
+1633965144 d:\workspace\.mipt\s3\physics\molecule.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
+	<cassert>
+	<type_traits>
 	"components/physics.h"
 	"components/render.h"
 	"components/chemistry.h"
+	"borders.h"
 
-1632731133 d:\workspace\.mipt\s3\physics\components\physics.h
+1634024382 d:\workspace\.mipt\s3\physics\components\physics.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
+	<ACL/gui/color.h>
 	"component.h"
+	"../borders.h"
 
-1632727901 d:\workspace\.mipt\s3\physics\components\component.h
+1633933760 d:\workspace\.mipt\s3\physics\components\component.h
+	<cassert>
 
-1632731231 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
+1633961649 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
 	"physics.h"
+	"../molecule.h"
 	<typeinfo>
+	<cassert>
+	<ACL/math/cmath.h>
 
-1632677434 source:d:\workspace\.mipt\s3\physics\components\component.cpp
+1633936944 source:d:\workspace\.mipt\s3\physics\components\component.cpp
 	"component.h"
 	"../molecule.h"
 
-1632730832 d:\workspace\.mipt\s3\physics\components\render.h
+1633959222 d:\workspace\.mipt\s3\physics\components\render.h
 	"component.h"
+	"../gui/coords.h"
+	<ACL/math/vector.h>
+	<ACL/gui/color.h>
 
-1632730670 d:\workspace\.mipt\s3\physics\components\chemistry.h
+1633956337 d:\workspace\.mipt\s3\physics\components\chemistry.h
 	<ACL/general.h>
 	"component.h"
 
-1632677498 source:d:\workspace\.mipt\s3\physics\components\chemistry.cpp
+1633965231 source:d:\workspace\.mipt\s3\physics\components\chemistry.cpp
 	"chemistry.h"
+	"../manager.h"
+	"../molecule.h"
 
-1632730609 source:d:\workspace\.mipt\s3\physics\components\render.cpp
+1633960890 source:d:\workspace\.mipt\s3\physics\components\render.cpp
 	"../gui/gui.h"
+	"../molecule.h"
 	"render.h"
+	"physics.h"
+
+1633964956 source:d:\workspace\.mipt\s3\physics\manager.cpp
+	"gui/gui.h"
+	"manager.h"
+	"components/physics.h"
+	<cassert>
+	<cstdint>
+
+1633942819 d:\workspace\.mipt\s3\physics\manager.h
+	"borders.h"
+	"molecule.h"
+	"gui/coords.h"
+	<ACL/math/vector.h>
+	<ACL/vector.h>
+	<ACL/general.h>
+
+1632943577 d:\workspace\.mipt\s3\physics\borders.h
+	<ACL/math/vector.h>
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl.h
+	"SDL_main.h"
+	"SDL_stdinc.h"
+	"SDL_assert.h"
+	"SDL_atomic.h"
+	"SDL_audio.h"
+	"SDL_clipboard.h"
+	"SDL_cpuinfo.h"
+	"SDL_endian.h"
+	"SDL_error.h"
+	"SDL_events.h"
+	"SDL_filesystem.h"
+	"SDL_gamecontroller.h"
+	"SDL_haptic.h"
+	"SDL_hints.h"
+	"SDL_joystick.h"
+	"SDL_loadso.h"
+	"SDL_log.h"
+	"SDL_messagebox.h"
+	"SDL_metal.h"
+	"SDL_mutex.h"
+	"SDL_power.h"
+	"SDL_render.h"
+	"SDL_rwops.h"
+	"SDL_sensor.h"
+	"SDL_shape.h"
+	"SDL_system.h"
+	"SDL_thread.h"
+	"SDL_timer.h"
+	"SDL_version.h"
+	"SDL_video.h"
+	"SDL_locale.h"
+	"SDL_misc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_main.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_stdinc.h
+	"SDL_config.h"
+	<sys/types.h>
+	<stdio.h>
+	<stdlib.h>
+	<stddef.h>
+	<stdarg.h>
+	<stdlib.h>
+	<malloc.h>
+	<stddef.h>
+	<stdarg.h>
+	<memory.h>
+	<string.h>
+	<strings.h>
+	<wchar.h>
+	<inttypes.h>
+	<stdint.h>
+	<ctype.h>
+	<math.h>
+	<float.h>
+	<alloca.h>
+	<malloc.h>
+	<malloc.h>
+	<malloc.h>
+	<stdlib.h>
+	<sal.h>
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_config.h
+	"SDL_platform.h"
+	<sdkddkver.h>
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_platform.h
+	"AvailabilityMacros.h"
+	"TargetConditionals.h"
+	<winapifamily.h>
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\begin_code.h
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\close_code.h
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_assert.h
+	"SDL_config.h"
+	"begin_code.h"
+	<signal.h>
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_atomic.h
+	"SDL_stdinc.h"
+	"SDL_platform.h"
+	"begin_code.h"
+	<sys/cpuinline.h>
+	<mbarrier.h>
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_audio.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_endian.h"
+	"SDL_mutex.h"
+	"SDL_thread.h"
+	"SDL_rwops.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_error.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_endian.h
+	"SDL_stdinc.h"
+	<intrin.h>
+	<endian.h>
+	<endian.h>
+	<sys/endian.h>
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_mutex.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_thread.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_atomic.h"
+	"SDL_mutex.h"
+	<process.h>
+	<process.h>
+	<stdlib.h>
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_rwops.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_clipboard.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_cpuinfo.h
+	"SDL_stdinc.h"
+	<intrin.h>
+	<intrin.h>
+	<arm_neon.h>
+	<altivec.h>
+	<arm_neon.h>
+	<armintr.h>
+	<arm_neon.h>
+	<arm64intr.h>
+	<arm64_neon.h>
+	<mm3dnow.h>
+	<immintrin.h>
+	<mmintrin.h>
+	<xmmintrin.h>
+	<emmintrin.h>
+	<pmmintrin.h>
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_events.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_video.h"
+	"SDL_keyboard.h"
+	"SDL_mouse.h"
+	"SDL_joystick.h"
+	"SDL_gamecontroller.h"
+	"SDL_quit.h"
+	"SDL_gesture.h"
+	"SDL_touch.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_video.h
+	"SDL_stdinc.h"
+	"SDL_pixels.h"
+	"SDL_rect.h"
+	"SDL_surface.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_pixels.h
+	"SDL_stdinc.h"
+	"SDL_endian.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_rect.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_pixels.h"
+	"SDL_rwops.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_surface.h
+	"SDL_stdinc.h"
+	"SDL_pixels.h"
+	"SDL_rect.h"
+	"SDL_blendmode.h"
+	"SDL_rwops.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_blendmode.h
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_keyboard.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_keycode.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_keycode.h
+	"SDL_stdinc.h"
+	"SDL_scancode.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_scancode.h
+	"SDL_stdinc.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_mouse.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_joystick.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_gamecontroller.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_rwops.h"
+	"SDL_sensor.h"
+	"SDL_joystick.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_sensor.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_quit.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_gesture.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_video.h"
+	"SDL_touch.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_touch.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_filesystem.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_haptic.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_joystick.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_hints.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_loadso.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_log.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_messagebox.h
+	"SDL_stdinc.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_metal.h
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_power.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_render.h
+	"SDL_stdinc.h"
+	"SDL_rect.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_shape.h
+	"SDL_stdinc.h"
+	"SDL_pixels.h"
+	"SDL_rect.h"
+	"SDL_surface.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_system.h
+	"SDL_stdinc.h"
+	"SDL_keyboard.h"
+	"SDL_render.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_timer.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610835 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_version.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_locale.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl_misc.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1632761120 source:d:\workspace\.mipt\s3\physics\gui\gui_sdl2.cpp
+	"gui.h"
+	<algorithm>
+	<cassert>
+
+1633520867 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+	<ACL/math/vector.h>
+	<ACL/type_traits.h>
+
+1632940475 source:d:\workspace\.mipt\s3\physics\gui\coords.cpp
+	"coords.h"
+
+1633520761 source:d:\workspace\.mipt\s3\physics\borders.cpp
+	"gui/gui.h"
+	"gui/coords.h"
+	"borders.h"
+
+1633511159 d:\workspace\.mipt\s3\acl\include\acl\type_traits.h
+	<type_traits>
+
+1633520952 d:\workspace\.mipt\s3\physics\gui\coords.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<ACL/gui/rect.h>
 
