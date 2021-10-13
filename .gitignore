@@ -5,3 +5,5 @@
 *.pdb
 *.o
 *.bak
+*.exe.log
+*.exe.log.dmp
