@@ -8,17 +8,29 @@
 
 class ChemComp : public Component {
 public:
+    static constexpr double INTERACTION_CHANCE = 0.4;
+
     DECLARE_ERROR(error, abel::error);
 
 
-    ChemComp(Molecule &object_, unsigned charge_ = 1);
+    inline ChemComp(Molecule *object_, unsigned potency_ = 1) noexcept :
+        Component(object_), potency{potency_}, energy{0} {}
 
-    void maybeInteract(ChemComp &other);
+    // Returns true if a reaction took place
+    bool updatePair(ChemComp &other, bool colliding);
+
+    // True if chemically interacted
+    bool maybeInteract(ChemComp &other);
 
     void interact(ChemComp &other);
 
+    ChemComp *copy() const;
+
+    unsigned getPotency() const { return potency; }
+
 protected:
-    unsigned charge;
+    unsigned potency;
+    double energy;
 
 };
 
