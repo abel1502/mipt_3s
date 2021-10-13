@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="SDL2 Debug">
-				<Option output="build/sdl2/dbg/bin/Raycaster" prefix_auto="1" extension_auto="1" />
+				<Option output="build/sdl2/dbg/bin/Physics" prefix_auto="1" extension_auto="1" />
 				<Option object_output="build/sdl2/dbg/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -25,7 +25,7 @@
 				</Linker>
 			</Target>
 			<Target title="TXLib Debug">
-				<Option output="build/txlib/dbg/bin/Raycaster" prefix_auto="1" extension_auto="1" />
+				<Option output="build/txlib/dbg/bin/Physics" prefix_auto="1" extension_auto="1" />
 				<Option object_output="build/txlib/dbg/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -35,7 +35,7 @@
 				</Compiler>
 			</Target>
 			<Target title="SDL2 Release">
-				<Option output="build/sdl2/bin/Raycaster" prefix_auto="1" extension_auto="1" />
+				<Option output="build/sdl2/bin/Physics" prefix_auto="1" extension_auto="1" />
 				<Option object_output="build/sdl2/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -54,7 +54,7 @@
 				</Linker>
 			</Target>
 			<Target title="TXLib Release">
-				<Option output="build/txlib/bin/Raycaster" prefix_auto="1" extension_auto="1" />
+				<Option output="build/txlib/bin/Physics" prefix_auto="1" extension_auto="1" />
 				<Option object_output="build/txlib/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
