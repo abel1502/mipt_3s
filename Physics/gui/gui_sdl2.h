@@ -1,7 +1,7 @@
-#ifndef GUI_SDL2_H
-#define GUI_SDL2_H
+#ifndef GUI_GUI_SDL2_H
+#define GUI_GUI_SDL2_H
 
-#ifndef GUI_H
+#ifndef GUI_GUI_H
 #error "Don't include this file manually!"
 #endif
 
@@ -57,12 +57,12 @@ public:
     ~Window() noexcept;
 
     inline void render(const Texture &texture) {
-        return renderAt(Rect<unsigned>(0, 0, width(), height()), texture);
+        return renderAt(Rect<int>(0, 0, width(), height()), texture);
     }
 
     void renderAt(const Vector2i &at, const Texture &texture);
 
-    void renderAt(const Rect<unsigned> &at, const Texture &texture);
+    void renderAt(const Rect<int> &at, const Texture &texture);
 
     void clear();
 
@@ -109,6 +109,18 @@ public:
 
     void update();
 
+    void drawLine(const Vector2i &from, const Vector2i &to);
+
+    void drawLineInf(const Vector2i &from, const Vector2i &to);
+
+    void drawCircle(const Vector2i &center, unsigned radius, const Color &color);
+
+    void drawEllipse(const Vector2i &center, const Vector2i &dimensions, const Color &color);
+
+    void drawSquare(const Vector2i &center, unsigned side, const Color &color);
+
+    void drawRect(const Rect<int> &at, const Color &color);
+
     inline unsigned width() const noexcept { return width_; }
 
     inline unsigned height() const noexcept { return height_; }
@@ -123,4 +135,4 @@ protected:
 
 
 
-#endif // GUI_SDL2_H
+#endif // GUI_GUI_SDL2_H

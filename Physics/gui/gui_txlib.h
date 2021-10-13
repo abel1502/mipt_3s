@@ -1,7 +1,7 @@
-#ifndef GUI_TXLIB_H
-#define GUI_TXLIB_H
+#ifndef GUI_GUI_TXLIB_H
+#define GUI_GUI_TXLIB_H
 
-#ifndef GUI_H
+#ifndef GUI_GUI_H
 #error "Don't include this file manually!"
 #endif
 
@@ -13,6 +13,12 @@
 
 #define MAIN_EVENT_LOOP(TICK_CODE, DELAY) {             \
     double DELTA_T = 0.0d;                              \
+                                                        \
+    /* 5 == txFramesToAverage, but the constant */      \
+    /* doesn't exist. */                                \
+    for (unsigned i = 0; i < 5; ++i) {                  \
+        txGetFPS();                                     \
+    }                                                   \
                                                         \
     while (!txGetAsyncKeyState(VK_ESCAPE)) {            \
         DELTA_T = std::fmin(1.d / txGetFPS(), 1.d);     \
@@ -47,12 +53,12 @@ public:
     ~Window() noexcept;
 
     inline void render(const Texture &texture) {
-        return renderAt(Rect<unsigned>(0, 0, width(), height()), texture);
+        return renderAt(Rect<int>::wh(0, 0, width(), height()), texture);
     }
 
     void renderAt(const Vector2i &at, const Texture &texture);
 
-    void renderAt(const Rect<unsigned> &at, const Texture &texture);
+    void renderAt(const Rect<int> &at, const Texture &texture);
 
     void clear();
 
@@ -96,9 +102,37 @@ public:
 
     void update();
 
-    inline unsigned width() const noexcept { return width_; }
+    void clear();
 
-    inline unsigned height() const noexcept { return height_; }
+    void drawLine(const Vector2d &from, const Vector2d &to, const Color &color = Color::BLACK);
+
+    inline void drawLineAlong(const Vector2d &from, const Vector2d &along, const Color &color = Color::BLACK) {
+        drawLine(from, from + along, color);
+    }
+
+    void drawLineInf(Vector2d from, Vector2d to, const Color &color = Color::BLACK);
+
+    inline void drawLineInfAlong(const Vector2d &from, const Vector2d &along, const Color &color = Color::BLACK) {
+        drawLineInf(from, from + along, color);
+    }
+
+    inline void drawCircle(const Vector2d &center, double radius, const Color &color = Color::RED) {
+        drawEllipse(center, Vector2d{radius, radius}, color);
+    }
+
+    void drawEllipse(const Vector2d &center, const Vector2d &dimensions, const Color &color = Color::RED);
+
+    inline void drawSquare(const Vector2d &center, double side, const Color &color = Color::BLUE) {
+        drawRect(Rect<double>::wh(center - Vector2d{side, side}, 2 * Vector2d{side, side}), color);
+    }
+
+    void drawRect(const Rect<double> &at, const Color &color = Color::BLUE);
+
+    constexpr unsigned width()  const noexcept { return width_;  }
+    constexpr unsigned height() const noexcept { return height_; }
+
+    constexpr Rect<double> getScreenRect() const noexcept { return Rect<double>::wh(0, 0, (double)width(), (double)height()); }
+    constexpr Rect<int> getScreenRectInt() const noexcept { return Rect<int>   ::wh(0, 0,    (int)width(),    (int)height()); }
 
 protected:
     unsigned width_, height_;
@@ -107,7 +141,9 @@ protected:
 
     void destroy() noexcept;
 
+    void setColor(const Color &color);
+
 };
 
 
-#endif // GUI_TXLIB_H
+#endif // GUI_GUI_TXLIB_H

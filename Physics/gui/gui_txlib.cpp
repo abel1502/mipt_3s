@@ -11,7 +11,7 @@ Window::Window() :
     Window(800, 600) {}
 
 Window::Window(unsigned width, unsigned height) :
-    Window(Rect<unsigned>(100, 100, width, height)) {}
+    Window(Rect<unsigned>::wh(100, 100, width, height)) {}
 
 Window::Window(const Rect<unsigned> &pos) :
     width_{pos.w()}, height_{pos.h()} {
@@ -48,7 +48,7 @@ void Window::renderAt(const Vector2i &at, const Texture &texture) {
     }
 }
 
-void Window::renderAt(const Rect<unsigned> &at, const Texture &texture) {
+void Window::renderAt(const Rect<int> &at, const Texture &texture) {
     HDC dest = txDC();
 
     if (!txGDI(Win32::StretchBlt(dest, at.x(), at.y(), at.w(), at.h(),
@@ -121,6 +121,65 @@ Texture::~Texture() noexcept {
 
 /// Same reasons as Window::update
 void Texture::update() {}
+
+void Texture::clear() {
+    setColor(Color{1, 1, 1});
+
+    if (!txClear(handle)) {
+        throw gui_error("TXLib failed to clear");
+    }
+}
+
+void Texture::setColor(const Color &color) {
+    PackedColor packedColor = color.pack();
+    COLORREF internalColor = RGB(packedColor.R, packedColor.G, packedColor.B);
+
+    if (!txSetFillColor(internalColor, handle) ||
+        !txSetColor(internalColor, 1.d, handle)) {
+        throw gui_error("TXLib set color failed");
+    }
+}
+
+void Texture::drawLine(const Vector2d &from, const Vector2d &to, const Color &color) {
+    setColor(color);
+
+    if (!txLine(from.x(), from.y(), to.x(), to.y(), handle)) {
+        throw gui_error("TXLib draw line failed");
+    }
+}
+
+void Texture::drawLineInf(Vector2d from, Vector2d to, const Color &color) {
+    setColor(color);
+
+    if (to == from) {
+        throw gui_error("Can't draw a line through just one point");
+    }
+
+    Vector2d delta{to - from};
+    delta.normalize();
+
+    from -= delta * (width() + height());
+    to   += delta * (width() + height());
+
+    drawLine(from, to);
+}
+
+void Texture::drawEllipse(const Vector2d &center, const Vector2d &dimensions, const Color &color) {
+    setColor(color);
+
+    if (!txEllipse(center.x() - dimensions.x(), center.y() - dimensions.y(),
+                   center.x() + dimensions.x(), center.y() + dimensions.y(), handle)) {
+        throw gui_error("TXLib draw ellipse failed");
+    }
+}
+
+void Texture::drawRect(const Rect<double> &at, const Color &color) {
+    setColor(color);
+
+    if (!txRectangle(at.x0(), at.y0(), at.x1(), at.y1(), handle)) {
+        throw gui_error("TXLib draw rectangle failed");
+    }
+}
 
 void Texture::destroy() noexcept {
     if (handle)

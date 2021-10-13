@@ -1,3 +1,6 @@
+#error "Sorry, not maintained anymore due to time constaints"
+
+
 #include "gui.h"
 
 #include <algorithm>
@@ -67,7 +70,7 @@ void Window::renderAt(const Vector2i &at, const Texture &texture) {
     renderAtInternal(sdlTexture, &bounds);
 }
 
-void Window::renderAt(const Rect<unsigned> &at, const Texture &texture) {
+void Window::renderAt(const Rect<int> &at, const Texture &texture) {
     SDL_Texture *sdlTexture = texture.createSDLTexture(renderer);
     SDL_Rect bounds = castRect(at);
 
@@ -127,8 +130,6 @@ Texture::Texture(Texture &&other) noexcept {
 }
 
 Texture &Texture::operator=(Texture &&other) noexcept {
-    destroy();
-
     std::swap(width_, other.width_);
     std::swap(height_, other.height_);
     std::swap(buf, other.buf);
@@ -163,6 +164,20 @@ SDL_Texture *Texture::createSDLTexture(SDL_Renderer *renderer) const {
 
 /// Same as Window::update - could theoretically throw in an abstract implementation
 void Texture::update() {}
+
+#if 0
+void Texture::drawLine(const Vector2i &from, const Vector2i &to);
+
+void Texture::drawLineInf(const Vector2i &from, const Vector2i &to);
+
+void Texture::drawCircle(const Vector2i &center, unsigned radius, const Color &color);
+
+void Texture::drawEllipse(const Vector2i &center, const Vector2i &dimensions, const Color &color);
+
+void Texture::drawSquare(const Vector2i &center, unsigned side, const Color &color);
+
+void Texture::drawRect(const Rect<int> &at, const Color &color);
+#endif
 
 void Texture::destroy() noexcept {
     width_ = 0;

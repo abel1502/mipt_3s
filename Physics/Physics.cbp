@@ -87,6 +87,7 @@
 		<Unit filename="components/physics.h" />
 		<Unit filename="components/render.cpp" />
 		<Unit filename="components/render.h" />
+		<Unit filename="gui/coords.h" />
 		<Unit filename="gui/gui.h" />
 		<Unit filename="gui/gui_sdl2.cpp">
 			<Option target="SDL2 Debug" />
