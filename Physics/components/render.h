@@ -2,40 +2,70 @@
 #define COMPONENTS_RENDER_H
 
 #include "component.h"
+#include "../gui/coords.h"
+#include <ACL/math/vector.h>
+#include <ACL/gui/color.h>
 
 
 class Texture;
+using Color = abel::gui::Color;
+class CircleRenderComp;
+class SquareRenderComp;
 
 class RenderComp : public Component {
 public:
     DECLARE_ERROR(error, abel::error);
 
-    static constexpr double RENDER_INTERVAL = 0.5d;
 
+    inline RenderComp(Molecule *object_) noexcept :
+        Component(object_) {}
 
-    RenderComp(Molecule &object_) noexcept;
+    virtual void render(Texture &target, const Coords &coords) = 0;
 
-    void update(double deltaT) noexcept;
-
-    virtual void render(Texture &target) = 0;
+    virtual void render(Texture &target, const Coords &coords, const Color &color) = 0;
 
     virtual ~RenderComp() noexcept = default;
 
-    virtual RenderComp *copy() = 0;
+    virtual RenderComp *copy() const = 0;
+
+    virtual void scale(double coeff) = 0;
+
+    virtual void scaleTo(double dismension) = 0;
+
+    /// This function may delete the `this` instance!
+    virtual CircleRenderComp *becomeCircle() = 0;
+
+    /// This function may delete the `this` instance!
+    virtual SquareRenderComp *becomeSquare() = 0;
 
 protected:
-    double renderTimer;
+    constexpr const abel::math::Vector2d &getPos() const noexcept;
 
 };
 
 
 class CircleRenderComp : public RenderComp {
 public:
-    CircleRenderComp(Molecule &object_, double radius_) noexcept;
+    inline CircleRenderComp(Molecule *object_, double radius_) noexcept :
+        RenderComp(object_), radius{radius_} {}
 
-    virtual void render(Texture &target) override;
+    virtual void render(Texture &target, const Coords &coords) override;
 
-    virtual CircleRenderComp *copy() override;
+    virtual void render(Texture &target, const Coords &coords, const Color &color) override;
+
+    virtual CircleRenderComp *copy() const override;
+
+    virtual ~CircleRenderComp() noexcept override = default;
+
+    virtual void scale(double coeff) override;
+
+    virtual void scaleTo(double dismension) override;
+
+    /// This function may delete the `this` instance!
+    virtual CircleRenderComp *becomeCircle() override;
+
+    /// This function may delete the `this` instance!
+    virtual SquareRenderComp *becomeSquare() override;
 
 protected:
     double radius;
@@ -45,11 +75,26 @@ protected:
 
 class SquareRenderComp : public RenderComp {
 public:
-    SquareRenderComp(Molecule &object_, double side_) noexcept;
+    inline SquareRenderComp(Molecule *object_, double side_) noexcept :
+        RenderComp(object_), side{side_} {}
 
-    virtual void render(Texture &target) override;
+    virtual void render(Texture &target, const Coords &coords) override;
 
-    virtual SquareRenderComp *copy() override;
+    virtual void render(Texture &target, const Coords &coords, const Color &color) override;
+
+    virtual SquareRenderComp *copy() const override;
+
+    virtual ~SquareRenderComp() noexcept override = default;
+
+    virtual void scale(double coeff) override;
+
+    virtual void scaleTo(double dismension) override;
+
+    /// This function may delete the `this` instance!
+    virtual CircleRenderComp *becomeCircle() override;
+
+    /// This function may delete the `this` instance!
+    virtual SquareRenderComp *becomeSquare() override;
 
 protected:
     double side;
