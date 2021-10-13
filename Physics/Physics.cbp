@@ -77,6 +77,8 @@
 			<Add library="ACL" />
 			<Add directory="../ACL/build/lib32" />
 		</Linker>
+		<Unit filename="borders.cpp" />
+		<Unit filename="borders.h" />
 		<Unit filename="components/chemistry.cpp" />
 		<Unit filename="components/chemistry.h" />
 		<Unit filename="components/component.cpp" />
