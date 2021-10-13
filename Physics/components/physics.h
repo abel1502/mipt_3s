@@ -3,8 +3,10 @@
 
 #include <ACL/general.h>
 #include <ACL/math/vector.h>
+#include <ACL/gui/color.h>
 
 #include "component.h"
+#include "../borders.h"
 
 
 using abel::math::Vector2d;
@@ -12,53 +14,114 @@ using abel::math::Vector2d;
 
 class PhysComp : public Component {
 public:
+    static constexpr bool ACCOUNT_FOR_SKIPPED_MOVEMENT = false;
+
     DECLARE_ERROR(error, abel::error);
 
 
-    PhysComp(Molecule &object_, double mass_, double radius_);
+    inline PhysComp(Molecule *object_, const Vector2d &pos_, double mass_, double radius_) :
+        PhysComp(object_, pos_, Vector2d::ZERO, mass_, radius_) {}
+
+    PhysComp(Molecule *object_, const Vector2d &pos_, const Vector2d &impulse_,
+             double mass_, double radius_);
 
     bool testForCollision(const PhysComp &other) const;
 
-    virtual void respondToCollision(PhysComp &other);  // TODO: Somehow make collision response called only once per pair
+    virtual void respondToCollision(PhysComp &other);
 
-    bool testForBorderCollision() const;
+    bool testForBorderCollision(const Border &border) const;
 
-    virtual void respondToBorderCollision();
+    virtual void respondToBorderCollision(Border &border);
 
     virtual void update(double deltaT);
 
-    virtual PhysComp *copy();
+    // Returns whether they collide
+    virtual bool updatePair(PhysComp &other);
 
-    virtual ~PhysComp();
+    virtual PhysComp *copy() const;
+
+    virtual ~PhysComp() = default;
+
+    virtual Molecule &absorb(PhysComp &other, bool reflectable = true);
+
+    virtual abel::gui::Color getTypeColor() noexcept;
+
+    // A lot of getters-setters
+    constexpr const Vector2d &getPos()     const { return pos;     }
+    constexpr       Vector2d &getPos()           { return pos;     }
+    constexpr const Vector2d &getImpulse() const { return impulse; }
+    constexpr       Vector2d &getImpulse()       { return impulse; }
+    constexpr         double  getMass()    const { return mass;    }
+    constexpr         double &getMass()          { return mass;    }
+    constexpr         double  getRadius()  const { return radius;  }
+    constexpr         double &getRadius()        { return radius;  }
+
+    constexpr         double  getEnergy()  const { return impulse.magnitude() / mass / 2; }
 
 protected:
+    Vector2d pos;
+    Vector2d impulse;
     double mass;
     double radius;
-    Vector2d impulse;
 
 };
 
 
 class GravityPhysComp : public PhysComp {
 public:
-    GravityPhysComp(Molecule &object_, double mass_, double radius_);
+    static constexpr double GRAVITY_COEFF = 9.8d;
+    static constexpr Vector2d GRAVITY_DIR{0.d, 1.d};
+
+
+    inline GravityPhysComp(Molecule *object_, const Vector2d &pos_, double mass_, double radius_) :
+        PhysComp(object_, pos_, mass_, radius_) {}
+
+    inline GravityPhysComp(Molecule *object_, const Vector2d &pos_, const Vector2d &impulse_,
+                           double mass_, double radius_) :
+        PhysComp(object_, pos_, impulse_, mass_, radius_) {}
 
     virtual void update(double deltaT) override;
 
-    virtual GravityPhysComp *copy() override;
+    virtual GravityPhysComp *copy() const override;
+
+    virtual ~GravityPhysComp() override = default;
+
+    virtual abel::gui::Color getTypeColor() noexcept override;
 };
 
 
 class MagneticPhysComp : public PhysComp {
 public:
-    MagneticPhysComp(Molecule &object_, double mass_, double radius_, double charge_);
+    static constexpr double MAGNETISM_COEFF = 30000.d;  // The real one was absurdly high
 
-    // TODO: In perspective, dispatch table. For now, an if
+
+    inline MagneticPhysComp(Molecule *object_, const Vector2d &pos_, double mass_,
+                            double radius_, double charge_) :
+        PhysComp(object_, pos_, mass_, radius_), charge{charge_}, magneticForce{0} {}
+
+    inline MagneticPhysComp(Molecule *object_, const Vector2d &pos_, const Vector2d &impulse_,
+                           double mass_, double radius_, double charge_) :
+        PhysComp(object_, pos_, impulse_, mass_, radius_), charge{charge_}, magneticForce{0} {}
+
     virtual void respondToCollision(PhysComp &other) override;
 
     virtual void update(double deltaT) override;
 
-    virtual MagneticPhysComp *copy() override;
+    // Returns whether they collide
+    virtual bool updatePair(PhysComp &other) override;
+
+    virtual MagneticPhysComp *copy() const override;
+
+    virtual ~MagneticPhysComp() override = default;
+
+    virtual Molecule &absorb(PhysComp &other, bool reflectable = true) override;
+
+    virtual abel::gui::Color getTypeColor() noexcept override;
+
+protected:
+    double charge;
+    Vector2d magneticForce;
+
 };
 
 
