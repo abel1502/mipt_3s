@@ -52,10 +52,11 @@ MAIN_DECL {
 
         MAIN_EVENT_LOOP(
             manager.tick(DELTA_T);
-            DBG("Tick completed");
+            DBG("Molecular tick completed");
 
             window.render(texture);
             window.update();
+            DBG("Render completed");
 
             DBG("Tick in %lg", DELTA_T);
         , 1)
