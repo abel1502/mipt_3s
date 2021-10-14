@@ -118,11 +118,22 @@ Molecule &MoleculeManager::copyMolecule(const Molecule &original) {
     return addMolecule<Molecule &&>(std::move(Molecule::ManagerProxy::copy(original)));
 }
 
-void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double energy) {
+void MoleculeManager::explodeClones(Molecule &mol, unsigned n, double energy) {
+    Vector2d dir{1, 0};
+    dir.rotateDegrees(abel::randDouble(360.d));
+
+    explodeClones(mol, n, energy, dir, 180.d);
+}
+
+void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double energy, Vector2d dir, double maxAngle) {
     REQUIRE(n >= 1);
     REQUIRE(&mol_.getManager() == this);
 
+    dir.normalize();
+    PhysComp &oldPhys = mol_.getComp<PhysComp>();
+
     if (n == 1) {
+        oldPhys.getImpulse() += dir * std::sqrt(energy * oldPhys.getMass() * 2);
         return;
     }
 
@@ -130,20 +141,20 @@ void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double energy) {
 
     // Because we need mol to persist over reallocations of our buffers.
     // mol_ will get garbage-collected, while mol will be destroyed automatically
-    mol_.dump();  // TODO: Delete
     Molecule mol = Molecule::ManagerProxy::copy(mol_);
     mol_.markDead();
 
-    PhysComp &oldPhys = mol.getComp<PhysComp>();
     double radius = oldPhys.getRadius() * RADIUS_COEFF;
-    // TODO: Encapsulate
+    // TODO: Encapsulate?
     double impulse = std::sqrt(energy * oldPhys.getMass() / n * 2);
 
-    const double angle = 360.d / n;
-    Vector2d dir{1, 0};
-    dir.rotateDegrees(abel::randDouble(360.d));
+    const double angle = maxAngle * 2.d / n;
+    dir.rotateDegrees(-maxAngle);
 
-    mol.markDead();
+    mol.markDead();  // Just in case
+
+    double totalEnergy = 0;
+    Vector2d totalImpulse{};
 
     for (unsigned i = 0; i < n; ++i) {
         Molecule &clone = copyMolecule(mol);
@@ -153,7 +164,23 @@ void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double energy) {
         phys.getImpulse() += dir * impulse;
 
         dir.rotateDegrees(angle);
+
+        totalEnergy  += phys.getEnergy();
+        totalImpulse += phys.getImpulse();
+
+        /*if (i == 0) {
+            DBG("Post explosion:\n"
+                "  clones cnt  = %u\n"
+                "  chem energy = %lg"
+                "  chem potency = %u",
+                n,
+                clone.getComp<ChemComp>().getEnergy(),
+                clone.getComp<ChemComp>().getPotency());
+            clone.getComp<PhysComp>().dump();
+        }*/
     }
+
+    DBG("Is %lg, (%lg, %lg)", totalEnergy, totalImpulse.x(), totalImpulse.y());
 }
 
 void MoleculeManager::tick(double deltaT) {
