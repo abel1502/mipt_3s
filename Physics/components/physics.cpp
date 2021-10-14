@@ -5,6 +5,7 @@
 #include <typeinfo>
 #include <cassert>
 #include <ACL/math/cmath.h>
+#include <numeric>
 
 
 PhysComp::PhysComp(Molecule *object_, const Vector2d &pos_, const Vector2d &impulse_,
@@ -69,27 +70,6 @@ void PhysComp::respondToBorderCollision(Border &border) {
 }
 
 void PhysComp::update(double deltaT) {
-    // TODO: Maybe implement dump()
-    /*if (abel::isZero(mass)) {
-        DBG("\nMolecule (%s) corrupt:\n"
-            " obj = %p\n"
-            " pos = (%lg, %lg)\n"
-            " impulse = (%lg, %lg)\n"
-            " mass = %lg\n"
-            " radius = %lg",
-            typeid(*this).name(),
-            object,
-            pos.x(), pos.y(),
-            impulse.x(), impulse.y(),
-            mass,
-            radius);
-
-        DBG("\n render type = %s",
-            typeid(getObj().getComp<RenderComp>()).name());
-        DBG("\n chem type = %s",
-            typeid(getObj().getComp<ChemComp>()).name());
-    }*/
-
     assert(!abel::isZero(mass));
     pos += impulse / mass * deltaT;
 }
@@ -121,8 +101,54 @@ Molecule &PhysComp::absorb(PhysComp &other, bool reflectable) {
     return *object;
 }
 
-abel::gui::Color PhysComp::getTypeColor() noexcept {
+abel::gui::Color PhysComp::getTypeColor() const noexcept {
     return abel::gui::Color::ORANGE;
+}
+
+void PhysComp::scaleTrue(double coeff) {
+    // Coeff is a characteristic of mass, and some values are affected
+    // by the corresponding linear proportion
+    double linCoeff = std::sqrt(coeff);
+
+    // pos stays the same
+    impulse *= coeff;
+    radius  *= linCoeff;
+    mass    *= coeff;
+}
+
+void PhysComp::dump() const noexcept {
+    dump("PhysComp");
+}
+
+void PhysComp::dump(const char *clsName) const noexcept {
+    Vector2d velocity{std::numeric_limits<Vector2d::TYPE>::infinity()};
+
+    if (!abel::isZero(mass)) {
+        velocity = impulse / mass;
+    }
+
+    DBG("%s (%p):\n"
+        "  pos             = (%lg, %lg)\n"
+        "  impulse         = (%lg, %lg)\n"
+        "  impulse abs     = %lg\n"
+        "  velocity        = (%lg, %lg)\n"
+        "  velocity abs    = %lg\n"
+        "  mass            = %lg\n"
+        "  radius          = %lg\n"
+        "  kinetic energy  = %lg",
+        clsName, this,
+        pos.x(), pos.y(),
+        impulse.x(), impulse.y(),
+        impulse.length(),
+        velocity.x(), velocity.y(),
+        velocity.length(),
+        mass,
+        radius,
+        getEnergy());
+}
+
+Vector2d PhysComp::getCOMWith(const PhysComp &other) const {
+    return (mass * pos + other.mass * other.pos) / (mass + other.mass);
 }
 
 void GravityPhysComp::update(double deltaT) {
@@ -135,8 +161,12 @@ GravityPhysComp *GravityPhysComp::copy() const {
     return new GravityPhysComp(object, pos, impulse, mass, radius);
 }
 
-abel::gui::Color GravityPhysComp::getTypeColor() noexcept {
+abel::gui::Color GravityPhysComp::getTypeColor() const noexcept {
     return abel::gui::Color::GREEN;
+}
+
+void GravityPhysComp::dump() const noexcept {
+    PhysComp::dump("GravityPhysComp");
 }
 
 // TODO: In perspective, dispatch table. For now, an if
@@ -154,10 +184,6 @@ void MagneticPhysComp::respondToCollision(PhysComp &other) {
 void MagneticPhysComp::update(double deltaT) {
     PhysComp::update(deltaT);
 
-    /*DBG("Force: (%lg, %lg)", magneticForce.x(), magneticForce.y());
-    DBG("deltaT: %lg", deltaT);
-    DBG("Mass: %lg", mass);
-    DBG("Charge: %lg", charge);*/
     impulse += magneticForce * deltaT;
     magneticForce = Vector2d{0};
 }
@@ -204,7 +230,7 @@ Molecule &MagneticPhysComp::absorb(PhysComp &other, bool) {
     return result;
 }
 
-abel::gui::Color MagneticPhysComp::getTypeColor() noexcept {
+abel::gui::Color MagneticPhysComp::getTypeColor() const noexcept {
     static constexpr double MAX_CHARGE = 0.1d;
 
     Color base{};
@@ -216,3 +242,22 @@ abel::gui::Color MagneticPhysComp::getTypeColor() noexcept {
 
     return base * std::abs(charge) / MAX_CHARGE;
 }
+
+void MagneticPhysComp::scaleTrue(double coeff) {
+    PhysComp::scaleTrue(coeff);
+
+    charge *= coeff;
+}
+
+void MagneticPhysComp::dump() const noexcept {
+    PhysComp::dump("MagneticPhysComp");
+
+    DBG("...\n"
+        "  charge          = %lg\n"
+        "  cached force    = (%lg, %lg)\n"
+        "  c. force (abs)  = %lg",
+        charge,
+        magneticForce.x(), magneticForce.y(),
+        magneticForce.length());
+}
+

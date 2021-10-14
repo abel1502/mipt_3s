@@ -170,9 +170,9 @@ void Molecule::renderBecomeSquare() {
 void Molecule::scaleTrue(double coeff) {
     validate();
 
-    //phys->scaleTrue(coeff);
-    //rend->scaleTrue(coeff);
-    //chem->scaleTrue(coeff);
+    phys->scaleTrue(coeff);
+    rend->scaleTrue(coeff);
+    chem->scaleTrue(coeff);
 }
 
 void Molecule::dump() const noexcept {

@@ -44,7 +44,13 @@ public:
 
     virtual Molecule &absorb(PhysComp &other, bool reflectable = true);
 
-    virtual abel::gui::Color getTypeColor() noexcept;
+    virtual abel::gui::Color getTypeColor() const noexcept;
+
+    virtual void scaleTrue(double coeff);
+
+    virtual void dump() const noexcept;
+
+    Vector2d getCOMWith(const PhysComp &other) const;
 
     // A lot of getters-setters
     constexpr const Vector2d &getPos()     const { return pos;     }
@@ -63,6 +69,8 @@ protected:
     Vector2d impulse;
     double mass;
     double radius;
+
+    void dump(const char *clsName) const noexcept;
 
 };
 
@@ -86,7 +94,10 @@ public:
 
     virtual ~GravityPhysComp() override = default;
 
-    virtual abel::gui::Color getTypeColor() noexcept override;
+    virtual abel::gui::Color getTypeColor() const noexcept override;
+
+    virtual void dump() const noexcept override;
+
 };
 
 
@@ -116,7 +127,11 @@ public:
 
     virtual Molecule &absorb(PhysComp &other, bool reflectable = true) override;
 
-    virtual abel::gui::Color getTypeColor() noexcept override;
+    virtual abel::gui::Color getTypeColor() const noexcept override;
+
+    virtual void scaleTrue(double coeff) override;
+
+    virtual void dump() const noexcept override;
 
 protected:
     double charge;
