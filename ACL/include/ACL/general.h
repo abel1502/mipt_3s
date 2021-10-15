@@ -15,8 +15,20 @@
 #define MACROARGS(...)  __VA_ARGS__
 
 
-#define ERR(msg, ...) abel::dbg_(true,  1, __func__, __LINE__, msg, ##__VA_ARGS__)
-#define DBG(msg, ...) abel::dbg_(false, 2, __func__, __LINE__, msg, ##__VA_ARGS__)
+#define ERR(msg, ...)  abel::dbg_(true,  1, __func__, __LINE__, msg, ##__VA_ARGS__)
+#define DBG(msg, ...)  abel::dbg_(false, 2, __func__, __LINE__, msg, ##__VA_ARGS__)
+
+
+#if defined(_WIN32) || defined(WIN32)
+#define PAUSE()  system("pause")
+#elif defined(__unix__)
+#define PAUSE()  system("read -n1 -r -p \"Press any key to continue...\"")
+#else
+#pragma GCC warning "ACL: Weird OS, PAUSE not available (yet)"
+#endif
+
+
+#define IS_REACHED(...)  DBG("<"); __VA_ARGS__; DBG(">");
 
 
 #define DECLARE_ERROR(NAME, PARENT)                     \
@@ -53,6 +65,9 @@
     } catch (const std::exception& e) {             \
         ERR("Uncaught C++ error: %s", e.what());    \
         return (EXC_RETVAL);                        \
+    } catch (...) {                                 \
+        ERR("Uncaught unknown...?");                \
+        return (EXC_RETVAL);                        \
     }
 
 
@@ -65,8 +80,14 @@ DECLARE_ERROR(require_error, error)
 
 extern int verbosity;
 
-
 void dbg_(bool isError, int level, const char *funcName, int lineNo, const char *msg, ...);
+
+
+extern unsigned long long randSeed;
+
+inline void srand(unsigned long long seed) {
+    randSeed = seed;
+}
 
 unsigned long long randLL();
 
@@ -78,6 +99,11 @@ inline double randDouble(double max = 1.d) {
     constexpr unsigned DISCRETENESS = 1'000'000;
 
     return max * (double)randLL(DISCRETENESS) / (double)DISCRETENESS;
+}
+
+inline double randDouble(double min, double max) {
+
+    return randDouble(max - min) + min;
 }
 
 

@@ -26,14 +26,14 @@ void dbg_(bool isError, int level, const char *funcName, int lineNo, const char 
     va_end(args);
 }
 
+unsigned long long randSeed = 123;
+
 unsigned long long randLL() {
-    static unsigned long long rnd = 123;
+    randSeed ^= randSeed << 21;
+    randSeed ^= randSeed >> 35;
+    randSeed ^= randSeed << 4;
 
-    rnd ^= rnd << 21;
-    rnd ^= rnd >> 35;
-    rnd ^= rnd << 4;
-
-    return rnd;
+    return randSeed;
 }
 
 
