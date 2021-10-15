@@ -47,6 +47,7 @@
 		<Unit filename="include/ACL/general.h" />
 		<Unit filename="include/ACL/gui/color.h" />
 		<Unit filename="include/ACL/gui/rect.h" />
+		<Unit filename="include/ACL/log.h" />
 		<Unit filename="include/ACL/math/binpow.h" />
 		<Unit filename="include/ACL/math/cmath.h" />
 		<Unit filename="include/ACL/math/getneutral.h" />
@@ -56,6 +57,7 @@
 		<Unit filename="include/ACL/type_traits.h" />
 		<Unit filename="include/ACL/vector.h" />
 		<Unit filename="src/general.cpp" />
+		<Unit filename="src/log.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
