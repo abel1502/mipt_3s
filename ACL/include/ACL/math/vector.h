@@ -99,6 +99,19 @@ namespace math {
     constexpr Vector2 rotatedDegrees(double degrees) const      \
                                                      noexcept { \
         return rotatedRadians(degrees / 180.d * M_PI);          \
+    }                                                           \
+                                                                \
+    static constexpr Vector2 fromPhiRadiansR(double phiRadians, \
+                                             double r)          \
+                                                noexcept {      \
+        return Vector2{r * std::cos(phiRadians),                \
+                       r * std::sin(phiRadians)};               \
+    }                                                           \
+                                                                \
+    static constexpr Vector2 fromPhiDegreesR(double phiDegrees, \
+                                             double r)          \
+                                                noexcept {      \
+        return fromPhiRadiansR(phiDegrees / 180.d * M_PI, r);   \
     }
 
 #include "ACL/math/vector.tpl.h"
