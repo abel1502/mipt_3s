@@ -14,7 +14,7 @@
 	"gui_sdl2.h"
 	"gui_txlib.h"
 
-1633964029 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1634314402 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
 
@@ -53,7 +53,7 @@
 1633773996 d:\workspace\.mipt\s3\physics\gui\gui_txlib.h
 	<ACL/math/cmath.h>
 
-1633963067 source:d:\workspace\.mipt\s3\physics\main.cpp
+1634317218 source:d:\workspace\.mipt\s3\physics\main.cpp
 	"gui/gui.h"
 	<ACL/general.h>
 	<typeinfo>
@@ -65,12 +65,12 @@
 
 1632672756 d:\workspace\.mipt\s3\physics\event.h
 
-1634120772 source:d:\workspace\.mipt\s3\physics\molecule.cpp
+1634315428 source:d:\workspace\.mipt\s3\physics\molecule.cpp
 	"molecule.h"
 	"manager.h"
 	<typeinfo>
 
-1633965144 d:\workspace\.mipt\s3\physics\molecule.h
+1634314410 d:\workspace\.mipt\s3\physics\molecule.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<cassert>
@@ -80,41 +80,45 @@
 	"components/chemistry.h"
 	"borders.h"
 
-1634024382 d:\workspace\.mipt\s3\physics\components\physics.h
+1634316322 d:\workspace\.mipt\s3\physics\components\physics.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<ACL/gui/color.h>
 	"component.h"
 	"../borders.h"
 
-1633933760 d:\workspace\.mipt\s3\physics\components\component.h
+1634144326 d:\workspace\.mipt\s3\physics\components\component.h
 	<cassert>
 
-1633961649 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
+1634317258 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
 	"physics.h"
 	"../molecule.h"
 	<typeinfo>
 	<cassert>
 	<ACL/math/cmath.h>
+	<numeric>
 
 1633936944 source:d:\workspace\.mipt\s3\physics\components\component.cpp
 	"component.h"
 	"../molecule.h"
 
-1633959222 d:\workspace\.mipt\s3\physics\components\render.h
+1634148956 d:\workspace\.mipt\s3\physics\components\render.h
 	"component.h"
 	"../gui/coords.h"
 	<ACL/math/vector.h>
 	<ACL/gui/color.h>
+	<ACL/math/cmath.h>
 
-1633956337 d:\workspace\.mipt\s3\physics\components\chemistry.h
+1634315446 d:\workspace\.mipt\s3\physics\components\chemistry.h
 	<ACL/general.h>
+	<ACL/math/vector.h>
 	"component.h"
 
-1633965231 source:d:\workspace\.mipt\s3\physics\components\chemistry.cpp
+1634315465 source:d:\workspace\.mipt\s3\physics\components\chemistry.cpp
 	"chemistry.h"
 	"../manager.h"
 	"../molecule.h"
+	<ACL/math/cmath.h>
 
 1633960890 source:d:\workspace\.mipt\s3\physics\components\render.cpp
 	"../gui/gui.h"
@@ -122,14 +126,14 @@
 	"render.h"
 	"physics.h"
 
-1633964956 source:d:\workspace\.mipt\s3\physics\manager.cpp
+1634317212 source:d:\workspace\.mipt\s3\physics\manager.cpp
 	"gui/gui.h"
 	"manager.h"
 	"components/physics.h"
 	<cassert>
 	<cstdint>
 
-1633942819 d:\workspace\.mipt\s3\physics\manager.h
+1634314698 d:\workspace\.mipt\s3\physics\manager.h
 	"borders.h"
 	"molecule.h"
 	"gui/coords.h"

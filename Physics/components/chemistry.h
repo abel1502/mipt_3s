@@ -2,8 +2,12 @@
 #define COMPONENTS_CHEMISTRY_H
 
 #include <ACL/general.h>
+#include <ACL/math/vector.h>
 
 #include "component.h"
+
+
+using abel::math::Vector2d;
 
 
 class ChemComp : public Component {
@@ -26,13 +30,17 @@ public:
 
     ChemComp *copy() const;
 
-    unsigned getPotency() const { return potency; }
+    constexpr unsigned getPotency() const { return potency; }
+
+    constexpr double getEnergy() const { return energy; }
 
     void scaleTrue(double coeff);
 
 protected:
     unsigned potency;
     double energy;
+
+    void explode(const Vector2d pos);
 
 };
 

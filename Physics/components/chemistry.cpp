@@ -37,18 +37,33 @@ void ChemComp::interact(ChemComp &other) {
     }
 
     // Explode
-          getObj().markDead();
-    other.getObj().markDead();
+    PhysComp &physMe = getObj().getComp<PhysComp>(),
+             &physIt = other.getObj().getComp<PhysComp>();
 
-    unsigned nClones = potency + other.potency;
+    // DBG("Was (%u) %lg, (%lg, %lg)",       potency, physMe.getEnergy() +       getEnergy(), physMe.getImpulse().x(), physMe.getImpulse().y());
+    // DBG("Was (%u) %lg, (%lg, %lg)", other.potency, physIt.getEnergy() + other.getEnergy(), physIt.getImpulse().x(), physIt.getImpulse().y());
 
-    PhysComp &   myPhys =       getObj().getComp<PhysComp>();
-    PhysComp &otherPhys = other.getObj().getComp<PhysComp>();
+    Vector2d pos = physMe.getCOMWith(physIt);
+
+          explode(pos);
+    other.explode(pos);
+
+    //PAUSE();
+}
+
+void ChemComp::explode(const Vector2d pos) {
+    getObj().markDead();
+    unsigned nClones = potency;
+    double impulse = std::sqrt(2 * getObj().getComp<PhysComp>().getMass() * energy) / nClones;
 
     MoleculeManager &manager = getObj().getManager();
-    Vector2d pos = (myPhys   .getPos() * myPhys   .getMass() +
-                    otherPhys.getPos() * otherPhys.getMass()) /
-                   (myPhys.getMass() + otherPhys.getMass());
+
+    /*DBG("Pre explosion:\n"
+        "  chem energy  = %lg\n"
+        "  chem potency = %u",
+        energy,
+        potency);
+    getObj().getComp<PhysComp>().dump();*/
 
     //Molecule &mol = manager.addMolecule(pos, 1.d, Molecule::P_BALL);
     Molecule &mol = manager.copyMolecule(getObj());
@@ -57,10 +72,10 @@ void ChemComp::interact(ChemComp &other) {
     //mol.getComp<PhysComp>().getRadius() = 1.d;
     mol.renderBecomeCircle();
     //mol.getComp<RenderComp>().scaleTo(2.d);
-    //mol.getComp<ChemComp>().potency = 1;
+    mol.getComp<ChemComp>().potency = 1;
     mol.getComp<ChemComp>().energy = 0;
 
-    manager.explodeClones(mol, nClones, energy);
+    manager.explodeClones(mol, nClones, impulse);
 
     energy = 0;
 }
