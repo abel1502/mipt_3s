@@ -5,6 +5,7 @@
 #include "../gui/coords.h"
 #include <ACL/math/vector.h>
 #include <ACL/gui/color.h>
+#include <ACL/math/cmath.h>
 
 
 class Texture;
@@ -31,6 +32,11 @@ public:
     virtual void scale(double coeff) = 0;
 
     virtual void scaleTo(double dismension) = 0;
+
+    // TODO: Maybe virtual, but for now this will do
+    inline void scaleTrue(double coeff) {
+        scale(std::sqrt(coeff));
+    }
 
     /// This function may delete the `this` instance!
     virtual CircleRenderComp *becomeCircle() = 0;

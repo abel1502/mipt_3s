@@ -28,6 +28,8 @@ public:
 
     unsigned getPotency() const { return potency; }
 
+    void scaleTrue(double coeff);
+
 protected:
     unsigned potency;
     double energy;

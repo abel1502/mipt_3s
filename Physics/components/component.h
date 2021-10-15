@@ -18,8 +18,12 @@ public:
 
     void updateObj(Molecule *new_object) noexcept;
 
-    /// Not virtual, no implementation - just an interface guideline
+    /// ================================================================================
+    /// After this point functions aren't virtual, nor implemented - just interface guidelines
+    /// ================================================================================
     Component *copy() const;
+
+    void scaleTrue(double coeff);
 
 protected:
     Molecule *object;

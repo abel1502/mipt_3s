@@ -2,6 +2,7 @@
 
 #include "../manager.h"
 #include "../molecule.h"
+#include <ACL/math/cmath.h>
 
 
 bool ChemComp::updatePair(ChemComp &other, bool colliding) {
@@ -66,5 +67,11 @@ void ChemComp::interact(ChemComp &other) {
 
 ChemComp *ChemComp::copy() const {
     return new ChemComp(object, potency);
+}
+
+void ChemComp::scaleTrue(double coeff) {
+    // I guess we can't really determine the correct new potency here
+    // potency = (unsigned)((double)potency * std::sqrt(coeff));
+    energy *= coeff;
 }
 
