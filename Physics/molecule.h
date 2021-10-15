@@ -39,8 +39,8 @@ public:
     };
 
     struct Flags {
-        bool inactive : 1;
-        bool dead     : 1;
+        bool dead : 1;
+        // Had other ones in the past, and may in the future, as well
     };
 
 
@@ -94,11 +94,21 @@ public:
     constexpr const Vector2d &getPos() const { validate(); return phys->getPos(); }
     constexpr       Vector2d &getPos()       { validate(); return phys->getPos(); }
 
-    constexpr void markDead    (bool dead     = true) noexcept { flags.dead     = dead;     }
-    constexpr void markInactive(bool inactive = true) noexcept { flags.inactive = inactive; }
+    constexpr void markDead(bool dead = true) noexcept { flags.dead = dead; }
+    constexpr bool isDead()             const noexcept { return flags.dead; }
 
-    constexpr bool isDead()     const { return flags.dead;     }
-    constexpr bool isInactive() const { return flags.inactive; }
+    constexpr void  addGracePeriod(double time) noexcept { gracePeriod += time; }
+    constexpr void  setGracePeriod(double time) noexcept { gracePeriod  = time; }
+    constexpr bool   inGracePeriod()      const noexcept { return abel::sgnDbl(gracePeriod) > 0; }
+    constexpr void passGracePeriod(double time) noexcept {
+        if(!inGracePeriod())
+            return;
+
+        gracePeriod -= time;
+
+        if (!inGracePeriod())
+            gracePeriod = 0.d;
+    }
 
     constexpr const MoleculeManager &getManager() const { validate(); return *manager; }
     constexpr       MoleculeManager &getManager()       { validate(); return *manager; }
@@ -116,6 +126,7 @@ protected:
     ChemComp   *chem;
 
     Flags flags;
+    double gracePeriod;
 
     void destroy() noexcept;
 
@@ -136,7 +147,7 @@ protected:
 
     // Not to be used at all, hopefully, but needed for std::swap, because otherwise it invokes the move-ctor on garbage
     Molecule() :
-        manager{nullptr}, phys{nullptr}, rend{nullptr}, chem{nullptr}, flags{} {}
+        manager{nullptr}, phys{nullptr}, rend{nullptr}, chem{nullptr}, flags{}, gracePeriod{0} {}
 
 };
 

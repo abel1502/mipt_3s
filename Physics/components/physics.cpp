@@ -69,16 +69,20 @@ void PhysComp::respondToBorderCollision(Border &border) {
     }
 }
 
-void PhysComp::update(double deltaT) {
+void PhysComp::update(double deltaT, bool /*inGracePeriod*/) {
     assert(!abel::isZero(mass));
     pos += impulse / mass * deltaT;
 }
 
-bool PhysComp::updatePair(PhysComp &other) {
+bool PhysComp::updatePair(PhysComp &other, bool inGracePeriod) {
+    if (inGracePeriod)
+        return false;
+
     if (testForCollision(other)) {
         respondToCollision(other);
         return true;
     }
+
     return false;
 }
 
@@ -151,8 +155,8 @@ Vector2d PhysComp::getCOMWith(const PhysComp &other) const {
     return (mass * pos + other.mass * other.pos) / (mass + other.mass);
 }
 
-void GravityPhysComp::update(double deltaT) {
-    PhysComp::update(deltaT);
+void GravityPhysComp::update(double deltaT, bool inGracePeriod) {
+    PhysComp::update(deltaT, inGracePeriod);
 
     impulse += GRAVITY_DIR * GRAVITY_COEFF * mass * deltaT;
 }
@@ -178,18 +182,25 @@ void MagneticPhysComp::respondToCollision(PhysComp &other) {
 
     MagneticPhysComp &otherM = dynamic_cast<MagneticPhysComp &>(other);
 
-    charge = otherM.charge = (charge + otherM.charge) / 2;
+    double totalCharge = charge + otherM.charge;
+    double coeff = mass / (mass + otherM.mass);
+
+           charge = totalCharge * coeff;
+    otherM.charge = totalCharge * (1 - coeff);
 }
 
-void MagneticPhysComp::update(double deltaT) {
-    PhysComp::update(deltaT);
+void MagneticPhysComp::update(double deltaT, bool inGracePeriod) {
+    PhysComp::update(deltaT, inGracePeriod);
 
     impulse += magneticForce * deltaT;
     magneticForce = Vector2d{0};
 }
 
-bool MagneticPhysComp::updatePair(PhysComp &other) {
-    bool result = PhysComp::updatePair(other);
+bool MagneticPhysComp::updatePair(PhysComp &other, bool inGracePeriod) {
+    bool result = PhysComp::updatePair(other, inGracePeriod);
+
+    if (inGracePeriod)
+        return result;
 
     if (typeid(other) != typeid(MagneticPhysComp))
         return result;
@@ -231,7 +242,7 @@ Molecule &MagneticPhysComp::absorb(PhysComp &other, bool) {
 }
 
 abel::gui::Color MagneticPhysComp::getTypeColor() const noexcept {
-    static constexpr double MAX_CHARGE = 0.1d;
+    static constexpr double MAX_CHARGE = 0.05d;
 
     Color base{};
     if (abel::sgnDbl(charge) > 0) {

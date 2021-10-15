@@ -118,38 +118,33 @@ Molecule &MoleculeManager::copyMolecule(const Molecule &original) {
     return addMolecule<Molecule &&>(std::move(Molecule::ManagerProxy::copy(original)));
 }
 
-void MoleculeManager::explodeClones(Molecule &mol, unsigned n, double energy) {
-    Vector2d dir{1, 0};
-    dir.rotateDegrees(abel::randDouble(360.d));
-
-    explodeClones(mol, n, energy, dir, 180.d);
-}
-
-void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double energy, Vector2d dir, double maxAngle) {
+void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double impulse) {
     REQUIRE(n >= 1);
     REQUIRE(&mol_.getManager() == this);
 
-    dir.normalize();
     PhysComp &oldPhys = mol_.getComp<PhysComp>();
 
     if (n == 1) {
-        oldPhys.getImpulse() += dir * std::sqrt(energy * oldPhys.getMass() * 2);
+        double oldImpulse = oldPhys.getImpulse().length();
+        oldPhys.getImpulse() *= 1 + impulse / oldImpulse;
         return;
     }
 
-    static constexpr double RADIUS_COEFF = 3.5;
+    static constexpr double RADIUS_COEFF = 1.4;  // was 3.5 without grace period
+    static constexpr double GRACE_PERIOD = 0.1;
 
     // Because we need mol to persist over reallocations of our buffers.
     // mol_ will get garbage-collected, while mol will be destroyed automatically
     Molecule mol = Molecule::ManagerProxy::copy(mol_);
     mol_.markDead();
 
-    double radius = oldPhys.getRadius() * RADIUS_COEFF;
-    // TODO: Encapsulate?
-    double impulse = std::sqrt(energy * oldPhys.getMass() / n * 2);
+    mol.addGracePeriod(GRACE_PERIOD);
 
-    const double angle = maxAngle * 2.d / n;
-    dir.rotateDegrees(-maxAngle);
+    double radius = oldPhys.getRadius() * RADIUS_COEFF;
+
+    const double angle = 360.d / n;
+    Vector2d dir{1, 0};
+    dir.rotateDegrees(abel::randDouble(360.d));
 
     mol.markDead();  // Just in case
 
@@ -180,7 +175,7 @@ void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double energy, V
         }*/
     }
 
-    DBG("Is %lg, (%lg, %lg)", totalEnergy, totalImpulse.x(), totalImpulse.y());
+    // DBG("Is %lg, (%lg, %lg)", totalEnergy, totalImpulse.x(), totalImpulse.y());
 }
 
 void MoleculeManager::tick(double deltaT) {
@@ -194,7 +189,6 @@ void MoleculeManager::tick(double deltaT) {
         }
     }
 
-    // TODO: Maybe now we remove the inactive flag altogether
     bool moleculesReallocated = false;
     while (newMolecules.getSize()) {
         Molecule &mol = newMolecules[-1];
@@ -210,8 +204,10 @@ void MoleculeManager::tick(double deltaT) {
         updateBackrefs();
     }
 
+    // double totalCharge = 0;
+
     for (Molecule &mol : molecules) {
-        if (mol.isDead() || mol.isInactive())
+        if (mol.isDead())
             continue;
 
         mol.update(deltaT);
@@ -219,7 +215,13 @@ void MoleculeManager::tick(double deltaT) {
         if (doRender) {
             mol.render(target, coords);
         }
+
+        // if (typeid(mol.getComp<PhysComp>()) == typeid(MagneticPhysComp)) {
+        //     totalCharge += dynamic_cast<MagneticPhysComp &>(mol.getComp<PhysComp>()).getCharge();
+        // }
     }
+
+    // DBG(">> Total charge: %lg", totalCharge);
 
     if (doRender) {
         haveRendered();
@@ -229,19 +231,19 @@ void MoleculeManager::tick(double deltaT) {
 
     for (unsigned i = 0; i < moleculesCnt; ++i) {
         Molecule &molA = molecules[i];
-        if (molA.isDead() || molA.isInactive())
+        if (molA.isDead())
             continue;
 
         for (unsigned j = i + 1; j < moleculesCnt; ++j) {
             Molecule &molB = molecules[j];
-            if (molB.isDead() || molB.isInactive())
+            if (molB.isDead())
                 continue;
 
             molA.updatePair(molB);
 
             assert(molecules.getSize() == moleculesCnt);
 
-            if (molA.isDead() || molA.isInactive())
+            if (molA.isDead())
                 break;
         }
     }
@@ -285,10 +287,6 @@ void MoleculeManager::processFlags() {
         if (molecules[i].isDead()) {
             deleteMolecule(i);
             continue;
-        }
-
-        if (molecules[i].isInactive()) {
-            molecules[i].markInactive(false);
         }
 
         i++;

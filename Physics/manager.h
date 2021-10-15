@@ -37,10 +37,7 @@ public:
 
     Molecule &copyMolecule(const Molecule &original);
 
-    void explodeClones(Molecule &mol, unsigned n, double energy);
-
-    // By-value dir because we like to modify it internally
-    void explodeClones(Molecule &mol, unsigned n, double energy, Vector2d dir, double maxAngle);
+    void explodeClones(Molecule &mol, unsigned n, double impulse);
 
     void tick(double deltaT);
 

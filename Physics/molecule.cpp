@@ -19,7 +19,7 @@ void Molecule::ManagerProxy::updateComponentBackrefs(Molecule &self) {
 }
 
 Molecule::Molecule(MoleculeManager *manager_, const Vector2d &pos, double size, Preset preset) :
-    manager{manager_}, phys{nullptr}, rend{nullptr}, chem{nullptr}, flags{true, false} {
+    manager{manager_}, phys{nullptr}, rend{nullptr}, chem{nullptr}, flags{false}, gracePeriod{0} {
 
     assert(abel::sgnDbl(size) > 0);
 
@@ -54,7 +54,7 @@ Molecule::Molecule(MoleculeManager *manager_, const PhysComp &phys_, const Rende
 }
 
 Molecule::Molecule(MoleculeManager *manager_, PhysComp *phys_, RenderComp *rend_, ChemComp *chem_) :
-    manager{manager_}, phys{phys_}, rend{rend_}, chem{chem_}, flags{true, false} {
+    manager{manager_}, phys{phys_}, rend{rend_}, chem{chem_}, flags{false}, gracePeriod{0} {
 
     validate();
     phys->updateObj(this);
@@ -63,10 +63,9 @@ Molecule::Molecule(MoleculeManager *manager_, PhysComp *phys_, RenderComp *rend_
 }
 
 Molecule::Molecule(Molecule &&other) :
-    manager{other.manager}, phys{other.phys}, rend{other.rend}, chem{other.chem}, flags{other.flags} {
+    manager{other.manager}, phys{other.phys}, rend{other.rend}, chem{other.chem}, flags{other.flags}, gracePeriod{other.gracePeriod} {
 
-    other.flags.inactive = false;
-    other.flags.dead     = false;
+    other.flags.dead = false;
 
     other.phys = nullptr;
     other.rend = nullptr;
@@ -83,6 +82,7 @@ Molecule &Molecule::operator=(Molecule &&other) {
     std::swap(rend,  other.rend);
     std::swap(chem,  other.chem);
     std::swap(flags, other.flags);
+    std::swap(gracePeriod, other.gracePeriod);
 
     if (phys)  phys->updateObj(this);
     if (rend)  rend->updateObj(this);
@@ -98,8 +98,11 @@ Molecule::~Molecule() noexcept {
 void Molecule::update(double deltaT) {
     validate();
 
-    phys->update(deltaT);
+    passGracePeriod(deltaT);
 
+    phys->update(deltaT, inGracePeriod());
+
+    // Border collisions are handled irregarding the grace state
     for (Border &border : getManager().getBorders()) {
         if (!phys->testForBorderCollision(border))
             continue;
@@ -111,12 +114,14 @@ void Molecule::update(double deltaT) {
 }
 
 void Molecule::updatePair(Molecule &other) {
-    bool colliding = getComp<PhysComp>().updatePair(other.getComp<PhysComp>());
+    bool igp = inGracePeriod() || other.inGracePeriod();
+
+    bool colliding = getComp<PhysComp>().updatePair(other.getComp<PhysComp>(), igp);
 
     if (isDead() || other.isDead())
         return;
 
-    getComp<ChemComp>().updatePair(other.getComp<ChemComp>(), colliding);
+    getComp<ChemComp>().updatePair(other.getComp<ChemComp>(), colliding, igp);
 }
 
 void Molecule::render(Texture &target, const Coords &coords) {
@@ -181,14 +186,16 @@ void Molecule::dump() const noexcept {
         "  phys    = %p (%s)\n"
         "  rend    = %p (%s)\n"
         "  chem    = %p (%s)\n"
-        "  flags   = dead:%d, inactive:%d\n"
+        "  flags   = dead:%d\n"
+        "  gracePeriod = %lg\n"
         "}",
         this,
         manager,
         phys, typeid(phys).name(),
         rend, typeid(rend).name(),
         chem, typeid(chem).name(),
-        flags.dead, flags.inactive);
+        flags.dead,
+        gracePeriod);
 }
 
 void Molecule::destroy() noexcept {
@@ -205,12 +212,12 @@ void Molecule::destroy() noexcept {
     rend = nullptr;
     chem = nullptr;
 
-    flags.inactive = false;
-    flags.dead     = false;
+    flags.dead = false;
+    gracePeriod = 0;
 }
 
 Molecule::Molecule(const Molecule &other) :
-    manager{other.manager}, phys{nullptr}, rend{nullptr}, chem{nullptr}, flags{true, false} {
+    manager{other.manager}, phys{nullptr}, rend{nullptr}, chem{nullptr}, flags{false}, gracePeriod{other.gracePeriod} {
 
     other.validate();
 
@@ -224,8 +231,8 @@ Molecule &Molecule::operator=(const Molecule &other) {
 
     other.validate();
 
-    flags.inactive = true;
-    flags.dead     = false;
+    flags.dead = false;
+    gracePeriod = other.gracePeriod;
 
     manager = other.manager;
     phys = other.phys->copy();

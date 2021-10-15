@@ -5,8 +5,8 @@
 #include <ACL/math/cmath.h>
 
 
-bool ChemComp::updatePair(ChemComp &other, bool colliding) {
-    return colliding && maybeInteract(other);
+bool ChemComp::updatePair(ChemComp &other, bool colliding, bool inGracePeriod) {
+    return colliding && !inGracePeriod && maybeInteract(other);
 }
 
 bool ChemComp::maybeInteract(ChemComp &other) {

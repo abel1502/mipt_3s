@@ -17,7 +17,7 @@ public:
         Component(object_), potency{potency_}, energy{0} {}
 
     // Returns true if a reaction took place
-    bool updatePair(ChemComp &other, bool colliding);
+    bool updatePair(ChemComp &other, bool colliding, bool inGracePeriod = false);
 
     // True if chemically interacted
     bool maybeInteract(ChemComp &other);

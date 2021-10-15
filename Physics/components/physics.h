@@ -33,10 +33,10 @@ public:
 
     virtual void respondToBorderCollision(Border &border);
 
-    virtual void update(double deltaT);
+    virtual void update(double deltaT, bool inGracePeriod = false);
 
     // Returns whether they collide
-    virtual bool updatePair(PhysComp &other);
+    virtual bool updatePair(PhysComp &other, bool inGracePeriod = false);
 
     virtual PhysComp *copy() const;
 
@@ -88,7 +88,7 @@ public:
                            double mass_, double radius_) :
         PhysComp(object_, pos_, impulse_, mass_, radius_) {}
 
-    virtual void update(double deltaT) override;
+    virtual void update(double deltaT, bool inGracePeriod = false) override;
 
     virtual GravityPhysComp *copy() const override;
 
@@ -116,10 +116,10 @@ public:
 
     virtual void respondToCollision(PhysComp &other) override;
 
-    virtual void update(double deltaT) override;
+    virtual void update(double deltaT, bool inGracePeriod = false) override;
 
     // Returns whether they collide
-    virtual bool updatePair(PhysComp &other) override;
+    virtual bool updatePair(PhysComp &other, bool inGracePeriod = false) override;
 
     virtual MagneticPhysComp *copy() const override;
 
@@ -132,6 +132,9 @@ public:
     virtual void scaleTrue(double coeff) override;
 
     virtual void dump() const noexcept override;
+
+    constexpr double &getCharge()       { return charge; }
+    constexpr double  getCharge() const { return charge; }
 
 protected:
     double charge;
