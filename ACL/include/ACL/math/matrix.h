@@ -5,7 +5,7 @@
 #include <ACL/vector.h>
 #include <ACL/math/getneutral.h>
 
-#include <algorithm>
+#include <utility>
 #include <cassert>
 #include <ACL/type_traits.h>
 

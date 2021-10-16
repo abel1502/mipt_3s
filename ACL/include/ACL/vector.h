@@ -4,7 +4,7 @@
 
 #include <ACL/general.h>
 
-#include <algorithm>
+#include <utility>
 #include <initializer_list>
 #include <cassert>
 #include <cstdlib>
@@ -136,12 +136,12 @@ public:
     }
 
     bool append(T &&value) {
-        DECLARE_APPEND_BODY_(std::move(value))
+        DECLARE_APPEND_BODY_(std::forward<T>(value))
     }
 
     template <typename ... Ts>
     bool appendEmplace(Ts ... args) {
-        DECLARE_APPEND_BODY_(args...)
+        DECLARE_APPEND_BODY_(std::forward<Ts>(args)...)
     }
 
     #undef DECLARE_APPEND_BODY_

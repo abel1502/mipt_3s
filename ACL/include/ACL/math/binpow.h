@@ -20,7 +20,7 @@ constexpr T binPow(T base, unsigned power) {
             --power;
         }
 
-        base = base * base;
+        base *= base;  // TODO: Validate correctness
         power >>= 1;
     }
 
