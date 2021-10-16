@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1634372693 source:d:\workspace\.mipt\s3\acl_tests\main.cpp
+	<ACL/general.h>
+	<cstdio>
+	<cstdlib>
+	<cassert>
+	<ACL/event.h>
+
+1634314402 d:\workspace\.mipt\s3\acl\include\acl\general.h
+	<stdexcept>
+	<string>
+
+1634372959 d:\workspace\.mipt\s3\acl\include\acl\event.h
+	<ACL/general.h>
+	<ACL/vector.h>
+
+1633356221 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+	<ACL/general.h>
+	<algorithm>
+	<initializer_list>
+	<cassert>
+	<cstdlib>
+	<memory>
+

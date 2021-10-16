@@ -44,6 +44,7 @@
 			<Add option="-Wall" />
 			<Add directory="include" />
 		</Compiler>
+		<Unit filename="include/ACL/event.h" />
 		<Unit filename="include/ACL/general.h" />
 		<Unit filename="include/ACL/gui/color.h" />
 		<Unit filename="include/ACL/gui/rect.h" />
