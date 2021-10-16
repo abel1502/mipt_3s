@@ -238,6 +238,10 @@ public:
 
         T *newBuf = (T *)calloc(new_capacity, sizeof(T));
 
+        if (!newBuf) {
+            throw error("Buffer allocation failed");
+        }
+
         if (buf) {
             for (unsigned i = 0; i < size; ++i) {
                 newBuf[i] = std::move(buf[i]);
@@ -251,6 +255,11 @@ public:
         capacity = new_capacity;
 
         return true;
+    }
+
+    void clear() {
+        destroy();
+        reserve(DEFAULT_CAPACITY);
     }
 
 protected:
