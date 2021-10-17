@@ -42,9 +42,9 @@
 	<SDL2/SDL.h>
 	<ACL/vector.h>
 
-1633356221 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1634393212 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
-	<algorithm>
+	<utility>
 	<initializer_list>
 	<cassert>
 	<cstdlib>
@@ -53,7 +53,7 @@
 1633773996 d:\workspace\.mipt\s3\physics\gui\gui_txlib.h
 	<ACL/math/cmath.h>
 
-1634317218 source:d:\workspace\.mipt\s3\physics\main.cpp
+1634319890 source:d:\workspace\.mipt\s3\physics\main.cpp
 	"gui/gui.h"
 	<ACL/general.h>
 	<typeinfo>
@@ -109,7 +109,7 @@
 	<ACL/gui/color.h>
 	<ACL/math/cmath.h>
 
-1634315446 d:\workspace\.mipt\s3\physics\components\chemistry.h
+1634407976 d:\workspace\.mipt\s3\physics\components\chemistry.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	"component.h"
@@ -126,14 +126,14 @@
 	"render.h"
 	"physics.h"
 
-1634317212 source:d:\workspace\.mipt\s3\physics\manager.cpp
+1634407823 source:d:\workspace\.mipt\s3\physics\manager.cpp
 	"gui/gui.h"
 	"manager.h"
 	"components/physics.h"
 	<cassert>
 	<cstdint>
 
-1634314698 d:\workspace\.mipt\s3\physics\manager.h
+1634407969 d:\workspace\.mipt\s3\physics\manager.h
 	"borders.h"
 	"molecule.h"
 	"gui/coords.h"

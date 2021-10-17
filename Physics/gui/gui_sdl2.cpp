@@ -3,7 +3,7 @@
 
 #include "gui.h"
 
-#include <algorithm>
+#include <utility>
 #include <cassert>
 
 

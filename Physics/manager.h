@@ -22,10 +22,10 @@ public:
     MoleculeManager(Texture &target_);
 
     // Has an explicit specialization to move molecules,
-    // but for copying, use copyMolecule instead
+    // but for copying, use copyMolecule instead.
     template <typename ... Ts>
-    Molecule &addMolecule(Ts ... args) {
-        if (newMolecules.appendEmplace(this, args...)) {
+    Molecule &addMolecule(Ts &&... args) {
+        if (newMolecules.appendEmplace(this, std::forward<Ts>(args)...)) {
             updateBackrefs();
         }
 
@@ -52,7 +52,7 @@ public:
 
 
 protected:
-    static constexpr double HALF_VIRT_WIDTH = 40.d;
+    static constexpr double HALF_VIRT_WIDTH = 40.d * 2;
     static constexpr unsigned BORDERS_CNT = 4;
 
     static constexpr abel::math::Vector2d BORDER_DIRS[BORDERS_CNT] = {

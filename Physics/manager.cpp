@@ -20,11 +20,12 @@ MoleculeManager::MoleculeManager(Texture &target_) :
     }
 }
 
+// Still needed, because the move-ctor doesn't take MoleculeManager *
 template <>
 Molecule &MoleculeManager::addMolecule(Molecule &&molecule) {
     assert(&molecule.getManager() == this);
 
-    if (newMolecules.append(std::move(molecule))) {
+    if (newMolecules.append(std::forward<Molecule>(molecule))) {
         updateBackrefs();
     }
 
@@ -115,7 +116,7 @@ Molecule &MoleculeManager::addRandomMolecule(Molecule::Preset base) {
 }
 
 Molecule &MoleculeManager::copyMolecule(const Molecule &original) {
-    return addMolecule<Molecule &&>(std::move(Molecule::ManagerProxy::copy(original)));
+    return addMolecule(std::move(Molecule::ManagerProxy::copy(original)));
 }
 
 void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double impulse) {

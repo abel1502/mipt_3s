@@ -12,7 +12,7 @@ MAIN_DECL {
 
     MAIN_TRY(
         Window window{};
-        Texture texture{window};
+        Texture texture{300, 300};
 
         MoleculeManager manager{texture};
 
@@ -28,7 +28,7 @@ MAIN_DECL {
 
         //manager.addMolecule(Vector2d{10, 2}, 2.d, Molecule::P_BALL).getComp<PhysComp>().getImpulse() = Vector2d{0, 0};*/
 
-        static constexpr unsigned MOLECULES_CNT = 25;
+        static constexpr unsigned MOLECULES_CNT = 200;
 
         for (unsigned i = 0; i < MOLECULES_CNT; ++i) {
             //manager.addRandomMolecule();
@@ -54,7 +54,7 @@ MAIN_DECL {
             manager.tick(DELTA_T);
             DBG("Molecular tick completed");
 
-            window.render(texture);
+            window.renderAt(Vector2i{0, 0}, texture);
             window.update();
             DBG("Render completed");
 
