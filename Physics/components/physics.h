@@ -14,7 +14,7 @@ using abel::math::Vector2d;
 
 class PhysComp : public Component {
 public:
-    static constexpr bool ACCOUNT_FOR_SKIPPED_MOVEMENT = false;
+    static constexpr bool ACCOUNT_FOR_SKIPPED_MOVEMENT = true;
 
     DECLARE_ERROR(error, abel::error);
 
@@ -103,7 +103,7 @@ public:
 
 class MagneticPhysComp : public PhysComp {
 public:
-    static constexpr double MAGNETISM_COEFF = 30000.d;  // The real one was absurdly high
+    static constexpr double MAGNETISM_COEFF = 40000.d;  // The real one was absurdly high
 
 
     inline MagneticPhysComp(Molecule *object_, const Vector2d &pos_, double mass_,

@@ -26,10 +26,6 @@ void PhysComp::respondToCollision(PhysComp &other) {
     if (axis.isZero()) {
         DBG("Precise central collision - ignoring");
 
-        dump();
-        other.dump();
-        PAUSE();
-
         return;
     }
 

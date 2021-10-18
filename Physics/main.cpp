@@ -29,12 +29,11 @@ int main() {
 
         //manager.addMolecule(Vector2d{10, 2}, 2.d, Molecule::P_BALL).getComp<PhysComp>().getImpulse() = Vector2d{0, 0};*/
 
-        static constexpr unsigned MOLECULES_CNT = 20;
+        static constexpr unsigned MOLECULES_CNT = 200;
 
         for (unsigned i = 0; i < MOLECULES_CNT; ++i) {
             //manager.addRandomMolecule();
-            DBG("%u", i);
-            manager.addRandomMolecule(Molecule::P_BALL).dump();
+            manager.addRandomMolecule(Molecule::P_BALL);
 
             /*bool good = false;
 
@@ -58,6 +57,8 @@ int main() {
         for (unsigned i = 0; i < 5; ++i) {
             txGetFPS();
         }
+
+        DBG("Starting");
 
         while (!txGetAsyncKeyState(VK_ESCAPE)) {
             deltaT = std::fmin(1.d / txGetFPS(), 1.d);

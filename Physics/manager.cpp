@@ -44,6 +44,7 @@ Molecule &MoleculeManager::addRandomMolecule() {
 Molecule &MoleculeManager::addRandomMolecule(Molecule::Preset base) {
     Vector2d pos{abel::randDouble(-coords.getVirtualPlane().w(), coords.getVirtualPlane().w()),
                  abel::randDouble(-coords.getVirtualPlane().h(), coords.getVirtualPlane().h())};
+    pos /= 2;  // Because we've used double constraints
     // pos *= 0.9;  // Just to make sure it's not inside borders
 
     Vector2d impulse = Vector2d::fromPhiDegreesR(abel::randDouble(360), abel::randDouble(
@@ -162,17 +163,6 @@ void MoleculeManager::explodeClones(Molecule &mol_, unsigned n, double impulse) 
 
         totalEnergy  += phys.getEnergy();
         totalImpulse += phys.getImpulse();
-
-        /*if (i == 0) {
-            DBG("Post explosion:\n"
-                "  clones cnt  = %u\n"
-                "  chem energy = %lg"
-                "  chem potency = %u",
-                n,
-                clone.getComp<ChemComp>().getEnergy(),
-                clone.getComp<ChemComp>().getPotency());
-            clone.getComp<PhysComp>().dump();
-        }*/
     }
 
     // DBG("Is %lg, (%lg, %lg)", totalEnergy, totalImpulse.x(), totalImpulse.y());
@@ -239,12 +229,6 @@ void MoleculeManager::tick(double deltaT) {
             if (molB.isDead())
                 continue;
 
-            /*if (molA.getComp<PhysComp>().getPos() == molB.getComp<PhysComp>().getPos()) {
-                molA.dump();
-                molB.dump();
-                PAUSE();
-            }*/
-            DBG("%u %u", i, j);
             molA.updatePair(molB);
 
             assert(molecules.getSize() == moleculesCnt);
