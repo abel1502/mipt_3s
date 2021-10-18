@@ -239,6 +239,12 @@ void MoleculeManager::tick(double deltaT) {
             if (molB.isDead())
                 continue;
 
+            /*if (molA.getComp<PhysComp>().getPos() == molB.getComp<PhysComp>().getPos()) {
+                molA.dump();
+                molB.dump();
+                PAUSE();
+            }*/
+            DBG("%u %u", i, j);
             molA.updatePair(molB);
 
             assert(molecules.getSize() == moleculesCnt);

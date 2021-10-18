@@ -196,6 +196,9 @@ void Molecule::dump() const noexcept {
         chem, typeid(chem).name(),
         flags.dead,
         gracePeriod);
+
+    if (phys)
+        phys->dump();
 }
 
 void Molecule::destroy() noexcept {

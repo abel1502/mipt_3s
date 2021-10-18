@@ -33,7 +33,8 @@ int main() {
 
         for (unsigned i = 0; i < MOLECULES_CNT; ++i) {
             //manager.addRandomMolecule();
-            manager.addRandomMolecule(Molecule::P_BALL);
+            DBG("%u", i);
+            manager.addRandomMolecule(Molecule::P_BALL).dump();
 
             /*bool good = false;
 
