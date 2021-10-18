@@ -18,63 +18,48 @@ public:
     using callback_t = void (As...);
 
 
-    Event() :
-        callbacks{} {}
+    void invoke(As ... args) {
+        beingInvoked = true;
 
-    void fire(As ... args) const {
-        for (const callback_t *cb : callbacks) {
+        for (callback_t *cb : callbacks) {
             (*cb)(args...);
         }
+
+        beingInvoked = false;
+
+        processUnsubQueue();
     }
 
-    void subscribe(const callback_t *cb) {
-        if (hasCallback(cb))
-            return;
+    #define ACL_EVENT_TPL_GUARD
+    #include <ACL/event.tpl.h>
+    #undef ACL_EVENT_TPL_GUARD
 
-        callbacks.append(cb);
-    }
+};
 
-    void unsubscribe(const callback_t *cb) {
-        unsigned i = findCallback(cb);
-        if (i == BAD_IDX)
-            return;
 
-        std::swap(callbacks[i], callbacks[-1]);
+template <typename ... As>
+class Event<bool (As...)> {
+public:
+    using callback_t = bool (As...);
 
-        callbacks.pop();
-    }
 
-    void clear() {
-        callbacks.clear();
-    }
+    void invoke(As ... args) {
+        beingInvoked = true;
 
-    bool hasCallback(const callback_t *cb) const {
-        for (auto curCb : callbacks) {
-            if (curCb == cb) {
-                return true;
+        for (callback_t *cb : callbacks) {
+            if ((*cb)(args...)) {
+                queueUnsubscribe(cb);
             }
         }
 
-        return false;
+        beingInvoked = false;
+
+        processUnsubQueue();
     }
 
-protected:
-    static constexpr unsigned BAD_IDX = -1u;
-
-
-    vector<const callback_t *> callbacks;  // TODO: set
-
-
-    // Returns callback index, or BAD_IDX on error
-    unsigned findCallback(const callback_t *cb) {
-        for (unsigned i = 0; i < callbacks.getSize(); ++i) {
-            if (callbacks[i] == cb) {
-                return i;
-            }
-        }
-
-        return BAD_IDX;
-    }
+    #define ACL_EVENT_TPL_GUARD
+    #include <ACL/event.tpl.h>
+    #undef ACL_EVENT_TPL_GUARD
 
 };
 

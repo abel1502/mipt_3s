@@ -1,31 +1,32 @@
 # depslib dependency file v1.0
-1632902776 source:d:\workspace\.mipt\s3\acl\src\general.cpp
+1633557527 source:d:\workspace\.mipt\s3\acl\src\general.cpp
 	<cstdio>
 	<cstdarg>
 	<cerrno>
 	<ACL/general.h>
 	"ACL/math/vector.h"
 
-1633504395 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1634462393 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
+	<typeinfo>
 
-1632942177 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
+1634542710 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
 	<ACL/type_traits.h>
 	<initializer_list>
 	<ACL/general.h>
 	<ACL/math/cmath.h>
-	"ACL/math/vector.tpl.h"
-	"ACL/math/vector.tpl.h"
-	"ACL/math/vector.tpl.h"
-	"ACL/math/vector.tpl.h"
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
 
 1631543143 d:\workspace\.mipt\s3\acl\include\acl\error.h
 	<stdexcept>
 	<string>
 	"general.h"
 
-1633511127 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+1634542624 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
 
 1631542283 d:\workspace\.mipt\s3\acl\include\acl\math\math.h
 	<cmath>
@@ -35,4 +36,12 @@
 
 1633511159 d:\workspace\.mipt\s3\acl\include\acl\type_traits.h
 	<type_traits>
+
+1633701738 source:d:\workspace\.mipt\s3\acl\src\log.cpp
+	<ACL/log.h>
+
+1634316518 d:\workspace\.mipt\s3\acl\include\acl\log.h
+	<ACL/general.h>
+	<cstdio>
+	<cstdint>
 
