@@ -2,14 +2,22 @@
 #define COMPONENTS_RENDER_H
 
 #include "component.h"
-#include "../gui/coords.h"
 #include <ACL/math/vector.h>
+#include <ACL/gui/coords.h>
 #include <ACL/gui/color.h>
 #include <ACL/math/cmath.h>
 
 
+namespace abel::gui {
 class Texture;
-using Color = abel::gui::Color;
+class Coords;
+class Color;
+}
+
+using abel::gui::Texture;
+using abel::gui::Coords;
+using abel::gui::Color;
+using abel::gui::Rect;
 class CircleRenderComp;
 class SquareRenderComp;
 

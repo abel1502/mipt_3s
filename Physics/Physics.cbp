@@ -6,61 +6,22 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="SDL2 Debug">
-				<Option output="build/sdl2/dbg/bin/Physics" prefix_auto="1" extension_auto="1" />
-				<Option object_output="build/sdl2/dbg/obj/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-					<Add option="-DUNDERLYING_GUI_FRAMEWORK=UGF_SDL2" />
-					<Add directory="../Grapher++/SDL/include" />
-				</Compiler>
-				<Linker>
-					<Add library="mingw32" />
-					<Add library="SDL2main" />
-					<Add library="SDL2" />
-					<Add directory="../Grapher++/SDL/lib" />
-					<Add directory="../Grapher++/SDL/bin" />
-				</Linker>
-			</Target>
-			<Target title="TXLib Debug">
+			<Target title="Debug">
 				<Option output="build/txlib/dbg/bin/Physics" prefix_auto="1" extension_auto="1" />
 				<Option object_output="build/txlib/dbg/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-DUNDERLYING_GUI_FRAMEWORK=UGF_TXLIB" />
 				</Compiler>
 			</Target>
-			<Target title="SDL2 Release">
-				<Option output="build/sdl2/bin/Physics" prefix_auto="1" extension_auto="1" />
-				<Option object_output="build/sdl2/obj/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
-					<Add option="-DUNDERLYING_GUI_FRAMEWORK=UGF_SDL2" />
-					<Add directory="../Grapher++/SDL/include" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-					<Add library="mingw32" />
-					<Add library="SDL2main" />
-					<Add library="SDL2" />
-					<Add directory="../Grapher++/SDL/lib" />
-					<Add directory="../Grapher++/SDL/bin" />
-				</Linker>
-			</Target>
-			<Target title="TXLib Release">
+			<Target title="Release">
 				<Option output="build/txlib/bin/Physics" prefix_auto="1" extension_auto="1" />
 				<Option object_output="build/txlib/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-DUNDERLYING_GUI_FRAMEWORK=UGF_TXLIB" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -72,12 +33,15 @@
 			<Add option="-Wall" />
 			<Add option="-m32" />
 			<Add directory="../ACL/include" />
+			<Add directory="../AGF/include" />
 		</Compiler>
 		<Linker>
 			<Add option="-flto" />
 			<Add option="-m32" />
 			<Add library="ACL" />
+			<Add library="AGF" />
 			<Add directory="../ACL/build/lib32" />
+			<Add directory="../AGF/build/lib32" />
 		</Linker>
 		<Unit filename="borders.cpp" />
 		<Unit filename="borders.h" />
@@ -89,24 +53,6 @@
 		<Unit filename="components/physics.h" />
 		<Unit filename="components/render.cpp" />
 		<Unit filename="components/render.h" />
-		<Unit filename="gui/coords.h" />
-		<Unit filename="gui/gui.h" />
-		<Unit filename="gui/gui_sdl2.cpp">
-			<Option target="SDL2 Debug" />
-			<Option target="SDL2 Release" />
-		</Unit>
-		<Unit filename="gui/gui_sdl2.h">
-			<Option target="SDL2 Debug" />
-			<Option target="SDL2 Release" />
-		</Unit>
-		<Unit filename="gui/gui_txlib.cpp">
-			<Option target="TXLib Debug" />
-			<Option target="TXLib Release" />
-		</Unit>
-		<Unit filename="gui/gui_txlib.h">
-			<Option target="TXLib Debug" />
-			<Option target="TXLib Release" />
-		</Unit>
 		<Unit filename="main.cpp" />
 		<Unit filename="manager.cpp" />
 		<Unit filename="manager.h" />

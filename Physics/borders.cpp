@@ -1,5 +1,5 @@
-#include "gui/gui.h"
-#include "gui/coords.h"
+#include <AGF/llgui.h>
+#include <ACL/gui/coords.h>
 #include "borders.h"
 
 

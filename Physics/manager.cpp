@@ -1,4 +1,4 @@
-#include "gui/gui.h"
+#include <AGF/llgui.h>
 
 #include "manager.h"
 #include "components/physics.h"
@@ -45,7 +45,6 @@ Molecule &MoleculeManager::addRandomMolecule(Molecule::Preset base) {
     Vector2d pos{abel::randDouble(-coords.getVirtualPlane().w(), coords.getVirtualPlane().w()),
                  abel::randDouble(-coords.getVirtualPlane().h(), coords.getVirtualPlane().h())};
     // pos *= 0.9;  // Just to make sure it's not inside borders
-
 
     Vector2d impulse = Vector2d::fromPhiDegreesR(abel::randDouble(360), abel::randDouble(
                             (coords.getVirtualPlane().w() + coords.getVirtualPlane().w()) * 0.3));
@@ -107,7 +106,7 @@ Molecule &MoleculeManager::addRandomMolecule(Molecule::Preset base) {
 
     Molecule &result = addMolecule(phys, rend, chem);
 
-    // We don't delete them, since now the molecule owns it!
+    // We don't delete them, since now the molecule owns them!
     // delete phys;
     // delete rend;
     // delete chem;

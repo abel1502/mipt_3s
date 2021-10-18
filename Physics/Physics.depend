@@ -14,11 +14,12 @@
 	"gui_sdl2.h"
 	"gui_txlib.h"
 
-1634314402 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1634462393 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
+	<typeinfo>
 
-1633935492 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
+1634465494 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
 	<ACL/type_traits.h>
 	<initializer_list>
 	<ACL/general.h>
@@ -33,7 +34,7 @@
 
 1633511127 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
 
-1633197772 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
+1634465459 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<cstdint>
@@ -53,8 +54,8 @@
 1633773996 d:\workspace\.mipt\s3\physics\gui\gui_txlib.h
 	<ACL/math/cmath.h>
 
-1634319890 source:d:\workspace\.mipt\s3\physics\main.cpp
-	"gui/gui.h"
+1634503476 source:d:\workspace\.mipt\s3\physics\main.cpp
+	<AGF/llgui.h>
 	<ACL/general.h>
 	<typeinfo>
 	"manager.h"
@@ -65,12 +66,12 @@
 
 1632672756 d:\workspace\.mipt\s3\physics\event.h
 
-1634315428 source:d:\workspace\.mipt\s3\physics\molecule.cpp
+1634502591 source:d:\workspace\.mipt\s3\physics\molecule.cpp
 	"molecule.h"
 	"manager.h"
 	<typeinfo>
 
-1634314410 d:\workspace\.mipt\s3\physics\molecule.h
+1634497424 d:\workspace\.mipt\s3\physics\molecule.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<cassert>
@@ -90,7 +91,7 @@
 1634144326 d:\workspace\.mipt\s3\physics\components\component.h
 	<cassert>
 
-1634317258 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
+1634502735 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
 	"physics.h"
 	"../molecule.h"
 	<typeinfo>
@@ -102,14 +103,14 @@
 	"component.h"
 	"../molecule.h"
 
-1634148956 d:\workspace\.mipt\s3\physics\components\render.h
+1634497443 d:\workspace\.mipt\s3\physics\components\render.h
 	"component.h"
-	"../gui/coords.h"
 	<ACL/math/vector.h>
+	<ACL/gui/coords.h>
 	<ACL/gui/color.h>
 	<ACL/math/cmath.h>
 
-1634407976 d:\workspace\.mipt\s3\physics\components\chemistry.h
+1634502021 d:\workspace\.mipt\s3\physics\components\chemistry.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	"component.h"
@@ -120,28 +121,28 @@
 	"../molecule.h"
 	<ACL/math/cmath.h>
 
-1633960890 source:d:\workspace\.mipt\s3\physics\components\render.cpp
-	"../gui/gui.h"
+1634497403 source:d:\workspace\.mipt\s3\physics\components\render.cpp
+	<AGF/llgui.h>
 	"../molecule.h"
 	"render.h"
 	"physics.h"
 
-1634407823 source:d:\workspace\.mipt\s3\physics\manager.cpp
-	"gui/gui.h"
+1634502892 source:d:\workspace\.mipt\s3\physics\manager.cpp
+	<AGF/llgui.h>
 	"manager.h"
 	"components/physics.h"
 	<cassert>
 	<cstdint>
 
-1634407969 d:\workspace\.mipt\s3\physics\manager.h
+1634497002 d:\workspace\.mipt\s3\physics\manager.h
 	"borders.h"
 	"molecule.h"
-	"gui/coords.h"
+	<ACL/gui/coords.h>
 	<ACL/math/vector.h>
 	<ACL/vector.h>
 	<ACL/general.h>
 
-1632943577 d:\workspace\.mipt\s3\physics\borders.h
+1634496739 d:\workspace\.mipt\s3\physics\borders.h
 	<ACL/math/vector.h>
 
 1628610834 d:\workspace\.mipt\s3\grapher++\sdl\include\sdl2\sdl.h
@@ -521,16 +522,16 @@
 	<algorithm>
 	<cassert>
 
-1633520867 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+1634465470 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
 	<ACL/math/vector.h>
 	<ACL/type_traits.h>
 
 1632940475 source:d:\workspace\.mipt\s3\physics\gui\coords.cpp
 	"coords.h"
 
-1633520761 source:d:\workspace\.mipt\s3\physics\borders.cpp
-	"gui/gui.h"
-	"gui/coords.h"
+1634496600 source:d:\workspace\.mipt\s3\physics\borders.cpp
+	<AGF/llgui.h>
+	<ACL/gui/coords.h>
 	"borders.h"
 
 1633511159 d:\workspace\.mipt\s3\acl\include\acl\type_traits.h
@@ -539,5 +540,20 @@
 1633520952 d:\workspace\.mipt\s3\physics\gui\coords.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
+	<ACL/gui/rect.h>
+
+1634465450 d:\workspace\.mipt\s3\acl\include\acl\gui\coords.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<ACL/gui/rect.h>
+
+1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
+	<AGF/impl/llgui_txlib.h>
+
+1634497843 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+	<TXLib.h>
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<ACL/gui/color.h>
 	<ACL/gui/rect.h>
 

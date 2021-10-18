@@ -3,13 +3,18 @@
 
 #include "borders.h"
 #include "molecule.h"
-#include "gui/coords.h"
+#include <ACL/gui/coords.h>
 #include <ACL/math/vector.h>
 #include <ACL/vector.h>
 #include <ACL/general.h>
 
 
+namespace abel::gui {
 class Texture;
+}
+
+using abel::gui::Texture;
+using abel::gui::Coords;
 
 class MoleculeManager {
 public:

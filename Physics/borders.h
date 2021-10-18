@@ -6,9 +6,13 @@
 
 using abel::math::Vector2d;
 
-
+namespace abel::gui {
 class Texture;
 class Coords;
+}
+
+using abel::gui::Texture;
+using abel::gui::Coords;
 
 class Border {
 public:

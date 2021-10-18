@@ -1,18 +1,19 @@
-#include "gui/gui.h"
+#include <AGF/llgui.h>
 #include <ACL/general.h>
 #include <typeinfo>
 #include "manager.h"
 #include "molecule.h"
 
 
-/// Has to be employed because of gui frameworks' implications
-MAIN_DECL {
+using abel::gui::Vector2i;
+
+int main() {
     abel::verbosity = 2;
     abel::srand(444);
 
     MAIN_TRY(
-        Window window{};
-        Texture texture{300, 300};
+        abel::gui::Window window{};
+        abel::gui::Texture texture{400, 600};
 
         MoleculeManager manager{texture};
 
@@ -28,7 +29,7 @@ MAIN_DECL {
 
         //manager.addMolecule(Vector2d{10, 2}, 2.d, Molecule::P_BALL).getComp<PhysComp>().getImpulse() = Vector2d{0, 0};*/
 
-        static constexpr unsigned MOLECULES_CNT = 200;
+        static constexpr unsigned MOLECULES_CNT = 20;
 
         for (unsigned i = 0; i < MOLECULES_CNT; ++i) {
             //manager.addRandomMolecule();
@@ -50,16 +51,27 @@ MAIN_DECL {
         /*manager.addMolecule(Vector2d{0, 0}, 1.d, Molecule::P_BALL);
         manager.addMolecule(Vector2d{0, 0.9}, 1.d, Molecule::P_BALL);*/
 
-        MAIN_EVENT_LOOP(
-            manager.tick(DELTA_T);
+        double deltaT = 0.0d;
+
+        // 5 == txFramesToAverage, but the constant doesn't exist.
+        for (unsigned i = 0; i < 5; ++i) {
+            txGetFPS();
+        }
+
+        while (!txGetAsyncKeyState(VK_ESCAPE)) {
+            deltaT = std::fmin(1.d / txGetFPS(), 1.d);
+
+            manager.tick(deltaT);
             DBG("Molecular tick completed");
 
-            window.renderAt(Vector2i{0, 0}, texture);
+            window.renderAt(Vector2i{400, 0}, texture);
             window.update();
             DBG("Render completed");
 
-            DBG("Tick in %lg", DELTA_T);
-        , 1)
+            DBG("Tick in %lg", deltaT);
+
+            txSleep(1);
+        }
 
         return 0;
     )

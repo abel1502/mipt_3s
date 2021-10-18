@@ -14,10 +14,14 @@
 
 using abel::math::Vector2d;
 
-
-class MoleculeManager;
+namespace abel::gui {
 class Texture;
 class Coords;
+}
+
+using abel::gui::Texture;
+using abel::gui::Coords;
+class MoleculeManager;
 
 class Molecule {
 public:

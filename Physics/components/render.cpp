@@ -1,4 +1,4 @@
-#include "../gui/gui.h"
+#include <AGF/llgui.h>
 
 #include "../molecule.h"
 #include "render.h"
@@ -18,7 +18,7 @@ void CircleRenderComp::render(Texture &target, const Coords &coords, const Color
 
     try {
         target.drawEllipse(coords.virt2screen(getPos()), coords.scale_v2s(dims), color);
-    } catch (const gui_error &e) {
+    } catch (const abel::gui::llgui_error &e) {
         throw error(e.what());
     }
 }
@@ -55,7 +55,7 @@ void SquareRenderComp::render(Texture &target, const Coords &coords, const Color
 
     try {
         target.drawRect(coords.virt2screen(Rect<double>(from, dims)), color);
-    } catch (const gui_error &e) {
+    } catch (const abel::gui::llgui_error &e) {
         throw error(e.what());
     }
 }
