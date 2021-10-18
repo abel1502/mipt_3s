@@ -1,0 +1,48 @@
+# depslib dependency file v1.0
+1634498160 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
+	<AGF/llgui.h>
+	<utility>
+	<cassert>
+
+1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
+	<AGF/impl/llgui_txlib.h>
+
+1634497843 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+	<TXLib.h>
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<ACL/gui/color.h>
+	<ACL/gui/rect.h>
+
+1634462393 d:\workspace\.mipt\s3\acl\include\acl\general.h
+	<stdexcept>
+	<string>
+	<typeinfo>
+
+1634542710 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
+	<ACL/type_traits.h>
+	<initializer_list>
+	<ACL/general.h>
+	<ACL/math/cmath.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+
+1633511159 d:\workspace\.mipt\s3\acl\include\acl\type_traits.h
+	<type_traits>
+
+1632301309 d:\workspace\.mipt\s3\acl\include\acl\math\cmath.h
+	<cmath>
+
+1634542624 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+
+1634465459 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<cstdint>
+
+1634465470 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+	<ACL/math/vector.h>
+	<ACL/type_traits.h>
+
