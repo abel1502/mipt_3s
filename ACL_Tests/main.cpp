@@ -17,7 +17,7 @@ int main() {
 
     event.subscribe(callback);
 
-    event.fire();
+    event.invoke();
 
     return 0;
 }

@@ -39,11 +39,9 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-m32" />
 			<Add directory="../ACL/include" />
 		</Compiler>
 		<Linker>
-			<Add option="-m32" />
 			<Add library="ACL" />
 		</Linker>
 		<Unit filename="main.cpp" />

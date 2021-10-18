@@ -1,24 +1,29 @@
 # depslib dependency file v1.0
-1634379545 source:d:\workspace\.mipt\s3\acl_tests\main.cpp
+1634542252 source:d:\workspace\.mipt\s3\acl_tests\main.cpp
 	<ACL/general.h>
 	<cstdio>
 	<cstdlib>
 	<cassert>
 	<ACL/event.h>
 
-1634314402 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1634462393 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
+	<typeinfo>
 
-1634379409 d:\workspace\.mipt\s3\acl\include\acl\event.h
+1634542776 d:\workspace\.mipt\s3\acl\include\acl\event.h
 	<ACL/general.h>
 	<ACL/vector.h>
+	<ACL/event.tpl.h>
+	<ACL/event.tpl.h>
 
-1634392783 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1634393212 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
 	<utility>
 	<initializer_list>
 	<cassert>
 	<cstdlib>
 	<memory>
+
+1634543263 d:\workspace\.mipt\s3\acl\include\acl\event.tpl.h
 
