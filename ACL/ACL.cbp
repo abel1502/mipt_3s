@@ -47,6 +47,7 @@
 		<Unit filename="include/ACL/event.h" />
 		<Unit filename="include/ACL/general.h" />
 		<Unit filename="include/ACL/gui/color.h" />
+		<Unit filename="include/ACL/gui/coords.h" />
 		<Unit filename="include/ACL/gui/rect.h" />
 		<Unit filename="include/ACL/log.h" />
 		<Unit filename="include/ACL/math/binpow.h" />
