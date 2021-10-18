@@ -5,8 +5,7 @@
 #include <ACL/type_traits.h>
 
 
-namespace abel {
-namespace math {
+namespace abel::math {
 
 
 /// Overload these for your type
@@ -26,7 +25,6 @@ constexpr T getAddNeutral() {
 }
 
 
-}
 }
 
 

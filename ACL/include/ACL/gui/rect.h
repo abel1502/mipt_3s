@@ -5,8 +5,7 @@
 #include <ACL/type_traits.h>
 
 
-namespace abel {
-namespace gui {
+namespace abel::gui {
 
 
 template <typename T>
@@ -106,7 +105,6 @@ protected:
 };
 
 
-}
 }
 
 

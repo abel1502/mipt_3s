@@ -13,8 +13,7 @@
 #error "Unfinished"
 
 
-namespace abel {
-namespace math {
+namespace abel::math {
 
 
 template <typename T>
@@ -338,7 +337,6 @@ Matrix<T> getNeutral() {
 }
 
 
-}
 }
 
 

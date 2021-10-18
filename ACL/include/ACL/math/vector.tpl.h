@@ -1,5 +1,5 @@
 #if !defined(NAME_) || !defined(N_)
-#error "DON'T use this file in your own projects!!! Use vector.h instead"
+#pragma GCC error "DON'T use this file in your own projects!!! Use vector.h instead"
 #endif
 
 #if !defined(EXTRA_)

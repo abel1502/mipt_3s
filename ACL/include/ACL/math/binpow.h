@@ -6,8 +6,7 @@
 #include <ACL/math/getneutral.h>
 
 
-namespace abel {
-namespace math {
+namespace abel::math {
 
 
 template <typename T>
@@ -46,7 +45,6 @@ constexpr T binPow(T base, unsigned power, U mod) {
 }
 
 
-}
 }
 
 

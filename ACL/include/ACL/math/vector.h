@@ -8,8 +8,7 @@
 #include <ACL/math/cmath.h>
 
 
-namespace abel {
-namespace math {
+namespace abel::math {
 
 
 // Not used anywhere
@@ -31,7 +30,7 @@ namespace math {
     constexpr Vector1(T new_x) noexcept :                       \
         values{new_x} {}
 
-#include "ACL/math/vector.tpl.h"
+#include <ACL/math/vector.tpl.h>
 
 
 // Vector2
@@ -114,7 +113,7 @@ namespace math {
         return fromPhiRadiansR(phiDegrees / 180.d * M_PI, r);   \
     }
 
-#include "ACL/math/vector.tpl.h"
+#include <ACL/math/vector.tpl.h>
 
 
 // Vector3
@@ -156,7 +155,7 @@ namespace math {
                        x() * other.y() - y() * other.x());      \
     }
 
-#include "ACL/math/vector.tpl.h"
+#include <ACL/math/vector.tpl.h>
 
 
 // Vector4
@@ -199,10 +198,9 @@ namespace math {
                                                     noexcept :  \
         values{new_x, new_y, new_z, new_w} {}
 
-#include "ACL/math/vector.tpl.h"
+#include <ACL/math/vector.tpl.h>
 
 
-}
 }
 
 

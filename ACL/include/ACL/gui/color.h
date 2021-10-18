@@ -6,8 +6,7 @@
 #include <cstdint>
 
 
-namespace abel {
-namespace gui {
+namespace abel::gui {
 
 
 struct PackedColor {
@@ -134,7 +133,6 @@ inline constexpr Color Color::BLUE   {0.d, 0.d, 1.d};
 inline constexpr Color Color::PURPLE {1.d, 0.d, 1.d};
 
 
-}
 }
 
 
