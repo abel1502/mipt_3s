@@ -19,20 +19,20 @@
 	<string>
 	<typeinfo>
 
-1634465494 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
+1634542710 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
 	<ACL/type_traits.h>
 	<initializer_list>
 	<ACL/general.h>
 	<ACL/math/cmath.h>
-	"ACL/math/vector.tpl.h"
-	"ACL/math/vector.tpl.h"
-	"ACL/math/vector.tpl.h"
-	"ACL/math/vector.tpl.h"
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
 
 1632301309 d:\workspace\.mipt\s3\acl\include\acl\math\cmath.h
 	<cmath>
 
-1633511127 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+1634542624 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
 
 1634465459 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
 	<ACL/general.h>
@@ -54,7 +54,7 @@
 1633773996 d:\workspace\.mipt\s3\physics\gui\gui_txlib.h
 	<ACL/math/cmath.h>
 
-1634503476 source:d:\workspace\.mipt\s3\physics\main.cpp
+1634564680 source:d:\workspace\.mipt\s3\physics\main.cpp
 	<AGF/llgui.h>
 	<ACL/general.h>
 	<typeinfo>
@@ -66,7 +66,7 @@
 
 1632672756 d:\workspace\.mipt\s3\physics\event.h
 
-1634502591 source:d:\workspace\.mipt\s3\physics\molecule.cpp
+1634503584 source:d:\workspace\.mipt\s3\physics\molecule.cpp
 	"molecule.h"
 	"manager.h"
 	<typeinfo>
@@ -81,7 +81,7 @@
 	"components/chemistry.h"
 	"borders.h"
 
-1634316322 d:\workspace\.mipt\s3\physics\components\physics.h
+1634563643 d:\workspace\.mipt\s3\physics\components\physics.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<ACL/gui/color.h>
@@ -91,7 +91,7 @@
 1634144326 d:\workspace\.mipt\s3\physics\components\component.h
 	<cassert>
 
-1634502735 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
+1634563556 source:d:\workspace\.mipt\s3\physics\components\physics.cpp
 	"physics.h"
 	"../molecule.h"
 	<typeinfo>
@@ -127,7 +127,7 @@
 	"render.h"
 	"physics.h"
 
-1634502892 source:d:\workspace\.mipt\s3\physics\manager.cpp
+1634563535 source:d:\workspace\.mipt\s3\physics\manager.cpp
 	<AGF/llgui.h>
 	"manager.h"
 	"components/physics.h"
@@ -550,7 +550,7 @@
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
 
-1634497843 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+1634560733 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>

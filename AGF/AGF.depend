@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1634498160 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
+1634560962 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
 	<AGF/llgui.h>
 	<utility>
 	<cassert>
@@ -7,7 +7,7 @@
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
 
-1634497843 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+1634560733 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
@@ -45,4 +45,46 @@
 1634465470 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
 	<ACL/math/vector.h>
 	<ACL/type_traits.h>
+
+1634544879 source:d:\workspace\.mipt\s3\agf\src\application.cpp
+	<AGF/application.h>
+
+1634544881 d:\workspace\.mipt\s3\agf\include\agf\application.h
+	<cassert>
+	<ACL/general.h>
+	<ACL/type_traits.h>
+	<ACL/event.h>
+	<AGF/widget.h>
+	<AGF/widget_event.h>
+
+1634546152 d:\workspace\.mipt\s3\acl\include\acl\event.h
+	<ACL/general.h>
+	<ACL/vector.h>
+	<ACL/event.tpl.h>
+	<ACL/event.tpl.h>
+
+1634393212 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+	<ACL/general.h>
+	<utility>
+	<initializer_list>
+	<cassert>
+	<cstdlib>
+	<memory>
+
+1634546034 d:\workspace\.mipt\s3\acl\include\acl\event.tpl.h
+
+1634560250 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+	<ACL/general.h>
+	<AGF/events.h>
+
+1634555664 d:\workspace\.mipt\s3\agf\include\agf\common_events.h
+	<AGF/widget_event.h>
+	<ACL/general.h>
+
+1634549806 d:\workspace\.mipt\s3\agf\include\agf\widget_event.h
+	<ACL/general.h>
+
+1634556583 d:\workspace\.mipt\s3\agf\include\agf\events.h
+	<AGF/widget_event.h>
+	<ACL/general.h>
 
