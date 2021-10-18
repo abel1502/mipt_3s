@@ -1,9 +1,9 @@
 #ifndef ACL_GENERAL_H
 #define ACL_GENERAL_H
 
-
 #include <stdexcept>
 #include <string>
+#include <typeinfo>
 
 
 #define MACROFUNC(...) do {__VA_ARGS__} while (0)
@@ -56,18 +56,18 @@
 #define MAIN_TRY(...)  MAIN_TRY_R(1, __VA_ARGS__)
 
 
-#define MAIN_TRY_R(EXC_RETVAL, ...)                 \
-    try {                                           \
-        __VA_ARGS__                                 \
-    } catch (const abel::error &e) {                \
-        ERR("Uncaught ACL error: %s", e.what());    \
-        return (EXC_RETVAL);                        \
-    } catch (const std::exception& e) {             \
-        ERR("Uncaught C++ error: %s", e.what());    \
-        return (EXC_RETVAL);                        \
-    } catch (...) {                                 \
-        ERR("Uncaught unknown...?");                \
-        return (EXC_RETVAL);                        \
+#define MAIN_TRY_R(EXC_RETVAL, ...)                                         \
+    try {                                                                   \
+        __VA_ARGS__                                                         \
+    } catch (const abel::error &e) {                                        \
+        ERR("Uncaught ACL error (%s): %s", typeid(e).name(), e.what());     \
+        return (EXC_RETVAL);                                                \
+    } catch (const std::exception& e) {                                     \
+        ERR("Uncaught C++ error (%s): %s", typeid(e).name(), e.what());     \
+        return (EXC_RETVAL);                                                \
+    } catch (...) {                                                         \
+        ERR("Uncaught unknown...?");                                        \
+        return (EXC_RETVAL);                                                \
     }
 
 
