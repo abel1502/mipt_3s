@@ -19,6 +19,7 @@ class vector {
 public:
     DECLARE_ERROR(error, abel::error)
 
+    using type = T;
     using iterator = T *;
     using const_iterator = const T *;
 
@@ -136,11 +137,11 @@ public:
     }
 
     bool append(T &&value) {
-        DECLARE_APPEND_BODY_(std::forward<T>(value))
+        DECLARE_APPEND_BODY_(std::move(value))
     }
 
     template <typename ... Ts>
-    bool appendEmplace(Ts ... args) {
+    bool appendEmplace(Ts &&... args) {
         DECLARE_APPEND_BODY_(std::forward<Ts>(args)...)
     }
 
@@ -188,6 +189,16 @@ public:
         assert(buf);
 
         buf[--size].~T();
+    }
+
+    void swapPop(int idx) {
+        std::swap((*this)[idx], (*this)[-1]);
+        pop();
+    }
+
+    T swapPopVal(int idx) {
+        std::swap((*this)[idx], (*this)[-1]);
+        return popVal();
     }
 
     bool isEmpty() const noexcept {
@@ -262,6 +273,48 @@ public:
         reserve(DEFAULT_CAPACITY);
     }
 
+    constexpr void swap(vector &other) noexcept {
+        std::swap(buf, other.buf);
+        std::swap(size, other.size);
+        std::swap(capacity, other.capacity);
+    }
+
+    /// Keep only the elements that match the predicate. Maintains the order of the ones remaining
+    template <typename P>
+    constexpr void filter(P predicate) {
+        unsigned newIdx = 0;
+
+        for (unsigned i = 0; i < size; ++i) {
+            if (!predicate(buf[i])) {
+                buf[i].~T();
+                continue;
+            }
+
+            if (newIdx < i) {
+                T *addr = new (&buf[newIdx]) T(std::move(buf[i]));
+                assert(addr == &buf[newIdx]);
+            }
+
+            newIdx++;
+        }
+
+        size = newIdx;
+    }
+
+    /// Same as filter, at the cost of possibly messing up the order, this one performs less moves on T
+    /// If T's movement is expensive, this will probably be faster.
+    template <typename P>
+    constexpr void filterUnordered(P predicate) {
+        for (unsigned i = 0; i < size; /* no increment intentionally */) {
+            if (predicate(buf[i])) {
+                i++;
+                continue;
+            }
+
+            swapPop(i);
+        }
+    }
+
 protected:
     T *buf;
     unsigned size;
@@ -283,6 +336,13 @@ protected:
 
 };
 
+
+}
+
+
+template <typename T>
+constexpr void std::swap(abel::vector<T> &a, abel::vector<T> &b) noexcept {
+    a.swap(b);
 }
 
 
