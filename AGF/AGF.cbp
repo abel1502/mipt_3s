@@ -48,6 +48,7 @@
 			<Add option="-s" />
 		</Linker>
 		<Unit filename="include/AGF/application.h" />
+		<Unit filename="include/AGF/events.dsl.h" />
 		<Unit filename="include/AGF/events.h" />
 		<Unit filename="include/AGF/impl/llgui_txlib.h" />
 		<Unit filename="include/AGF/llgui.h" />
