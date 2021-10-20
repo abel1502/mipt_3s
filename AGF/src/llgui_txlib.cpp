@@ -88,7 +88,7 @@ void Window::destroy() noexcept {
 //================================================================================
 
 Texture::Texture() :
-    Texture(300, 300) {}
+    width_{0}, height_{0}, handle{NULL}, buf{nullptr} {}
 
 Texture::Texture(unsigned width, unsigned height) :
     width_{width}, height_{height} {
@@ -103,16 +103,14 @@ Texture::Texture(unsigned width, unsigned height) :
 Texture::Texture(const Window &wnd) :
     Texture(wnd.width(), wnd.height()) {}
 
-Texture::Texture(Texture &&other) noexcept {
-    std::swap(width_, other.width_);
-    std::swap(height_, other.height_);
-    std::swap(handle, other.handle);
-    std::swap(buf, other.buf);
+Texture::Texture(Texture &&other) noexcept :
+    width_{other.width_}, height_{other.height_}, handle{other.handle}, buf{other.buf} {
+
+    other.handle = NULL;
+    other.buf = nullptr;
 }
 
 Texture &Texture::operator=(Texture &&other) noexcept {
-    destroy();
-
     std::swap(width_, other.width_);
     std::swap(height_, other.height_);
     std::swap(handle, other.handle);
@@ -125,11 +123,19 @@ Texture::~Texture() noexcept {
     destroy();
 }
 
+void Texture::resize(const Vector2d &newSize) {
+    Texture result{(unsigned)newSize.x(), (unsigned)newSize.y()};
+
+    result.embed(result.getScreenRect(), *this);
+
+    *this = std::move(result);
+}
+
 /// Same reasons as Window::update
 void Texture::update() {}
 
-void Texture::clear() {
-    setColor(Color{1, 1, 1});
+void Texture::clear(const Color &color) {
+    setColor(color);
 
     if (!txClear(handle)) {
         throw llgui_error("TXLib failed to clear");
@@ -143,6 +149,14 @@ void Texture::setColor(const Color &color) {
     if (!txSetFillColor(internalColor, handle) ||
         !txSetColor(internalColor, 1.d, handle)) {
         throw llgui_error("TXLib set color failed");
+    }
+}
+
+void Texture::embed(const Rect<double> &at, const Texture &other) {
+    if (!txGDI(Win32::StretchBlt(handle, (int)at.x(), (int)at.y(), (int)at.w(), (int)at.h(),
+                                 other.getHDC(), 0, 0, other.width(), other.height(),
+                                 SRCCOPY), handle)) {
+        throw llgui_error("TXLib StretchBlt failed");
     }
 }
 

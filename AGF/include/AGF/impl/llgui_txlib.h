@@ -87,6 +87,7 @@ public:
     Texture(Texture &&other) noexcept;
     Texture &operator=(Texture &&other) noexcept;
 
+    // TODO: Enable?
     Texture(const Texture &other) = delete;
     Texture &operator=(const Texture &other) = delete;
 
@@ -98,9 +99,13 @@ public:
     IMPL_SPECIFIC_
     inline HDC getHDC() const { return handle; }
 
+    void resize(const Vector2d &newSize);
+
     void update();
 
-    void clear();
+    void clear(const Color &color = Color::WHITE);
+
+    void embed(const Rect<double> &at, const Texture &other);
 
     void drawLine(const Vector2d &from, const Vector2d &to, const Color &color = Color::BLACK);
 

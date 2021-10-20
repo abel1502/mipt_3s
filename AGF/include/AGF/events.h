@@ -1,5 +1,6 @@
 #include <AGF/widget_event.h>
 #include <ACL/general.h>
+#include <AGF/llgui_pre.h>
 
 
 namespace abel::gui::inline events {
