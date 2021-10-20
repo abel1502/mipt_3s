@@ -55,6 +55,7 @@
 		<Unit filename="include/AGF/llgui_pre.h" />
 		<Unit filename="include/AGF/widget.h" />
 		<Unit filename="include/AGF/widget_event.h" />
+		<Unit filename="include/AGF/widget_pos.h" />
 		<Unit filename="src/application.cpp" />
 		<Unit filename="src/llgui_txlib.cpp" />
 		<Unit filename="src/main.cpp" />
