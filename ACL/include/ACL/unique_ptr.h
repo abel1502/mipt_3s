@@ -40,6 +40,8 @@ public:
     }
 
     ~unique_ptr() {
+        sizeof(T);
+        // TODO: Because of this we need a deleter!!!
         delete ptr;
     }
 
