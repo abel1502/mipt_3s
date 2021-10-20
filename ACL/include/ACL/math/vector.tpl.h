@@ -22,7 +22,9 @@ public:
     constexpr NAME_() noexcept :
         values{} {}
 
-    constexpr NAME_(const NAME_ &other) noexcept {
+    constexpr NAME_(const NAME_ &other) noexcept :
+        values{} {
+
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] = other.values[i];
         }
@@ -30,7 +32,9 @@ public:
 
     // Because for N == 1 this is equivalent to the complete constructor
     #if N_ > 1
-    constexpr NAME_(ARG_TYPE val) noexcept {
+    constexpr NAME_(ARG_TYPE val) noexcept :
+        values{} {
+
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] = val;
         }

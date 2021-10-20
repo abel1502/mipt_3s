@@ -39,6 +39,9 @@ public:
     constexpr Color() noexcept :
         abel::math::Vector3f() {}
 
+    constexpr Color(float brightness) noexcept :
+        abel::math::Vector3f(brightness) {}
+
     constexpr Color(float new_r, float new_g, float new_b) noexcept :
         abel::math::Vector3f(new_r, new_g, new_b) {}
 
