@@ -45,6 +45,7 @@
 		<Linker>
 			<Add option="-s" />
 		</Linker>
+		<Unit filename="include/ACL/debug.h" />
 		<Unit filename="include/ACL/event.h" />
 		<Unit filename="include/ACL/event.tpl.h" />
 		<Unit filename="include/ACL/general.h" />
