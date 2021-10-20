@@ -4,9 +4,10 @@
 #include <cassert>
 #include <ACL/general.h>
 #include <ACL/type_traits.h>
-#include <ACL/event.h>
+#include <ACL/signal.h>
 #include <AGF/widget.h>
 #include <AGF/widget_event.h>
+#include <AGF/llgui_pre.h>
 
 
 namespace abel::gui {
@@ -18,7 +19,7 @@ public:
     DECLARE_ERROR(error, abel::error)
 
 
-    Event<void (double deltaT)> tick{};
+    Signal<void (double deltaT)> tick{};
 
 
     /// =========== [ These should be implemented in some way in user code ] ===========
