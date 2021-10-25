@@ -14,14 +14,14 @@ EVENT_HANDLER_IMPL(Widget, Render) {
     return E_SKIP;
 }
 
+EVENT_HANDLER_IMPL(Widget, Move) {
+    return E_SKIP;
+}
+
 EVENT_HANDLER_IMPL(Widget, Resize) {
     region = event.newRegion;
 
     return E_CONTINUE;
-}
-
-EVENT_HANDLER_IMPL(Widget, Move) {
-    return E_SKIP;
 }
 
 EVENT_HANDLER_IMPL(Widget, ActiveStatusUpdate) {
