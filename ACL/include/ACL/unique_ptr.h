@@ -2,19 +2,20 @@
 #define ACL_UNIQUE_PTR_H
 
 #include <ACL/general.h>
+#include <memory>  // For default_delete
 
 
 namespace abel {
 
 
-// TODO: Something like a deleter?
-template <typename T>
+template <typename T, typename Deleter = std::default_delete<T>>
 class unique_ptr {
 public:
     DECLARE_ERROR(error, abel::error)
 
-    using type    = T;
-    using pointer = T *;
+    using type         = T;
+    using deleter_type = Deleter;
+    using pointer      = T *;
 
 
     constexpr unique_ptr() noexcept :
@@ -29,20 +30,34 @@ public:
     unique_ptr(const unique_ptr &other) = delete;
     unique_ptr &operator=(const unique_ptr &other) = delete;
 
-    constexpr unique_ptr(unique_ptr &&other) :
+    constexpr unique_ptr(unique_ptr &&other) noexcept :
         ptr{other.ptr} {
 
         other.ptr = nullptr;
     }
 
-    constexpr unique_ptr &operator=(unique_ptr &&other) {
+    constexpr unique_ptr &operator=(unique_ptr &&other) noexcept {
         std::swap(ptr, other.ptr);
+
+        return *this;
+    }
+
+    constexpr unique_ptr &operator=(std::nullptr_t) {
+        reset();
+
+        return *this;
+    }
+
+    constexpr unique_ptr &operator=(pointer ptr_) {
+        reset(ptr_);
+
+        return *this;
     }
 
     ~unique_ptr() {
-        sizeof(T);
-        // TODO: Because of this we need a deleter!!!
-        delete ptr;
+        get_deleter()(ptr);
+        // delete ptr;
+        ptr = nullptr;
     }
 
     constexpr type &operator*() const {
@@ -64,10 +79,14 @@ public:
         return ptr;
     }
 
+    static constexpr deleter_type get_deleter() noexcept { return deleter_type{}; }
+    // constexpr const deleter_type &get_deleter() const noexcept { return deleter_type{}; }
+    // constexpr       deleter_type &get_deleter()       noexcept { return deleter_type{}; }
+
     constexpr pointer release() noexcept {
         pointer result = ptr;
         ptr = 0;
-        return ptr;
+        return result;
     }
 
     void reset(pointer newPtr = nullptr) {
@@ -83,7 +102,12 @@ public:
     }
 
     template <typename ... As>
-    static unique_ptr emplace(As &&... args) {
+    void emplace(As &&... args) {
+        reset(new T(std::forward<As>(args)...));
+    }
+
+    template <typename ... As>
+    static unique_ptr createEmplace(As &&... args) {
         return unique_ptr(new T(std::forward<As>(args)...));
     }
 
@@ -96,8 +120,8 @@ protected:
 
 
 // TODO: Implement
-template <typename T>
-class unique_ptr<T[]>;
+template <typename T, typename Deleter>
+class unique_ptr<T[], Deleter>;
 
 
 }

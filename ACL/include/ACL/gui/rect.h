@@ -76,27 +76,32 @@ public:
     }
 
     /// Width-height, vector
-    constexpr Rect<T>(Vector2T from, Vector2T size) noexcept {
+    constexpr Rect<T>(const Vector2T &from, const Vector2T &size) noexcept {
         x(from.x());
         y(from.y());
         w(size.x());
         h(size.y());
     }
 
-    static constexpr Rect<T> wh(Vector2T from, Vector2T size) noexcept {
+    static constexpr Rect<T> wh(const Vector2T &from, const Vector2T &size) noexcept {
         return Rect(from, size);
     }
 
     /// Start-end, vector
-    constexpr Rect<T>(Vector2T from, Vector2T to, int) noexcept {
+    constexpr Rect<T>(const Vector2T &from, const Vector2T &to, int) noexcept {
         x0(from.x());
         y0(from.y());
         x1(to.x());
         y1(to.y());
     }
 
-    static constexpr Rect<T> se(Vector2T start, Vector2T end) noexcept {
+    static constexpr Rect<T> se(const Vector2T &start, const Vector2T &end) noexcept {
         return Rect(start, end, 0);
+    }
+
+    constexpr bool contains(const Vector2T &point) const noexcept {
+        return x0() <= point.x() && point.x() <= x1() &&
+               y0() <= point.y() && point.y() <= y1();
     }
 
 protected:

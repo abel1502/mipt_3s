@@ -6,6 +6,11 @@
 #include <typeinfo>
 
 
+// I couldn't figure out a way to disable those in code::blocks settings
+#pragma GCC diagnostic ignored "-Wsuggest-final-types"
+#pragma GCC diagnostic ignored "-Wsuggest-final-methods"
+
+
 #define MACROFUNC(...) do {__VA_ARGS__} while (0)
 
 

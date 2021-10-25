@@ -47,7 +47,6 @@ public:
         processStashedUnsub();
     }
 
-protected:
     #define ACL_SIGNAL_TPL_GUARD
     #include <ACL/signal.tpl.h>
     #undef ACL_SIGNAL_TPL_GUARD
