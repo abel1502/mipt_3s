@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Photoshoop" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="build/bin/dbg/Photoshoop" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/obj/dbg/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="build/bin/Photoshoop" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-m64" />
+			<Add directory="../ACL/include" />
+			<Add directory="../AGF/include" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+			<Add library="ACL" />
+			<Add library="AGF" />
+			<Add directory="../ACL/build/lib64" />
+			<Add directory="../AGF/build/lib64" />
+		</Linker>
+		<Unit filename="app.cpp" />
+		<Unit filename="app.h" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

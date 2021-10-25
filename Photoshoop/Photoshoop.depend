@@ -1,0 +1,137 @@
+# depslib dependency file v1.0
+1635097343 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
+	<AGF/llgui.h>
+	"app.h"
+	<AGF/widgets/button.h>
+
+1635088312 d:\workspace\.mipt\s3\photoshoop\app.h
+	<ACL/general.h>
+	<AGF/application.h>
+
+1635098502 d:\workspace\.mipt\s3\acl\include\acl\general.h
+	<stdexcept>
+	<string>
+	<typeinfo>
+
+1635097966 d:\workspace\.mipt\s3\agf\include\agf\application.h
+	<cassert>
+	<ACL/general.h>
+	<AGF/llgui_pre.h>
+	<ACL/type_traits.h>
+	<ACL/signal.h>
+	<ACL/unique_ptr.h>
+	<AGF/widget.h>
+	<AGF/widget_event.h>
+	<AGF/events.h>
+	<windef.h>
+
+1633511159 d:\workspace\.mipt\s3\acl\include\acl\type_traits.h
+	<type_traits>
+
+1635005300 d:\workspace\.mipt\s3\acl\include\acl\signal.h
+	<ACL/general.h>
+	<ACL/vector.h>
+	<utility>
+	<functional>
+	<ACL/signal.tpl.h>
+	<ACL/signal.tpl.h>
+
+1634755401 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+	<ACL/general.h>
+	<utility>
+	<initializer_list>
+	<cassert>
+	<cstdlib>
+	<memory>
+
+1634756848 d:\workspace\.mipt\s3\acl\include\acl\signal.tpl.h
+
+1635162951 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
+	<ACL/general.h>
+	<memory>
+
+1635165923 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+	<ACL/general.h>
+	<ACL/signal.h>
+	<AGF/events.h>
+	<AGF/widget_pos.h>
+	<AGF/llgui_pre.h>
+	<ACL/unique_ptr.h>
+	<AGF/events.dsl.h>
+	<AGF/events.dsl.h>
+	<AGF/events.dsl.h>
+
+1635097256 d:\workspace\.mipt\s3\agf\include\agf\events.h
+	<AGF/widget_event.h>
+	<ACL/general.h>
+	<AGF/llgui_pre.h>
+	<AGF/mouse.h>
+
+1635097283 d:\workspace\.mipt\s3\agf\include\agf\widget_event.h
+	<ACL/general.h>
+
+1635088714 d:\workspace\.mipt\s3\agf\include\agf\llgui_pre.h
+	<ACL/general.h>
+	<ACL/gui/color.h>
+	<ACL/gui/rect.h>
+	<ACL/gui/coords.h>
+	<ACL/unique_ptr.h>
+
+1634717363 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<cstdint>
+
+1634542710 d:\workspace\.mipt\s3\acl\include\acl\math\vector.h
+	<ACL/type_traits.h>
+	<initializer_list>
+	<ACL/general.h>
+	<ACL/math/cmath.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+	<ACL/math/vector.tpl.h>
+
+1632301309 d:\workspace\.mipt\s3\acl\include\acl\math\cmath.h
+	<cmath>
+
+1634757889 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+
+1635005462 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+	<ACL/math/vector.h>
+	<ACL/type_traits.h>
+
+1634465450 d:\workspace\.mipt\s3\acl\include\acl\gui\coords.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<ACL/gui/rect.h>
+
+1635002846 d:\workspace\.mipt\s3\agf\include\agf\mouse.h
+	<ACL/general.h>
+
+1634575790 d:\workspace\.mipt\s3\agf\include\agf\widget_pos.h
+	<ACL/gui/rect.h>
+	<ACL/gui/coords.h>
+	<ACL/math/vector.h>
+	<ACL/type_traits.h>
+
+1634917325 d:\workspace\.mipt\s3\agf\include\agf\events.dsl.h
+
+1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
+	<AGF/impl/llgui_txlib.h>
+
+1635094287 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+	<TXLib.h>
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<ACL/gui/color.h>
+	<ACL/gui/rect.h>
+
+1635097451 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
+	<AGF/widget.h>
+	<AGF/widgets/rectangle.h>
+	<AGF/events.dsl.h>
+
+1635003611 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
+	<AGF/widget.h>
+
