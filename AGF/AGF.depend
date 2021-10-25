@@ -15,7 +15,7 @@
 	<ACL/gui/color.h>
 	<ACL/gui/rect.h>
 
-1634462393 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1635098502 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
 	<typeinfo>
@@ -36,35 +36,42 @@
 1632301309 d:\workspace\.mipt\s3\acl\include\acl\math\cmath.h
 	<cmath>
 
-1634542624 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
+1634757889 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
 
-1634465459 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
+1634717363 d:\workspace\.mipt\s3\acl\include\acl\gui\color.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<cstdint>
 
-1634465470 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+1635005462 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
 	<ACL/math/vector.h>
 	<ACL/type_traits.h>
 
-1634544879 source:d:\workspace\.mipt\s3\agf\src\application.cpp
+1635098640 source:d:\workspace\.mipt\s3\agf\src\application.cpp
+	<AGF/llgui.h>
 	<AGF/application.h>
 
-1634544881 d:\workspace\.mipt\s3\agf\include\agf\application.h
+1635097966 d:\workspace\.mipt\s3\agf\include\agf\application.h
 	<cassert>
 	<ACL/general.h>
+	<AGF/llgui_pre.h>
 	<ACL/type_traits.h>
-	<ACL/event.h>
+	<ACL/signal.h>
+	<ACL/unique_ptr.h>
 	<AGF/widget.h>
 	<AGF/widget_event.h>
+	<AGF/events.h>
+	<windef.h>
 
-1634546152 d:\workspace\.mipt\s3\acl\include\acl\event.h
+1634674298 d:\workspace\.mipt\s3\acl\include\acl\event.h
 	<ACL/general.h>
 	<ACL/vector.h>
+	<utility>
+	<functional>
 	<ACL/event.tpl.h>
 	<ACL/event.tpl.h>
 
-1634393212 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1634755401 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
 	<utility>
 	<initializer_list>
@@ -72,26 +79,91 @@
 	<cstdlib>
 	<memory>
 
-1634546034 d:\workspace\.mipt\s3\acl\include\acl\event.tpl.h
+1634664618 d:\workspace\.mipt\s3\acl\include\acl\event.tpl.h
 
-1634560250 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+1635166048 d:\workspace\.mipt\s3\agf\include\agf\widget.h
 	<ACL/general.h>
+	<ACL/signal.h>
 	<AGF/events.h>
+	<AGF/widget_pos.h>
+	<AGF/llgui_pre.h>
+	<ACL/unique_ptr.h>
+	<AGF/events.dsl.h>
+	<AGF/events.dsl.h>
 
 1634555664 d:\workspace\.mipt\s3\agf\include\agf\common_events.h
 	<AGF/widget_event.h>
 	<ACL/general.h>
 
-1634549806 d:\workspace\.mipt\s3\agf\include\agf\widget_event.h
+1635097283 d:\workspace\.mipt\s3\agf\include\agf\widget_event.h
 	<ACL/general.h>
 
-1634556583 d:\workspace\.mipt\s3\agf\include\agf\events.h
+1635097256 d:\workspace\.mipt\s3\agf\include\agf\events.h
 	<AGF/widget_event.h>
 	<ACL/general.h>
+	<AGF/llgui_pre.h>
+	<AGF/mouse.h>
+
+1634575790 d:\workspace\.mipt\s3\agf\include\agf\widget_pos.h
+	<ACL/gui/rect.h>
+	<ACL/gui/coords.h>
+	<ACL/math/vector.h>
+	<ACL/type_traits.h>
+
+1634465450 d:\workspace\.mipt\s3\acl\include\acl\gui\coords.h
+	<ACL/general.h>
+	<ACL/math/vector.h>
+	<ACL/gui/rect.h>
+
+1635097652 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
+	<AGF/widget.h>
+
+1635083888 source:d:\workspace\.mipt\s3\agf\src\main.cpp
+	<AGF/llgui.h>
+	<AGF/application.h>
+
 1635088714 d:\workspace\.mipt\s3\agf\include\agf\llgui_pre.h
 	<ACL/general.h>
 	<ACL/gui/color.h>
 	<ACL/gui/rect.h>
 	<ACL/gui/coords.h>
 	<ACL/unique_ptr.h>
+
+1634917325 d:\workspace\.mipt\s3\agf\include\agf\events.dsl.h
+
+1635005300 d:\workspace\.mipt\s3\acl\include\acl\signal.h
+	<ACL/general.h>
+	<ACL/vector.h>
+	<utility>
+	<functional>
+	<ACL/signal.tpl.h>
+	<ACL/signal.tpl.h>
+
+1634756848 d:\workspace\.mipt\s3\acl\include\acl\signal.tpl.h
+
+1635005278 source:d:\workspace\.mipt\s3\agf\src\widgets\button.cpp
+	<ACL/general.h>
+	<AGF/widgets/button.h>
+	<AGF/events.dsl.h>
+
+1635097451 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
+	<AGF/widget.h>
+	<AGF/widgets/rectangle.h>
+	<AGF/events.dsl.h>
+
+1635162951 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
+	<ACL/general.h>
+	<memory>
+
+1635003611 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
+	<AGF/widget.h>
+
+1635003624 source:d:\workspace\.mipt\s3\agf\src\widgets\rectangle.cpp
+	<AGF/llgui.h>
+	<ACL/general.h>
+	<AGF/widgets/rectangle.h>
+	<cassert>
+
+1635002846 d:\workspace\.mipt\s3\agf\include\agf\mouse.h
+	<ACL/general.h>
 

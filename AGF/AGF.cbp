@@ -44,22 +44,25 @@
 			<Add directory="include" />
 			<Add directory="../ACL/include" />
 		</Compiler>
-		<Linker>
-			<Add option="-s" />
-		</Linker>
 		<Unit filename="include/AGF/application.h" />
 		<Unit filename="include/AGF/events.dsl.h" />
 		<Unit filename="include/AGF/events.h" />
 		<Unit filename="include/AGF/impl/llgui_txlib.h" />
 		<Unit filename="include/AGF/llgui.h" />
 		<Unit filename="include/AGF/llgui_pre.h" />
+		<Unit filename="include/AGF/mouse.h" />
 		<Unit filename="include/AGF/widget.h" />
 		<Unit filename="include/AGF/widget_event.h" />
 		<Unit filename="include/AGF/widget_pos.h" />
+		<Unit filename="include/AGF/widgets/button.h" />
+		<Unit filename="include/AGF/widgets/group.h" />
+		<Unit filename="include/AGF/widgets/rectangle.h" />
 		<Unit filename="src/application.cpp" />
 		<Unit filename="src/llgui_txlib.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/widget.cpp" />
+		<Unit filename="src/widgets/button.cpp" />
+		<Unit filename="src/widgets/rectangle.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
