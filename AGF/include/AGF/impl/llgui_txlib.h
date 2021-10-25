@@ -29,7 +29,6 @@ static_assert(offsetof(RGBQUAD, rgbBlue)  == offsetof(PackedColor, B));
 
 #define IMPL_SPECIFIC_
 
-
 class Window;
 class Texture;
 
@@ -62,9 +61,15 @@ public:
 
     void update();
 
-    inline unsigned width() const noexcept { return width_; }
+    constexpr unsigned width() const noexcept { return width_; }
 
-    inline unsigned height() const noexcept { return height_; }
+    constexpr unsigned height() const noexcept { return height_; }
+
+    constexpr Vector2d getSize() const noexcept { return Vector2d{(double)width_, (double)height_}; }
+
+    void setWndProc(WNDPROC wndProc);
+
+    void resetWndProc();
 
 protected:
     static unsigned exists;
@@ -147,7 +152,6 @@ protected:
     void setColor(const Color &color);
 
 };
-
 
 #undef IMPL_SPECIFIC_
 

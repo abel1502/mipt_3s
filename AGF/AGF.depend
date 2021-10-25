@@ -1,13 +1,14 @@
 # depslib dependency file v1.0
-1634560962 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
+1635162906 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
 	<AGF/llgui.h>
 	<utility>
 	<cassert>
+	<ACL/unique_ptr.h>
 
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
 
-1634560733 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+1635094287 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
@@ -87,4 +88,10 @@
 1634556583 d:\workspace\.mipt\s3\agf\include\agf\events.h
 	<AGF/widget_event.h>
 	<ACL/general.h>
+1635088714 d:\workspace\.mipt\s3\agf\include\agf\llgui_pre.h
+	<ACL/general.h>
+	<ACL/gui/color.h>
+	<ACL/gui/rect.h>
+	<ACL/gui/coords.h>
+	<ACL/unique_ptr.h>
 

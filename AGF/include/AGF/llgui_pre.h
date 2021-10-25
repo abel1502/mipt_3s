@@ -5,6 +5,7 @@
 #include <ACL/gui/color.h>
 #include <ACL/gui/rect.h>
 #include <ACL/gui/coords.h>
+#include <ACL/unique_ptr.h>
 
 
 namespace abel::gui {
@@ -16,6 +17,13 @@ class Window;
 class Texture;
 
 }
+
+extern template
+class abel::unique_ptr<abel::gui::Window>;
+
+extern template
+class abel::unique_ptr<abel::gui::Texture>;
+
 
 
 #endif // AGF_LLGUI_PRE_H
