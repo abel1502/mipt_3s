@@ -1,45 +1,66 @@
+#ifndef AGF_EVENTS_H
+#define AGF_EVENTS_H
+
 #include <AGF/widget_event.h>
 #include <ACL/general.h>
 #include <AGF/llgui_pre.h>
+#include <AGF/mouse.h>
 
 
-#define DECL_EVENT_CLS_(EVENT_NAME) \
-    struct EVENT_NAME##Event : public WidgetEvent
+#define EVENT_CLS_NAME(EVENT_NAME) \
+    EVENT_NAME##Event
+
+#define EVENT_CLS_DECL_(EVENT_NAME) \
+    struct EVENT_CLS_NAME(EVENT_NAME) : public WidgetEvent
 
 
-namespace abel::gui::inline events {
+namespace abel::gui {
 // TODO: Implement all of these
 
 
-DECL_EVENT_CLS_(Render) {
+
+EVENT_CLS_DECL_(Render) {
     Rect<double> region;
     Texture &target;
+
+    constexpr EVENT_CLS_NAME(Render)(const Rect<double> &region_, Texture &target_) :
+        region{region_}, target{target_} {}
 };
 
-DECL_EVENT_CLS_(Move) {};
+EVENT_CLS_DECL_(Move) {};
 
 /// May involve movement as well
-DECL_EVENT_CLS_(Resize) {
+EVENT_CLS_DECL_(Resize) {
     Rect<double> newRegion;
 };
 
-DECL_EVENT_CLS_(ActiveStatusUpdate) {};
+EVENT_CLS_DECL_(ActiveStatusUpdate) {};
 
-DECL_EVENT_CLS_(Start) {};
+EVENT_CLS_DECL_(Start) {};
 
-DECL_EVENT_CLS_(Exit) {};
+EVENT_CLS_DECL_(Exit) {};
 
-DECL_EVENT_CLS_(MouseClick) {};
+EVENT_CLS_DECL_(MouseClick) {
+    Vector2d pos;
+    MouseAttrs attrs;
+    MouseBtn button;
+    MouseClickType type;
+};
 
-DECL_EVENT_CLS_(MouseMove) {};
+EVENT_CLS_DECL_(MouseMove) {
+    Vector2d pos0;
+    Vector2d pos1;
+    MouseAttrs attrs;
+};
 
-DECL_EVENT_CLS_(Keyboard) {};
+EVENT_CLS_DECL_(Keyboard) {};
 
 // TODO: Use type erasure here to allow the users to customize this
-DECL_EVENT_CLS_(User) {};
+EVENT_CLS_DECL_(User) {};
 
 
 }
 
-#undef DECL_EVENT_CLS_
+#undef EVENT_CLS_DECL_
 
+#endif // AGF_EVENTS_H

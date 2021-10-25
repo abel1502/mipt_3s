@@ -1,3 +1,5 @@
+/// #define EVENTS_DSL_ITEM_(NAME)
+
 #ifndef EVENTS_DSL_ITEM_
 #pragma GCC error "This header should only be used as DSL"
 #endif

@@ -9,7 +9,10 @@ namespace abel::gui {
 
 class WidgetEvent {
 public:
-    WidgetEvent() = delete;
+    // TODO: ?
+
+protected:
+    WidgetEvent() = default;
 };
 
 
