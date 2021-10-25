@@ -14,10 +14,10 @@
     handler_on##EVENT_NAME
 
 #define EVENT_HANDLER_METHOD(EVENT_NAME) \
-    EventStatus EVENT_HANDLER_NAME(EVENT_NAME)(const EVENT_NAME##Event &event)
+    EventStatus EVENT_HANDLER_NAME(EVENT_NAME)(const EVENT_CLS_NAME(EVENT_NAME) &event)
 
 #define EVENT_HANDLER_METHOD_SCOPED(CLS, EVENT_NAME) \
-    Widget::EventStatus CLS::EVENT_HANDLER_NAME(EVENT_NAME)(const EVENT_NAME##Event &event)
+    Widget::EventStatus CLS::EVENT_HANDLER_NAME(EVENT_NAME)(const EVENT_CLS_NAME(EVENT_NAME) &event)
 
 #define EVENT_HANDLER_DECL(EVENT_NAME) \
     virtual EVENT_HANDLER_METHOD(EVENT_NAME);
@@ -29,10 +29,10 @@
     EVENT_HANDLER_METHOD_SCOPED(CLS, EVENT_NAME)
 
 #define EVENT_HANDLER_CALL_BASE(BASE_CLS, EVENT_OBJ) \
-    BASE_CLS::dispatchEvent<decltype(EVENT_OBJ)>(EVENT_OBJ)
+    BASE_CLS::dispatchEvent(EVENT_OBJ)
 
 #define EVENT_HANDLER_CALL_INST(INSTANCE, EVENT_OBJ) \
-    (INSTANCE).dispatchEvent<decltype(EVENT_OBJ)>(EVENT_OBJ)
+    (INSTANCE).dispatchEvent(EVENT_OBJ)
 
 
 namespace abel::gui {
@@ -54,7 +54,7 @@ public:
 
     Widget() = delete;
 
-    virtual ~Widget();
+    virtual ~Widget() = default;
 
     #define EVENTS_DSL_ITEM_(NAME) EVENT_HANDLER_DECL(NAME)
     #include <AGF/events.dsl.h>
@@ -79,10 +79,10 @@ protected:
 };
 
 // TODO: Force-inline?
-#define EVENTS_DSL_ITEM_(EVENT_NAME)                                                        \
-    template <>                                                                             \
-    inline Widget::EventStatus Widget::dispatchEvent(const EVENT_NAME##Event &event) {    \
-        return EVENT_HANDLER_NAME(EVENT_NAME)(event);                                       \
+#define EVENTS_DSL_ITEM_(EVENT_NAME)                                                            \
+    template <>                                                                                 \
+    inline Widget::EventStatus Widget::dispatchEvent(const EVENT_CLS_NAME(EVENT_NAME) &event) { \
+        return EVENT_HANDLER_NAME(EVENT_NAME)(event);                                           \
     }
 
 #include <AGF/events.dsl.h>
