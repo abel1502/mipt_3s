@@ -6,6 +6,7 @@
 
 #include <utility>
 #include <cassert>
+#include <ACL/unique_ptr.h>
 
 
 namespace abel::gui {
@@ -83,6 +84,14 @@ void Window::destroy() noexcept {
     SetWindowText(txWindow(), "[Closed]");  // We ignore the result, because this is a destructor anyway
 
     exists--;
+}
+
+void Window::setWndProc(WNDPROC wndProc) {
+    txSetWindowsHook(wndProc);
+}
+
+void Window::resetWndProc() {
+    txSetWindowsHook();
 }
 
 //================================================================================
@@ -213,6 +222,13 @@ void Texture::destroy() noexcept {
 
 
 }
+
+
+template
+class abel::unique_ptr<abel::gui::Window>;
+
+template
+class abel::unique_ptr<abel::gui::Texture>;
 
 
 #endif // AGF_BASE_FRAMEWORK == AGF_BASE_FRAMEWORK_TXLIB
