@@ -4,12 +4,16 @@
 #include <cstring>
 #include <vector>
 #include <string_view>
+#include <string>
+#include <iostream>
 #include <algorithm>
 #include <map>
+#include <new>
 #include <type_traits>
+#include <utility>
 
 
-#if 1
+#if 0
 #define DBG(FMT, ...) \
     printf("[%s#%d: " FMT "]\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #else
@@ -17,32 +21,67 @@
 #endif
 
 
+class SuffixTree;
+
+class SuffixArray {
+public:
+    struct Suffix {
+        unsigned start;
+        unsigned lcp;
+
+        void dump(const SuffixArray &array) const noexcept {
+            printf("    \"%-*s\" [%2u] (lcp = %2u)\n", (int)array.str.size(), array.str.data() + start, start, lcp);
+        }
+    };
+
+    friend class Suffix;
+
+
+    SuffixArray(const char *str_ = "");
+
+    SuffixArray(const SuffixTree &suffTree);
+
+    template <typename ... As>
+    SuffixArray &operator=(As &&... args) {
+        this->~SuffixArray();
+        SuffixArray *newAddr = new (this) SuffixArray(std::forward<As>(args)...);
+        assert(newAddr == this);
+
+        return *this;
+    }
+
+    // Warning: Do not attempt to use directly!
+    void addSuffix(unsigned start, unsigned lcp) {
+        assert(suffixes.size() < str.size());
+        suffixes.push_back(Suffix{start, lcp});
+    }
+
+    void dump() const noexcept {
+        printf("SuffArr(\"%s\") {\n", str.data());
+
+        for (unsigned i = 0; i < suffixes.size(); ++i) {
+            suffixes[i].dump(*this);
+        }
+
+        printf("}\n");
+    }
+
+    const std::string_view &getStr() const noexcept { return str; }
+
+    const std::vector<Suffix> &getSuffixes() const noexcept { return suffixes; }
+
+protected:
+    std::string_view str;
+    std::vector<Suffix> suffixes;
+
+};
+
+
 class SuffixTree {
 public:
     using idx_t = unsigned;
     static constexpr idx_t BAD_IDX = -1u;
 
-    SuffixTree(const char *str_ = "") :
-        str{str_}, nodes{Node(0, 0)} {
-
-        build();
-    }
-
-    SuffixTree &operator=(const char *str_) {
-        str = str_;
-        nodes.clear();
-        nodes.push_back(Node(0, 0));
-
-        build();
-
-        return *this;
-    }
-
-    void dump() {
-        nodes[0].dump(*this);
-    }
-
-protected:
     struct Pos;
     struct Node;
 
@@ -97,12 +136,14 @@ protected:
 
             targetPos.advance(tree, strL + (parent == 0), strR);
 
-            return (link = targetPos.split(tree));
+            idx_t ourIdx = tree.idxByRef(*this);
+            idx_t newLink = targetPos.split(tree);  // This line might invalidate `this`
+            return (tree.nodes[ourIdx].link = newLink);
         }
 
         void dump(SuffixTree &tree, unsigned indentation = 0) {
             indent(indentation); printf("\"%.*s\" <%u> (link = %d, parent = %d) %s",
-                                        getLength(), &tree.str[strL],
+                                        getLength(), tree.str.data() + strL,
                                         tree.idxByRef(*this),
                                         (int)getLink(tree),
                                         (int)parent,
@@ -113,6 +154,24 @@ protected:
             }
 
             indent(indentation); printf("%s\n", isLeaf() ? "" : "}");
+        }
+
+        void dfsPopulateSuffArray(const SuffixTree &tree, SuffixArray &suffArr, unsigned &lcp, unsigned suffLen = 0) const noexcept {
+            DBG("%u+\"%.*s\" (%u, %u) (lcp = %u)", suffLen, getLength(), tree.str.data() + strL, strL, strR, lcp);
+
+            if (isLeaf()) {
+                suffArr.addSuffix(strL - suffLen, lcp);
+                lcp = suffLen;
+                return;
+            }
+
+            suffLen += getLength();
+
+            for (auto child : children) {
+                tree.nodes[child.second].dfsPopulateSuffArray(tree, suffArr, lcp, suffLen);
+                if (lcp > suffLen)
+                    lcp = suffLen;
+            }
         }
 
     private:
@@ -134,11 +193,11 @@ protected:
         Pos(idx_t node_, unsigned pos_) noexcept :
             node{node_}, pos{pos_} {}
 
-        inline       Node &getCurNode(      SuffixTree &tree) const { return tree.nodes[node]; }
-        inline const Node &getCurNode(const SuffixTree &tree) const { return tree.nodes[node]; }
+        inline       Node &getCurNode(      SuffixTree &tree) const { assert(node != BAD_IDX); return tree.nodes[node]; }
+        inline const Node &getCurNode(const SuffixTree &tree) const { assert(node != BAD_IDX); return tree.nodes[node]; }
 
         inline unsigned getCurLength(const SuffixTree &tree) const {
-            return tree.nodes[node].getLength();
+            return getCurNode(tree).getLength();
         }
 
         inline unsigned getRemainingLength(const SuffixTree &tree) const {
@@ -165,7 +224,7 @@ protected:
                     continue;
                 }
 
-                if (tree.str[tree.nodes[node].strL + pos] != curChr) {
+                if (tree.str[getCurNode(tree).strL + pos] != curChr) {
                     *this = backup;
                     return false;
                 }
@@ -206,6 +265,43 @@ protected:
 
     friend struct Pos;
 
+
+    SuffixTree(const char *str_ = "") :
+        str{str_}, nodes{Node(0, 0)} {
+
+        build();
+    }
+
+    SuffixTree &operator=(const char *str_) {
+        str = str_;
+        nodes.clear();
+        nodes.push_back(Node(0, 0));
+
+        build();
+
+        return *this;
+    }
+
+    void dump() {
+        printf("SuffTree(\"%s\") {\n", str.data());
+        nodes[0].dump(*this, 1);
+        printf("}\n");
+    }
+
+    void populateSuffArray(SuffixArray &suffArr) const noexcept {
+        unsigned lcp = 0;
+        assert(nodes.size() > 0);
+        nodes[0].dfsPopulateSuffArray(*this, suffArr, lcp);
+    }
+
+    const std::string_view &getStr() const noexcept { return str; }
+
+    const Node &operator[](idx_t idx) const {
+        assert(idx < nodes.size());
+        return nodes[idx];
+    }
+
+protected:
     std::string_view str;
     std::vector<Node> nodes;
 
@@ -217,6 +313,7 @@ protected:
     }
 
     inline idx_t lastIdx() const noexcept {
+        assert(nodes.size());
         return nodes.size() - 1;
     }
 
@@ -259,11 +356,35 @@ protected:
 };
 
 
-int main() {
-    SuffixTree st;
+SuffixArray::SuffixArray(const char *str_) :
+    SuffixArray(SuffixTree(str_)) {}
 
-    st = "ABRACADABRA$";
+SuffixArray::SuffixArray(const SuffixTree &suffTree) :
+    str{suffTree.getStr()}, suffixes{} {
+
+    suffTree.populateSuffArray(*this);
+}
+
+
+
+int main() {
+    /*SuffixTree st("ABRACADABRA$");
+    SuffixArray sa(st);
+
     st.dump();
+    sa.dump();*/
+
+    std::string str{};
+    std::cin >> str;
+    str += "$";
+
+    SuffixArray sa(str.data());
+
+    //sa.dump();
+
+    for (unsigned i = 1; i < sa.getSuffixes().size(); ++i) {
+        printf("%u\n", sa.getSuffixes()[i].start + 1);
+    }
 
     return 0;
 }
