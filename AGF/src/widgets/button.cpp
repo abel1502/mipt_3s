@@ -6,8 +6,10 @@
 namespace abel::gui::widgets {
 
 
-SimpleButton::SimpleButton(Widget *parent_, const Rect<double> &region_, const char */*text_*/) :
-    Widget(parent_, region_), body{new Rectangle(this, region, COL_DEFAULT)} {}
+SimpleButton::SimpleButton(Widget *parent_, const Rect<double> &region_, const char *text_) :
+    Widget(parent_, region_),
+    body{new Rectangle(this, region, COL_DEFAULT)},
+    label{new Label(this, region, text_, region.h() * 0.8)} {}
 
 
 template <>

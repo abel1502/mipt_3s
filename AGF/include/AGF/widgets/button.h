@@ -3,6 +3,7 @@
 
 #include <AGF/widget.h>
 #include <AGF/widgets/rectangle.h>
+#include <AGF/widgets/label.h>
 
 
 namespace abel::gui::widgets {
@@ -30,6 +31,7 @@ public:
 
 protected:
     unique_ptr<Rectangle> body{nullptr};
+    unique_ptr<Label> label{nullptr};
 
 private:  // TODO: maybe keep in protected instead
     template <typename T>
@@ -41,10 +43,11 @@ private:  // TODO: maybe keep in protected instead
 
         assert(body);
         status = EVENT_HANDLER_CALL_INST(body, event);
+        if (!status.shouldHandle(status.SIBL))
+            return status.update();
 
-        // TODO: Lots of encapsulation!
-        if (status == E_STOP_GLOBAL)
-            return status;
+        assert(label);
+        status = EVENT_HANDLER_CALL_INST(label, event);
 
         return status.update();
     }
