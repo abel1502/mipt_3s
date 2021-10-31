@@ -10,6 +10,8 @@ namespace abel::gui::widgets {
 
 class SimpleButton : public Widget {
 public:
+    EVENT_HANDLER_USING(Widget)
+
     static constexpr Color COL_DEFAULT{0.9f};
     static constexpr Color COL_PRESSED{0.6f};
 
@@ -34,17 +36,17 @@ private:  // TODO: maybe keep in protected instead
     EventStatus _processEvent(const T &event) {
         EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
 
-        if (status == E_STOP_GLOBAL || status == E_STOP_LOCAL)
-            return status;
+        if (!status.shouldHandle(status.NODE))
+            return status.update();
 
         assert(body);
-        status = EVENT_HANDLER_CALL_INST(*body, event);
+        status = EVENT_HANDLER_CALL_INST(body, event);
 
         // TODO: Lots of encapsulation!
         if (status == E_STOP_GLOBAL)
             return status;
 
-        return E_CONTINUE;
+        return status.update();
     }
 
 };

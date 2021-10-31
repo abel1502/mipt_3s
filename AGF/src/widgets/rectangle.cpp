@@ -28,21 +28,23 @@ void Rectangle::bakeTexture() {
 EVENT_HANDLER_IMPL(Rectangle, Render) {
     EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
 
-    assert(texture);
-    event.target.embed(event.region, *texture);
+    if (status.shouldHandle(status.NODE)) {
+        assert(texture);
+        event.target.embed(event.region.relRect(region), *texture);
+    }
 
-    return status == E_SKIP ? E_CONTINUE : status;
+    return status.update();
 }
 
 EVENT_HANDLER_IMPL(Rectangle, Resize) {
     EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
 
-    texture->resize(event.newRegion.getDiag());
-    bakeTexture();
+    if (status.shouldHandle(status.NODE)) {
+        texture->resize(event.newRegion.getDiag());
+        bakeTexture();
+    }
 
-    return status == E_SKIP ? E_CONTINUE : status;
+    return status.update();
 }
-
-Rectangle::~Rectangle() = default;
 
 }

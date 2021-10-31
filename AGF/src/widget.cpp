@@ -9,47 +9,47 @@ namespace abel::gui {
 
 EVENT_HANDLER_IMPL(Widget, Render) {
     if (!visible)
-        return E_CONTINUE;
+        return EventStatus::done();
 
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, Move) {
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, Resize) {
     region = event.newRegion;
 
-    return E_CONTINUE;
+    return EventStatus::done();
 }
 
 EVENT_HANDLER_IMPL(Widget, ActiveStatusUpdate) {
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, Start) {
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, Exit) {
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, MouseClick) {
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, MouseMove) {
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, Keyboard) {
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, User) {
-    return E_SKIP;
+    return EventStatus::skip();
 }
 
 #pragma GCC diagnostic pop

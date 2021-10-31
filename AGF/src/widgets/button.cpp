@@ -1,5 +1,6 @@
-#include <ACL/general.h>
+#include <AGF/llgui.h>
 #include <AGF/widgets/button.h>
+#include <ACL/general.h>
 
 
 namespace abel::gui::widgets {
@@ -15,14 +16,20 @@ Widget::EventStatus SimpleButton::_processEvent(const MouseClickEvent &event) {
 
     EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
 
-    assert(status == E_SKIP);
+    if (!status.shouldHandle(status.NODE))
+        return status.update();
 
-    if (!region.contains(event.pos)) {
-        return E_CONTINUE;
+    if (!region.contains(event.pos))
+        return status.update();
+
+    if (event.type == decltype(event.type)::Down) {
+        body->recolor(COL_PRESSED);
+    } else {
+        body->recolor(COL_DEFAULT);
+        sigClick();
     }
 
-    sigClick();
-    return E_STOP_GLOBAL;
+    return EventStatus::stop(EventStatus::TREE);
 }
 
 
