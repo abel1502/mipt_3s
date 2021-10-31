@@ -3,6 +3,7 @@
 
 #include <ACL/math/vector.h>
 #include <ACL/type_traits.h>
+#include <ACL/math/cmath.h>
 
 
 namespace abel::gui {
@@ -13,18 +14,18 @@ class Rect {
     //static_assert(std::is_arithmetic_v<T>);
 
 public:
-    constexpr Rect<T>() noexcept :
+    constexpr Rect() noexcept :
         x_{0}, y_{0}, w_{0}, h_{0} {}
 
     /// Width-height
-    constexpr Rect<T>(T new_x, T new_y, T new_w, T new_h) noexcept {
+    constexpr Rect(T new_x, T new_y, T new_w, T new_h) noexcept {
         x(new_x);
         y(new_y);
         w(new_w);
         h(new_h);
     }
 
-    static constexpr Rect<T> wh(T x, T y, T w, T h) noexcept {
+    static constexpr Rect wh(T x, T y, T w, T h) noexcept {
         return Rect(x, y, w, h);
     }
 
@@ -36,7 +37,7 @@ public:
         y1(new_y1);
     }
 
-    static constexpr Rect<T> se(T x0, T y0, T x1, T y1) noexcept {
+    static constexpr Rect se(T x0, T y0, T x1, T y1) noexcept {
         return Rect(x0, y0, x1, y1, 0);
     }
 
@@ -63,6 +64,21 @@ public:
         return Rect<T2>((T2)x(), (T2)y(), (T2)w(), (T2)h());
     }
 
+    Rect &clamp(const Rect &bounds) noexcept {
+        x0(abel::math::clamp(x0(), bounds.x0(), bounds.x1()));
+        x1(abel::math::clamp(x1(), bounds.x0(), bounds.x1()));
+        y0(abel::math::clamp(y0(), bounds.y0(), bounds.y1()));
+        y1(abel::math::clamp(y1(), bounds.y0(), bounds.y1()));
+
+        return *this;
+    }
+
+    Rect clamped(const Rect &bounds) const noexcept {
+        Rect result{*this};
+
+        return result.intersect(bounds);
+    }
+
 
     using Vector2T = typename abel::math::Vector2<typename abel::make_signed_t<T>>;
 
@@ -70,38 +86,62 @@ public:
     constexpr Vector2T getEnd()   const { return Vector2T(x1(), y1()); }
     constexpr Vector2T getDiag()  const { return Vector2T(w(), h());   }
 
+    constexpr void setStart(const Vector2T &value) const { x0() = value.x(); y0() = value.y(); }
+    constexpr void setEnd  (const Vector2T &value) const { x1() = value.x(); y1() = value.y(); }
+    constexpr void setDiag (const Vector2T &value) const { w () = value.x(); h () = value.y(); }
+
     constexpr Vector2T getVertex(bool xCoord, bool yCoord) const {
         return Vector2T(x() + xCoord * w(),
                         y() + yCoord * h());
     }
 
     /// Width-height, vector
-    constexpr Rect<T>(const Vector2T &from, const Vector2T &size) noexcept {
+    constexpr Rect(const Vector2T &from, const Vector2T &size) noexcept {
         x(from.x());
         y(from.y());
         w(size.x());
         h(size.y());
     }
 
-    static constexpr Rect<T> wh(const Vector2T &from, const Vector2T &size) noexcept {
+    static constexpr Rect wh(const Vector2T &from, const Vector2T &size) noexcept {
         return Rect(from, size);
     }
 
     /// Start-end, vector
-    constexpr Rect<T>(const Vector2T &from, const Vector2T &to, int) noexcept {
+    constexpr Rect(const Vector2T &from, const Vector2T &to, int) noexcept {
         x0(from.x());
         y0(from.y());
         x1(to.x());
         y1(to.y());
     }
 
-    static constexpr Rect<T> se(const Vector2T &start, const Vector2T &end) noexcept {
+    static constexpr Rect se(const Vector2T &start, const Vector2T &end) noexcept {
         return Rect(start, end, 0);
     }
 
     constexpr bool contains(const Vector2T &point) const noexcept {
         return x0() <= point.x() && point.x() <= x1() &&
                y0() <= point.y() && point.y() <= y1();
+    }
+
+    constexpr Rect relRect(const Rect &relative, bool allowOverflow = false) const noexcept {
+        Rect result = Rect::wh(getStart() + relative.getStart(), relative.getDiag());
+
+        if (!allowOverflow) {
+            result.clamp(*this);
+        }
+
+        return result;
+    }
+
+    constexpr Rect relVec(const Vector2T &relative, bool allowOverflow = false) const noexcept {
+        Vector2T result = getStart() + relative;
+
+        if (!allowOverflow) {
+            result.clamp(getDiag());
+        }
+
+        return result;
     }
 
 protected:

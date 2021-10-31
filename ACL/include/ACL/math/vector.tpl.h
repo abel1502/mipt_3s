@@ -159,6 +159,20 @@ public:
         return onto * (*this * onto) / onto.magnitude();
     }
 
+    constexpr NAME_ &clamp(const NAME_ &from, const NAME_ &to) noexcept {
+        for (unsigned i = 0; i < DIM; ++i) {
+            values[i] = clamp(values[i], from.values[i], to.values[i]);
+        }
+
+        return *this;
+    }
+
+    constexpr NAME_ clamped(const NAME_ &from, const NAME_ &to) const noexcept {
+        NAME_ result{*this};
+
+        return result.clamp();
+    }
+
     constexpr double length() const noexcept {
         if constexpr (DIM == 1)
             return (double)values[0];
