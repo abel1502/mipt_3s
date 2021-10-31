@@ -1,0 +1,434 @@
+#include <cstdlib>
+#include <cstdio>
+#include <cassert>
+#include <cstring>
+#include <vector>
+#include <string_view>
+#include <string>
+#include <iostream>
+#include <algorithm>
+#include <map>
+#include <new>
+#include <type_traits>
+#include <utility>
+#include <cctype>
+
+
+#if 0
+#define DBG(FMT, ...) \
+    printf("[%s#%d: " FMT "]\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#else
+#define DBG(FMT, ...)
+#endif
+
+
+class SuffixTree;
+
+class SuffixArray {
+public:
+    struct Suffix {
+        unsigned start;
+        unsigned lcp;
+
+        void dump(const SuffixArray &array) const noexcept {
+            printf("    \"%-*s\" [%2u] (lcp = %2u)\n", (int)array.str.size(), array.str.data() + start, start, lcp);
+        }
+    };
+
+    friend class Suffix;
+
+
+    SuffixArray(const char *str_ = "");
+
+    SuffixArray(const SuffixTree &suffTree);
+
+    template <typename ... As>
+    SuffixArray &operator=(As &&... args) {
+        this->~SuffixArray();
+        SuffixArray *newAddr = new (this) SuffixArray(std::forward<As>(args)...);
+        assert(newAddr == this);
+
+        return *this;
+    }
+
+    // Warning: Do not attempt to use directly!
+    void addSuffix(unsigned start, unsigned lcp) {
+        assert(suffixes.size() < str.size());
+        suffixes.push_back(Suffix{start, lcp});
+    }
+
+    void dump() const noexcept {
+        printf("SuffArr(\"%s\") {\n", str.data());
+
+        for (unsigned i = 0; i < suffixes.size(); ++i) {
+            suffixes[i].dump(*this);
+        }
+
+        printf("}\n");
+    }
+
+    const std::string_view &getStr() const noexcept { return str; }
+
+    const std::vector<Suffix> &getSuffixes() const noexcept { return suffixes; }
+
+protected:
+    std::string_view str;
+    std::vector<Suffix> suffixes;
+
+};
+
+
+class SuffixTree {
+public:
+    using idx_t = unsigned;
+    static constexpr idx_t BAD_IDX = -1u;
+    static constexpr unsigned STR_END = -1u;
+
+    struct Pos;
+    struct Node;
+
+    struct Node {
+        unsigned strL = 0, strR = 0;
+        idx_t parent = BAD_IDX;
+        idx_t link = BAD_IDX;
+        std::map<char, idx_t> children{};
+
+        Node(unsigned strL_, unsigned strR_, idx_t parent_ = BAD_IDX) noexcept :
+            strL{strL_}, strR{strR_}, parent{parent_} {}
+
+        inline bool hasChild(char chr) const noexcept {
+            return children.find(chr) != children.end();
+        }
+
+        inline idx_t getChild(char chr) const noexcept {
+            auto it = children.find(chr);
+
+            return it != children.end() ? it->second : BAD_IDX;
+        }
+
+        inline void addChild(char chr, idx_t child) noexcept {
+            children[chr] = child;
+        }
+
+        inline unsigned getLength(const SuffixTree &tree) const noexcept {
+            if (strR == STR_END)
+                return tree.str.size() - strL;
+            return strR - strL;
+        }
+
+        inline bool isRoot() const noexcept {
+            return parent == BAD_IDX;
+        }
+
+        inline bool isLeaf() const noexcept {
+            return children.size() == 0;
+        }
+
+        Pos getPos(const SuffixTree &tree) {
+            return Pos(tree.idxByRef(*this), getLength(tree));
+        }
+
+        idx_t getLink(SuffixTree &tree) {
+            if (link != BAD_IDX)
+                return link;
+
+            if (isRoot())
+                return (link = 0);
+
+            idx_t target = tree.nodes[parent].getLink(tree);
+            Pos targetPos = tree.nodes[target].getPos(tree);
+
+            targetPos.advance(tree, strL + (parent == 0), strR);
+
+            idx_t ourIdx = tree.idxByRef(*this);
+            idx_t newLink = targetPos.split(tree);  // This line might invalidate `this`
+            return (tree.nodes[ourIdx].link = newLink);
+        }
+
+        void dump(SuffixTree &tree, unsigned indentation = 0) {
+            indent(indentation); printf("\"%.*s\" <%u> (link = %d, parent = %d) %s",
+                                        getLength(tree), tree.str.data() + strL,
+                                        tree.idxByRef(*this),
+                                        (int)getLink(tree),
+                                        (int)parent,
+                                        isLeaf() ? "{}" : "{\n");
+
+            for (auto child : children) {
+                tree.nodes[child.second].dump(tree, indentation + 1);
+            }
+
+            indent(indentation); printf("%s\n", isLeaf() ? "" : "}");
+        }
+
+        void dfsPopulateSuffArray(const SuffixTree &tree, SuffixArray &suffArr, unsigned &lcp, unsigned suffLen = 0) const noexcept {
+            DBG("%u+\"%.*s\" (%u, %d) (lcp = %u)", suffLen, getLength(tree), tree.str.data() + strL, strL, (int)strR, lcp);
+
+            if (isLeaf()) {
+                suffArr.addSuffix(strL - suffLen, lcp);
+                lcp = suffLen;
+                return;
+            }
+
+            suffLen += getLength(tree);
+
+            for (auto child : children) {
+                tree.nodes[child.second].dfsPopulateSuffArray(tree, suffArr, lcp, suffLen);
+                if (lcp > suffLen)
+                    lcp = suffLen;
+            }
+        }
+
+        bool contains(const SuffixTree &tree, std::string_view &&text) const noexcept {
+            if (strncmp(tree.str.data() + strL, text.data(), std::min(getLength(tree), (unsigned)text.size())) != 0)
+                return false;
+
+            if (text.size() <= getLength(tree))
+                return true;
+
+            text.remove_prefix(getLength(tree));
+
+            if (!hasChild(text[0]))
+                return false;
+
+            return tree.nodes[getChild(text[0])].contains(tree, std::move(text));
+        }
+
+    private:
+        static void indent(unsigned indentation) {
+            static constexpr const char INDENT[] = "    ";
+
+            for (unsigned i = 0; i < indentation; ++i) {
+                printf("%s", INDENT);
+            }
+        }
+    };
+
+    friend struct Node;
+
+    struct Pos {
+        idx_t node = BAD_IDX;
+        unsigned pos = 0;
+
+        Pos(idx_t node_, unsigned pos_) noexcept :
+            node{node_}, pos{pos_} {}
+
+        inline       Node &getCurNode(      SuffixTree &tree) const { assert(node != BAD_IDX); return tree.nodes[node]; }
+        inline const Node &getCurNode(const SuffixTree &tree) const { assert(node != BAD_IDX); return tree.nodes[node]; }
+
+        inline unsigned getCurLength(const SuffixTree &tree) const {
+            return getCurNode(tree).getLength(tree);
+        }
+
+        inline unsigned getRemainingLength(const SuffixTree &tree) const {
+            return getCurLength(tree) - pos;
+        }
+
+        bool advance(const SuffixTree &tree, unsigned strL, unsigned strR) {
+            if (strR == STR_END)
+                strR = tree.str.size();
+
+            assert(strL <= strR);
+
+            Pos backup = *this;
+
+            while (strL < strR) {
+                char curChr = tree.str[strL];
+
+                if (pos == getCurLength(tree)) {
+                    node = getCurNode(tree).getChild(curChr);
+                    pos = 0;
+
+                    if (node == BAD_IDX) {
+                        *this = backup;
+                        return false;
+                    }
+
+                    continue;
+                }
+
+                if (tree.str[getCurNode(tree).strL + pos] != curChr) {
+                    *this = backup;
+                    return false;
+                }
+
+                if (strR - strL < getRemainingLength(tree)) {
+                    pos += strR - strL;
+                    return true;
+                }
+
+                strL += getRemainingLength(tree);
+                pos = getCurLength(tree);
+            }
+
+            return true;
+        }
+
+        idx_t split(SuffixTree &tree) {
+            if (pos == getCurLength(tree)) {
+                return node;
+            }
+
+            if (pos == 0) {
+                return getCurNode(tree).parent;
+            }
+
+            Node backup = getCurNode(tree);
+            idx_t newNode = tree.addNode(backup.parent, backup.strL, backup.strL + pos);
+            tree.nodes[newNode].addChild(tree.str[backup.strL + pos], node);
+            getCurNode(tree).parent = newNode;
+            getCurNode(tree).strL += pos;
+
+            /*node = newNode;
+            pos = 0;*/
+
+            return newNode;
+        }
+    };
+
+    friend struct Pos;
+
+
+    SuffixTree(const char *str_ = "") :
+        str{str_}, nodes{Node(0, 0)} {
+
+        build();
+    }
+
+    SuffixTree &operator=(const char *str_) {
+        str = str_;
+        nodes.clear();
+        nodes.push_back(Node(0, 0));
+
+        build();
+
+        return *this;
+    }
+
+    void extend(const char *str_) {
+        unsigned startIdx = str.size();
+        str += str_;
+        build(startIdx);
+    }
+
+    bool contains(std::string_view word) {
+        return nodes[0].contains(*this, std::move(word));
+    }
+
+    void dump() {
+        printf("SuffTree(\"%s\") {\n", str.data());
+        nodes[0].dump(*this, 1);
+        printf("}\n");
+    }
+
+    void populateSuffArray(SuffixArray &suffArr) const noexcept {
+        unsigned lcp = 0;
+        assert(nodes.size() > 0);
+        nodes[0].dfsPopulateSuffArray(*this, suffArr, lcp);
+    }
+
+    const std::string &getStr() const noexcept { return str; }
+
+    const Node &operator[](idx_t idx) const {
+        assert(idx < nodes.size());
+        return nodes[idx];
+    }
+
+protected:
+    std::string str;
+    std::vector<Node> nodes;
+    Pos buildPos{0, 0};
+
+
+    inline idx_t idxByRef(const Node &node) const {
+        assert((size_t)(&node - nodes.data()) < nodes.size());
+
+        return &node - nodes.data();
+    }
+
+    inline idx_t lastIdx() const noexcept {
+        assert(nodes.size());
+        return nodes.size() - 1;
+    }
+
+    idx_t addNode(idx_t parent, unsigned strL, unsigned strR) {
+        char chr = str[strL];
+
+        // assert(!nodes[parent].hasChild(chr));
+
+        nodes.emplace_back(strL, strR, parent);
+        nodes[parent].addChild(chr, lastIdx());
+
+        return lastIdx();
+    }
+
+    void build(unsigned startIdx = 0) {
+        for (unsigned idx = startIdx; idx < str.size(); ++idx) {
+            step(idx);
+        }
+    }
+
+    void step(unsigned idx) {
+        while (true) {
+            if (buildPos.advance(*this, idx, idx + 1)) {
+                return;
+            }
+
+            idx_t newNode = buildPos.split(*this);
+            addNode(newNode, idx, STR_END);
+
+            buildPos = nodes[nodes[newNode].getLink(*this)].getPos(*this);
+
+            if (!newNode) {
+                return;
+            }
+        }
+    }
+
+};
+
+
+SuffixArray::SuffixArray(const char *str_) :
+    SuffixArray(SuffixTree(str_)) {}
+
+SuffixArray::SuffixArray(const SuffixTree &suffTree) :
+    str{suffTree.getStr()}, suffixes{} {
+
+    suffTree.populateSuffArray(*this);
+}
+
+
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin .tie(nullptr);
+    std::cout.tie(nullptr);
+
+    std::string str{};
+
+    SuffixTree st("");
+
+    //st.dump();
+
+    while (std::cin) {
+        char cmd = '\0';
+        std::cin >> cmd >> str;
+        // Since we trust str to be ASCII, this is fine
+        std::transform(str.begin(), str.end(), str.begin(), [](char c){ return tolower(c); });
+
+        switch (cmd) {
+        case '?':
+            printf("%s\n", st.contains(str) ? "YES" : "NO");
+            break;
+
+        case 'A':
+            st.extend(str.data());
+            break;
+
+        default:
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
