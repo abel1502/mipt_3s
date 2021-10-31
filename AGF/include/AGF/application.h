@@ -7,6 +7,7 @@
 #include <ACL/type_traits.h>
 #include <ACL/signal.h>
 #include <ACL/unique_ptr.h>
+#include <AGF/mouse.h>
 #include <AGF/widget.h>
 #include <AGF/widget_event.h>
 #include <AGF/events.h>
@@ -47,7 +48,7 @@ public:
 
     virtual void deinit();
 
-    virtual LRESULT dispatchWindowsEvent(UINT uMsg, WPARAM wParam, LPARAM lParam);
+    virtual LRESULT dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     virtual ~Application() = default;
 
@@ -81,7 +82,7 @@ public:
     }
 
     constexpr bool isInitialized() const noexcept { return initialized; }
-       inline bool isQuitting   () const noexcept { return quitting;    }
+       inline bool isFinished   () const noexcept { return finished;    }
 
 protected:
     static app_ptr_t instance;
@@ -90,7 +91,7 @@ protected:
     unique_ptr<Window> wnd = nullptr;
     unique_ptr<Widget> mainWidget = nullptr;
     bool initialized = false;
-    volatile bool quitting = false;
+    volatile bool finished = false;
 
 
     static LRESULT CALLBACK _wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

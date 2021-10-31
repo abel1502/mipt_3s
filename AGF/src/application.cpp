@@ -45,7 +45,7 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
 void Application::run() {
     wnd->update();
 
-    while (!quitting) {
+    while (!finished) {
         asm volatile ("pause");
     }
 }
@@ -57,11 +57,16 @@ void Application::deinit() {
 
     initialized = false;
 
+    mainWidget.reset();
     wnd.reset();
 }
 
 
-LRESULT Application::dispatchWindowsEvent(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    if (finished) {
+        return 0;
+    }
+
     if (!mainWidget) {
         ERR("Main widget absent; ignoring event");
         return 0;
@@ -72,10 +77,16 @@ LRESULT Application::dispatchWindowsEvent(UINT uMsg, WPARAM wParam, LPARAM lPara
         return 0;
     }
 
+    (void)hWnd, (void)uMsg, (void)wParam, (void)lParam;
+
+    MouseBtn mouseBtn = MouseBtn::Left;
+    MouseClickType mouseClickType = MouseClickType::Down;
+
     switch (uMsg) {
         // TODO: Translate applicable ones to widget_events
     case WM_PAINT: {
         abel::gui::Texture texture{*wnd};
+        texture.clear(Color::WHITE);  // TODO: Remove?
 
         mainWidget->dispatchEvent(EVENT_CLS_NAME(Render){texture.getScreenRect(), texture});
 
@@ -85,20 +96,72 @@ LRESULT Application::dispatchWindowsEvent(UINT uMsg, WPARAM wParam, LPARAM lPara
         // wnd->update();
     } return 0;
 
-    case WM_QUIT: {
-        quitting = true;
+    case WM_LBUTTONDOWN:
+        mouseBtn = MouseBtn::Left;
+        mouseClickType = MouseClickType::Down;
+        goto mouseClickEvent;
+
+    case WM_MBUTTONDOWN:
+        mouseBtn = MouseBtn::Middle;
+        mouseClickType = MouseClickType::Down;
+        goto mouseClickEvent;
+
+    case WM_RBUTTONDOWN:
+        mouseBtn = MouseBtn::Right;
+        mouseClickType = MouseClickType::Down;
+        goto mouseClickEvent;
+
+    case WM_LBUTTONUP:
+        mouseBtn = MouseBtn::Left;
+        mouseClickType = MouseClickType::Up;
+        goto mouseClickEvent;
+
+    case WM_MBUTTONUP:
+        mouseBtn = MouseBtn::Middle;
+        mouseClickType = MouseClickType::Up;
+        goto mouseClickEvent;
+
+    case WM_RBUTTONUP:
+        mouseBtn = MouseBtn::Right;
+        mouseClickType = MouseClickType::Up;
+        goto mouseClickEvent;
+
+    mouseClickEvent: {
+        mainWidget->dispatchEvent(EVENT_CLS_NAME(MouseClick){
+            Vector2d{GET_X_LPARAM(lParam),
+                     GET_Y_LPARAM(lParam)},
+            MouseAttrs{wParam},
+            mouseBtn,
+            mouseClickType});
     } return 0;
 
+    case WM_CLOSE: {
+        DBG("Closing");
+        finished = true;
+    } return TX_WMSG_HANDLED | 0;
+
+    /*case WM_DESTROY:
+    case WM_QUIT: {
+        if (initialized) {
+            asm volatile ("pause");
+        }
+    } return 0;*/
+
+    // TODO: WM_QUIT
+
     default: {
-        DBG("Windows message: %u %zu %zu", uMsg, wParam, lParam);
+        //DBG("Windows message: %u %zu %zu", uMsg, wParam, lParam);
     } return 0;
 
     }
 }
 
 
-LRESULT CALLBACK Application::_wndproc(HWND /*hWnd*/, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    return Application::getInstance().dispatchWindowsEvent(uMsg, wParam, lParam);
+LRESULT CALLBACK Application::_wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    if (!instance)
+        return 0;
+
+    return getInstance().dispatchWindowsEvent(hWnd, uMsg, wParam, lParam);
 }
 
 

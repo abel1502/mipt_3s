@@ -56,12 +56,14 @@
 		<Unit filename="include/AGF/widget_pos.h" />
 		<Unit filename="include/AGF/widgets/button.h" />
 		<Unit filename="include/AGF/widgets/group.h" />
+		<Unit filename="include/AGF/widgets/label.h" />
 		<Unit filename="include/AGF/widgets/rectangle.h" />
 		<Unit filename="src/application.cpp" />
 		<Unit filename="src/llgui_txlib.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/widget.cpp" />
 		<Unit filename="src/widgets/button.cpp" />
+		<Unit filename="src/widgets/label.cpp" />
 		<Unit filename="src/widgets/rectangle.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
