@@ -31,13 +31,21 @@ public:
     unique_ptr &operator=(const unique_ptr &other) = delete;
 
     constexpr unique_ptr(unique_ptr &&other) noexcept :
-        ptr{other.ptr} {
-
-        other.ptr = nullptr;
-    }
+        ptr{other.release()} {}
 
     constexpr unique_ptr &operator=(unique_ptr &&other) noexcept {
         std::swap(ptr, other.ptr);
+
+        return *this;
+    }
+
+    template <typename U, typename E>
+    constexpr unique_ptr(unique_ptr<U, E> &&other) noexcept :
+        ptr{other.release()} {}
+
+    template <typename U, typename E>
+    constexpr unique_ptr &operator=(unique_ptr<U, E> &&other) noexcept {
+        reset(other.release());
 
         return *this;
     }
@@ -55,9 +63,7 @@ public:
     }
 
     ~unique_ptr() {
-        get_deleter()(ptr);
-        // delete ptr;
-        ptr = nullptr;
+        reset();
     }
 
     constexpr type &operator*() const {
@@ -94,7 +100,7 @@ public:
         ptr = newPtr;
 
         if (oldPtr)
-            delete oldPtr;
+            get_deleter()(oldPtr);
     }
 
     constexpr void swap(unique_ptr &other) noexcept {
