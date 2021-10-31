@@ -31,11 +31,27 @@ public:
         funcCallbacks.append(std::move(cb));
     }
 
-    template <typename T>
-    inline Signal &operator+=(T &&cb) {
-        subscribe(std::forward<T>(cb));
+    inline Signal &operator+=(callback_t *cb) {
+        subscribe(cb);
 
         return *this;
+    }
+
+    inline Signal &operator+=(const func_callback_t &cb) {
+        subscribe(cb);
+
+        return *this;
+    }
+
+    inline Signal &operator+=(func_callback_t &&cb) {
+        subscribe(std::move(cb));
+
+        return *this;
+    }
+
+    template <typename T>
+    inline Signal &operator+=(T &&obj) {
+        return *this += func_callback_t(std::forward<T>(obj));
     }
 
     void unsubscribe(callback_t *cb) {
