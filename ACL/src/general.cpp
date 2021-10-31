@@ -39,9 +39,3 @@ unsigned long long randLL() {
 
 }
 
-
-#include "ACL/math/vector.h"
-
-abel::math::Vector2i vec1 = abel::math::Vector2i::ZERO + abel::math::Vector2i::ZERO;
-abel::math::Vector2i vec2(1, 2);
-abel::math::Vector2i vec3 = -vec2;
