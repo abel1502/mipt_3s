@@ -2,6 +2,9 @@
 #define AGF_MOUSE_H
 
 #include <ACL/general.h>
+#include <windef.h>
+#include <windowsx.h>
+#include <winuser.h>
 
 
 namespace abel::gui {
@@ -27,6 +30,11 @@ struct MouseAttrs {
 
     bool ctrl  : 1;
     bool shift : 1;
+
+
+    constexpr MouseAttrs(WPARAM wParam) noexcept :
+        btnL{!!(wParam & MK_LBUTTON)}, btnM{!!(wParam & MK_MBUTTON)}, btnR{!!(wParam & MK_RBUTTON)},
+        ctrl{!!(wParam & MK_CONTROL)}, shift{!!(wParam & MK_SHIFT)} {}
 };
 
 
