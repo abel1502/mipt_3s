@@ -57,7 +57,7 @@ public:
 
     void renderAt(const Rect<int> &at, const Texture &texture);
 
-    void clear();
+    void clear(const Color &color = Color::WHITE);
 
     void update();
 
@@ -135,6 +135,12 @@ public:
     }
 
     void drawRect(const Rect<double> &at, const Color &color = Color::BLUE);
+
+    void drawText(const Rect<double> &at, const char *text,
+                  unsigned format = DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_WORD_ELLIPSIS,
+                  const Color &color = Color::BLACK);
+
+    void setFont(const char *name, double sizeY);
 
     constexpr unsigned width()  const noexcept { return width_;  }
     constexpr unsigned height() const noexcept { return height_; }

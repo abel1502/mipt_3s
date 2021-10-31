@@ -66,7 +66,16 @@ void Window::renderAt(const Rect<int> &at, const Texture &texture) {
     }
 }
 
-void Window::clear() {
+void Window::clear(const Color &color) {
+    // TODO: Encapsulate?
+    PackedColor packedColor = color.pack();
+    COLORREF internalColor = RGB(packedColor.R, packedColor.G, packedColor.B);
+
+    if (!txSetFillColor(internalColor) ||
+        !txSetColor(internalColor, 1.d)) {
+        throw llgui_error("TXLib set color failed");
+    }
+
     if (!txClear()) {
         throw llgui_error("TXLib clear failed");
     }
@@ -208,6 +217,22 @@ void Texture::drawRect(const Rect<double> &at, const Color &color) {
     if (!txRectangle(at.x0(), at.y0(), at.x1(), at.y1(), handle)) {
         throw llgui_error("TXLib draw rectangle failed");
     }
+}
+
+void Texture::drawText(const Rect<double> &at, const char *text, unsigned format, const Color &color) {
+    setColor(color);
+
+    if (!txDrawText(at.x0(), at.y0(), at.x1(), at.y1(), text, format, handle)) {
+        throw llgui_error("TXLib draw text failed");
+    }
+}
+
+void Texture::setFont(const char *name, double sizeY) {
+    if (!txFontExist(name)) {
+        throw llgui_error("TXLib font not found");
+    }
+
+    txSelectFont(name, sizeY);
 }
 
 void Texture::destroy() noexcept {
