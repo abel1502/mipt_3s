@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1635323025 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
+1635323518 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
 	<AGF/llgui.h>
 	"app.h"
 	<AGF/widgets/button.h>
@@ -37,7 +37,7 @@
 	<ACL/signal.tpl.h>
 	<ACL/signal.tpl.h>
 
-1634755401 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1635775030 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
 	<utility>
 	<initializer_list>
@@ -47,11 +47,11 @@
 
 1635169881 d:\workspace\.mipt\s3\acl\include\acl\signal.tpl.h
 
-1635169907 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
+1635324430 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
 	<ACL/general.h>
 	<memory>
 
-1635168726 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+1635702353 d:\workspace\.mipt\s3\agf\include\agf\widget.h
 	<ACL/general.h>
 	<ACL/signal.h>
 	<AGF/events.h>
@@ -125,18 +125,22 @@
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
 
-1635316870 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+1635694003 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<ACL/gui/color.h>
 	<ACL/gui/rect.h>
 
-1635168824 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
+1635702139 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
 	<AGF/widget.h>
 	<AGF/widgets/rectangle.h>
+	<AGF/widgets/label.h>
 	<AGF/events.dsl.h>
 
-1635168817 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
+1635324188 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
+	<AGF/widget.h>
+
+1635702363 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
 	<AGF/widget.h>
 

@@ -75,7 +75,7 @@
 	<ACL/event.tpl.h>
 	<ACL/event.tpl.h>
 
-1634755401 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1635790665 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
 	<utility>
 	<initializer_list>
@@ -101,7 +101,7 @@
 1635097283 d:\workspace\.mipt\s3\agf\include\agf\widget_event.h
 	<ACL/general.h>
 
-1635322077 d:\workspace\.mipt\s3\agf\include\agf\events.h
+1635783190 d:\workspace\.mipt\s3\agf\include\agf\events.h
 	<AGF/widget_event.h>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -118,7 +118,7 @@
 	<ACL/math/vector.h>
 	<ACL/gui/rect.h>
 
-1635685804 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
+1635788539 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
 	<AGF/widget.h>
 
 1635175217 source:d:\workspace\.mipt\s3\agf\src\main.cpp
@@ -132,7 +132,7 @@
 	<ACL/gui/coords.h>
 	<ACL/unique_ptr.h>
 
-1634917325 d:\workspace\.mipt\s3\agf\include\agf\events.dsl.h
+1635783184 d:\workspace\.mipt\s3\agf\include\agf\events.dsl.h
 
 1635172333 d:\workspace\.mipt\s3\acl\include\acl\signal.h
 	<ACL/general.h>
@@ -144,15 +144,16 @@
 
 1635169881 d:\workspace\.mipt\s3\acl\include\acl\signal.tpl.h
 
-1635681178 source:d:\workspace\.mipt\s3\agf\src\widgets\button.cpp
+1635788528 source:d:\workspace\.mipt\s3\agf\src\widgets\button.cpp
 	<AGF/llgui.h>
 	<AGF/widgets/button.h>
 	<ACL/general.h>
 	<AGF/events.dsl.h>
 
-1635168824 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
+1635788508 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
 	<AGF/widget.h>
 	<AGF/widgets/rectangle.h>
+	<AGF/widgets/label.h>
 	<AGF/events.dsl.h>
 
 1635324430 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
@@ -181,4 +182,29 @@
 
 1635702363 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
 	<AGF/widget.h>
+
+1635790236 source:d:\workspace\.mipt\s3\agf\src\widgets\group.cpp
+	<AGF/llgui.h>
+	<ACL/general.h>
+	<AGF/widgets/group.h>
+	<AGF/events.dsl.h>
+
+1635790239 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
+	<AGF/widget.h>
+	<ACL/list.h>
+	<AGF/events.dsl.h>
+
+1635790762 d:\workspace\.mipt\s3\acl\include\acl\list.h
+	<ACL/general.h>
+	<ACL/vector.h>
+	<utility>
+	<cstdlib>
+	<optional>
+	<initializer_list>
+	<iterator>
+	<cassert>
+	<ACL/list_iterator.tpl.h>
+	<ACL/list_iterator.tpl.h>
+
+1635775747 d:\workspace\.mipt\s3\acl\include\acl\list_iterator.tpl.h
 

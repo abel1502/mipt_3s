@@ -63,6 +63,7 @@
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/widget.cpp" />
 		<Unit filename="src/widgets/button.cpp" />
+		<Unit filename="src/widgets/group.cpp" />
 		<Unit filename="src/widgets/label.cpp" />
 		<Unit filename="src/widgets/rectangle.cpp" />
 		<Extensions>
