@@ -83,7 +83,7 @@ public:
             prev = prev_;
             next = next_;
 
-            value = std::move(value);
+            value = std::move(value_);
         }
 
         template <typename ... As>
@@ -115,7 +115,8 @@ public:
     //--------------------------------------------------------------------------------
 
 
-    list() {
+    list() :
+        buf(1) {
         clear();
     }
 
@@ -209,10 +210,10 @@ public:
     DECLARE_INSERTS_BIDIR_(Back, Front, , 0)
 
     DECLARE_INSERTS_BIDIR_(Before, After, demandValidIter(iter),
-                           refToIdx(iter.node), const const_iterator &iter)
+                           ptrToIdx(iter.node), const const_iterator &iter)
 
     DECLARE_INSERTS_BIDIR_(Before, After, demandValidIter(iter),
-                           refToIdx(iter.node), const iterator &iter)
+                           ptrToIdx(iter.node), const iterator &iter)
 
     protected:
     DECLARE_INSERTS_BIDIR_(Before, After, , node, idx_t node)
@@ -238,7 +239,7 @@ public:
         template <typename ... As>                                              \
         inline void extend##NAME(const const_iterator &iter, As &&... args) {   \
             demandValidIter(iter);                                              \
-            extend##NAME(refToIdx(iter.node), std::forward<As>(args)...);       \
+            extend##NAME(ptrToIdx(iter.node), std::forward<As>(args)...);       \
         }                                                                       \
                                                                                 \
         protected:                                                              \
@@ -278,7 +279,7 @@ public:
 
     //--------------------------------------------------------------------------------
     // Erases
-    inline void erase(const const_iterator &iter) { demandValidIter(iter); erase(refToIdx(iter.node)); }
+    inline void erase(const const_iterator &iter) { demandValidIter(iter); erase(ptrToIdx(iter.node)); }
 
     protected:
     void erase(idx_t idx) {
@@ -299,6 +300,46 @@ public:
     public:
     //--------------------------------------------------------------------------------
 
+    inline void swapElems(const const_iterator &iterA,
+                          const const_iterator &iterB) {
+        demandValidIter(iterA);
+        demandValidIter(iterB);
+        return swapElems(ptrToIdx(iterA.node), ptrToIdx(iterB.node));
+    }
+
+    inline void swapFront(const const_iterator &iter) {
+        demandValidIter(iter);
+        return swapElems(buf[0].next, ptrToIdx(iter.node));
+    }
+
+    inline void swapBack(const const_iterator &iter) {
+        demandValidIter(iter);
+        return swapElems(buf[0].prev, ptrToIdx(iter.node));
+    }
+
+    protected:
+    void swapElems(idx_t idxA, idx_t idxB) {
+        assert(idxA < buf.getSize() && idxB < buf.getSize());
+
+        if (!buf[idxA].isUsed() || !buf[idxB].isUsed())
+            throw error("Can't swap anything but used elements");
+
+        if (idxA == idxB)
+            return;
+
+        idx_t prevA = buf[idxA].prev,
+              prevB = buf[idxB].prev,
+              nextA = buf[idxA].next,
+              nextB = buf[idxB].next;
+
+        std::swap(buf[prevA].next, buf[prevB].next);
+        std::swap(buf[nextA].prev, buf[nextB].prev);
+        std::swap(buf[ idxA].prev, buf[ idxB].prev);
+        std::swap(buf[ idxA].next, buf[ idxB].next);
+    }
+
+    public:
+
     constexpr bool isEmpty() const noexcept {
         return size == 0;
     }
@@ -308,12 +349,12 @@ public:
     }
 
     bool validateIter(const const_iterator &iter) const {
-        return iter.list == this && buf.testWithin(iter.node);
+        return iter.lst == this && buf.testWithin(iter.node);
     }
 
 protected:
-    vector<Node> buf{};
-    unsigned size = 1;
+    vector<Node> buf;
+    unsigned size = 0;
     idx_t firstFree = BAD_IDX;
     // bool inArrayMode = true;
 
@@ -380,6 +421,10 @@ protected:
 
     inline idx_t refToIdx(const Node &node) const {
         return buf.refToIdx(node);
+    }
+
+    inline idx_t ptrToIdx(const Node *node) const {
+        return buf.ptrToIdx(node);
     }
 
     inline void demandValidIter(const const_iterator &iter) {

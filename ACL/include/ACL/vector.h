@@ -36,7 +36,7 @@ public:
     vector(std::initializer_list<T> values) :
         vector() {
 
-        reserve(values.size());
+        reserve((unsigned)values.size());
         extend(values.begin(), values.end());
     }
 
@@ -243,7 +243,7 @@ public:
         if (!testWithin(item))
             throw error("Item doesn't belong to the vector");
 
-        return item - buf;
+        return (unsigned)(item - buf);
     }
 
     inline unsigned refToIdx(const T &ref) const { return ptrToIdx(&ref); }
