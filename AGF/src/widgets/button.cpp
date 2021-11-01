@@ -13,7 +13,7 @@ SimpleButton::SimpleButton(Widget *parent_, const Rect<double> &region_, const c
 
 
 template <>
-Widget::EventStatus SimpleButton::_processEvent(const MouseClickEvent &event) {
+Widget::EventStatus SimpleButton::_processEvent(const EVENT_CLS_NAME(MouseClick) &event) {
     assert(body);
 
     EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
@@ -32,6 +32,25 @@ Widget::EventStatus SimpleButton::_processEvent(const MouseClickEvent &event) {
     }
 
     return EventStatus::stop(EventStatus::TREE);
+}
+
+// Render should be handled in reverse
+template <>
+Widget::EventStatus SimpleButton::_processEvent(const EVENT_CLS_NAME(Render) &event) {
+    EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
+
+    if (!status.shouldHandle(status.NODE))
+        return status.update();
+
+    assert(body);
+    status = EVENT_HANDLER_CALL_INST(body, event);
+    if (!status.shouldHandle(status.SIBL))
+        return status.update();
+
+    assert(label);
+    status = EVENT_HANDLER_CALL_INST(label, event);
+
+    return status.update();
 }
 
 

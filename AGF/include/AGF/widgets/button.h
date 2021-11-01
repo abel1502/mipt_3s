@@ -41,13 +41,13 @@ private:  // TODO: maybe keep in protected instead
         if (!status.shouldHandle(status.NODE))
             return status.update();
 
-        assert(body);
-        status = EVENT_HANDLER_CALL_INST(body, event);
+        assert(label);
+        status = EVENT_HANDLER_CALL_INST(label, event);
         if (!status.shouldHandle(status.SIBL))
             return status.update();
 
-        assert(label);
-        status = EVENT_HANDLER_CALL_INST(label, event);
+        assert(body);
+        status = EVENT_HANDLER_CALL_INST(body, event);
 
         return status.update();
     }
