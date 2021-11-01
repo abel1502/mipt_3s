@@ -34,20 +34,26 @@ public:
     }
 
     vector(std::initializer_list<T> values) :
-        buf{nullptr},
-        size{0},
-        capacity{0} {
+        vector() {
 
         reserve(values.size());
+        extend(values.begin(), values.end());
+    }
 
-        extend(values);
+    template <typename InputIt>
+    vector(InputIt &&begin_, InputIt &&end_) :
+        vector() {
+
+        extend(std::forward<InputIt>(begin_), std::forward<InputIt>(end_));
     }
 
     vector(unsigned new_size) :
         vector() {
 
         reserve(new_size);
-        size = new_size;
+        for (unsigned i = 0; i < new_size; ++i) {
+            append();
+        }
     }
 
     vector(unsigned new_size, const T &value) :
@@ -167,6 +173,11 @@ public:
         DECLARE_EXTEND_BODY_(const T &val : values, append(val))
     }
 
+    template <typename InputIt>
+    bool extend(InputIt begin_, InputIt end_) {
+        DECLARE_EXTEND_BODY_(; begin_ != end_; ++begin_, append(*begin_))
+    }
+
     #undef DECLARE_EXTEND_BODY_
 
     T popVal() {
@@ -201,15 +212,15 @@ public:
         return popVal();
     }
 
-    bool isEmpty() const noexcept {
+    constexpr bool isEmpty() const noexcept {
         return size == 0;
     }
 
-    unsigned getSize() const noexcept {
+    constexpr unsigned getSize() const noexcept {
         return size;
     }
 
-    unsigned getCapacity() const noexcept {
+    constexpr unsigned getCapacity() const noexcept {
         return capacity;
     }
 
@@ -222,6 +233,20 @@ public:
     T *getBuf() noexcept {
         return buf;
     }
+
+    bool testWithin(const T *item) const {
+        // One check is sufficient because size_t is signed
+        return (size_t)(item - buf) < size && ((size_t)item - (size_t)buf) % sizeof(T) == 0;
+    }
+
+    unsigned ptrToIdx(const T *item) const {
+        if (!testWithin(item))
+            throw error("Item doesn't belong to the vector");
+
+        return item - buf;
+    }
+
+    inline unsigned refToIdx(const T &ref) const { return ptrToIdx(&ref); }
 
     constexpr const_iterator begin() const noexcept {
         return buf;

@@ -51,6 +51,7 @@
 		<Unit filename="include/ACL/gui/coords.h" />
 		<Unit filename="include/ACL/gui/rect.h" />
 		<Unit filename="include/ACL/list.h" />
+		<Unit filename="include/ACL/list_iterator.tpl.h" />
 		<Unit filename="include/ACL/log.h" />
 		<Unit filename="include/ACL/math/binpow.h" />
 		<Unit filename="include/ACL/math/cmath.h" />
