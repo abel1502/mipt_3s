@@ -24,7 +24,7 @@ EVENT_HANDLER_IMPL(Widget, Resize) {
     return EventStatus::done();
 }
 
-EVENT_HANDLER_IMPL(Widget, ActiveStatusUpdate) {
+EVENT_HANDLER_IMPL(Widget, FocusUpdate) {
     return EventStatus::skip();
 }
 

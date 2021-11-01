@@ -7,7 +7,7 @@
 EVENTS_DSL_ITEM_(Render)
 EVENTS_DSL_ITEM_(Move)
 EVENTS_DSL_ITEM_(Resize)
-EVENTS_DSL_ITEM_(ActiveStatusUpdate)
+EVENTS_DSL_ITEM_(FocusUpdate)
 EVENTS_DSL_ITEM_(Start)
 EVENTS_DSL_ITEM_(Exit)
 EVENTS_DSL_ITEM_(MouseClick)

@@ -54,7 +54,7 @@ EVENT_CLS_DECL_(Resize) {
     }
 };
 
-EVENT_CLS_DECL_(ActiveStatusUpdate) {};
+EVENT_CLS_DECL_(FocusUpdate) {};
 
 EVENT_CLS_DECL_(Start) {};
 
