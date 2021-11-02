@@ -14,7 +14,7 @@
 #include <stack>
 
 
-#if 1
+#if 0
 #define DBG(FMT, ...) \
     printf("[%s#%d: " FMT "]\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #else
@@ -75,7 +75,7 @@ public:
 
     const std::vector<Suffix> &getSuffixes() const noexcept { return suffixes; }
 
-    unsigned findBlockEnd(unsigned fromIdx, unsigned length) const {
+    /*unsigned findBlockEnd(unsigned fromIdx, unsigned length) const {
         unsigned idx = fromIdx + 1;
         while (idx < suffixes.size() && suffixes[idx].lcp >= length) {
             idx++;
@@ -133,7 +133,7 @@ public:
             return "No such line.";
 
         return std::string_view(str.data() + suffixes[idx].start, length);
-    }
+    }*/
 
 protected:
     std::string_view str;
@@ -154,6 +154,7 @@ public:
         unsigned strL = 0, strR = 0;
         idx_t parent = BAD_IDX;
         idx_t link = BAD_IDX;
+        unsigned numLeaves = 0;
         std::map<char, idx_t> children{};
 
         Node(unsigned strL_, unsigned strR_, idx_t parent_ = BAD_IDX) noexcept :
@@ -206,12 +207,12 @@ public:
             return (tree.nodes[ourIdx].link = newLink);
         }
 
-        void dump(SuffixTree &tree, unsigned indentation = 0) {
-            indent(indentation); printf("\"%.*s\" <%u> (link = %d, parent = %d) %s",
+        void dump(const SuffixTree &tree, unsigned indentation = 0) const {
+            indent(indentation); printf("\"%.*s\" <%u> (link = %d, leaves = %u) %s",
                                         getLength(), tree.str.data() + strL,
                                         tree.idxByRef(*this),
-                                        (int)getLink(tree),
-                                        (int)parent,
+                                        (int)link,
+                                        numLeaves,
                                         isLeaf() ? "{}" : "{\n");
 
             for (auto child : children) {
@@ -235,6 +236,57 @@ public:
                 if (lcp > suffLen)
                     lcp = suffLen;
             }
+        }
+
+        unsigned dfsCountLeaves(SuffixTree &tree) {
+            if (isLeaf()) {
+                return (numLeaves = 1);
+            }
+
+            for (auto child : children) {
+                numLeaves += tree.nodes[child.second].dfsCountLeaves(tree);
+            }
+
+            return numLeaves;
+        }
+
+        unsigned expandLeft(const SuffixTree &tree, unsigned start) const {
+            if (isRoot())
+                return start;
+
+            assert(start >= getLength());
+            return tree.nodes[parent].expandLeft(tree, start - getLength());
+        }
+
+        std::string_view kthSubstr(const SuffixTree &tree, unsigned &k) const {
+            unsigned length = getLength();
+            if (isLeaf())  length--;
+
+            DBG("%u: k = %u, avail %u", tree.idxByRef(*this), k, length * numLeaves);
+            // dump(tree);
+
+            if (k <= length * numLeaves) {
+                // TODO: Verify
+                unsigned start = strL;
+                unsigned end = k > 0 ? (strL + 1 + (k - 1) / numLeaves) : start;
+
+                if (!isRoot())
+                    start = tree.nodes[parent].expandLeft(tree, start);
+
+                DBG("Chose [%u:%u]", start, end);
+                k = 0;
+                return std::string_view{tree.str.data() + start, end - start};
+            }
+
+            k -= length * numLeaves;
+
+            for (auto child : children) {
+                std::string_view result = tree.nodes[child.second].kthSubstr(tree, k);
+                if (!k)
+                    return result;
+            }
+
+            return "No such line.";
         }
 
     private:
@@ -345,7 +397,7 @@ public:
         return *this;
     }
 
-    void dump() {
+    void dump() const {
         printf("SuffTree(\"%s\") {\n", str.data());
         nodes[0].dump(*this, 1);
         printf("}\n");
@@ -362,6 +414,16 @@ public:
     const Node &operator[](idx_t idx) const {
         assert(idx < nodes.size());
         return nodes[idx];
+    }
+
+    void countLeaves() {
+        assert(nodes.size() > 0);
+        nodes[0].dfsCountLeaves(*this);
+    }
+
+    std::string_view kthSubstr(unsigned k) const {
+        assert(nodes.size() > 0);
+        return nodes[0].kthSubstr(*this, k);
     }
 
 protected:
@@ -431,21 +493,21 @@ SuffixArray::SuffixArray(const SuffixTree &suffTree) :
 
 
 int main() {
-    // TODO: Finish!!!!!
-
     unsigned k = 0;
     std::string str{};
-    str = "aaaaabbb";
-    // std::cin >> str >> k;
+    // str = "aaabba";
+    // k = 5;
+    std::cin >> str >> k;
+    // std::cin >> str;
     str += "$";
 
-    SuffixArray sa(str.data());
-    sa.dump();
+    SuffixTree st(str.data());
+    st.countLeaves();
+    // st.dump();
 
-    unsigned limit = (str.size()) * (str.size() - 1) / 2 + 1;
-    std::cout << sa.kthSubstr(limit) << "\n";
-
-    // std::cout << sa.kthSubstr(k) << "\n";
+    // unsigned limit = str.size() * (str.size() - 1) / 2 + 1;
+    // for (k = 1; k <= limit; ++k)
+    std::cout << st.kthSubstr(k) << "\n";
 
     return 0;
 }
