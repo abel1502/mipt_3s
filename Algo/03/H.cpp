@@ -80,7 +80,6 @@ public:
             idx_t target = tree.nodes[parent].getLink(tree);
             Pos targetPos = tree.nodes[target].getPos(tree);
 
-            // TODO: Verify
             targetPos.advance(tree, strL + (parent == 0), strR);
 
             idx_t ourIdx = tree.idxByRef(*this);
