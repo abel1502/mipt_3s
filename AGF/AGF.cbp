@@ -56,6 +56,7 @@
 		<Unit filename="include/AGF/widgets/group.h" />
 		<Unit filename="include/AGF/widgets/label.h" />
 		<Unit filename="include/AGF/widgets/rectangle.h" />
+		<Unit filename="include/AGF/widgets/static_group.h" />
 		<Unit filename="src/application.cpp" />
 		<Unit filename="src/llgui_txlib.cpp" />
 		<Unit filename="src/main.cpp" />
