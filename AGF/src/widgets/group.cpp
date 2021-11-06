@@ -10,7 +10,9 @@ Group::Group(Widget *parent_, const Rect<double> &region_) :
     Widget(parent_, region_) {}
 
 void Group::addChild(Widget *child) {
+    assert(child);
     children.insertBack(child);
+    child->updateParent(this);
 }
 
 void Group::clearChildren() {
