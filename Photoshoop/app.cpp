@@ -1,6 +1,6 @@
 #include <AGF/llgui.h>
 #include "app.h"
-#include <AGF/widgets/button.h>
+#include <AGF/widgets/all.h>
 
 
 abel::gui::Application::app_ptr_t abel::gui::Application::create() {
@@ -21,13 +21,19 @@ void MyApp::init(int argc, const char **argv) {
 
     abel::verbosity = 2;
 
-    abel::unique_ptr<abel::gui::widgets::SimpleButton> btn{};
-    btn.emplace(nullptr, abel::gui::Rect<double>::wh(20, 20, 100, 60), "Button");
-    btn->sigClick += [](){ static unsigned cnt = 3; DBG("Knopochka"); return !(--cnt); };
-    mainWidget = std::move(btn);
+    using namespace abel::gui::widgets;
+    using abel::gui::Rect;
+
+    Group *grp = new Group(nullptr, Rect<double>::wh(0, 0, 140, 170));
+    Button *btn1 = new Button(nullptr, Rect<double>::wh(20, 20, 100, 60), "Button one");
+    btn1->sigClick += [](){ DBG("Knopochka"); return false; };
+    Button *btn2 = new Button(nullptr, Rect<double>::wh(20, 90, 100, 60), "Button two");
+    btn2->sigClick += [](){ static unsigned cnt = 4; DBG("Another knopochka"); return !(--cnt); };
+    grp->addChild(btn1);
+    grp->addChild(btn2);
+    mainWidget = grp;
 
     Application::init(argc, argv);
-    DBG("");
 }
 
 
@@ -36,5 +42,4 @@ void MyApp::deinit() {
         return;
 
     Application::deinit();
-    DBG("");
 }

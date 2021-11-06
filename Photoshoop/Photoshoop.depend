@@ -1,19 +1,20 @@
 # depslib dependency file v1.0
-1635323518 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
+1636214304 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
 	<AGF/llgui.h>
 	"app.h"
-	<AGF/widgets/button.h>
+	<AGF/widgets/all.h>
 
 1635088312 d:\workspace\.mipt\s3\photoshoop\app.h
 	<ACL/general.h>
 	<AGF/application.h>
 
-1635098502 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1636192360 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
 	<typeinfo>
+	<cstdlib>
 
-1635320023 d:\workspace\.mipt\s3\agf\include\agf\application.h
+1636220018 d:\workspace\.mipt\s3\agf\include\agf\application.h
 	<cassert>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -37,7 +38,7 @@
 	<ACL/signal.tpl.h>
 	<ACL/signal.tpl.h>
 
-1635775030 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1635790665 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
 	<utility>
 	<initializer_list>
@@ -47,11 +48,11 @@
 
 1635169881 d:\workspace\.mipt\s3\acl\include\acl\signal.tpl.h
 
-1635324430 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
+1636138467 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
 	<ACL/general.h>
 	<memory>
 
-1635702353 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+1636214249 d:\workspace\.mipt\s3\agf\include\agf\widget.h
 	<ACL/general.h>
 	<ACL/signal.h>
 	<AGF/events.h>
@@ -60,13 +61,13 @@
 	<ACL/unique_ptr.h>
 	<AGF/events.dsl.h>
 
-1635322077 d:\workspace\.mipt\s3\agf\include\agf\events.h
+1636213433 d:\workspace\.mipt\s3\agf\include\agf\events.h
 	<AGF/widget_event.h>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
 	<AGF/mouse.h>
 
-1635097283 d:\workspace\.mipt\s3\agf\include\agf\widget_event.h
+1636099137 d:\workspace\.mipt\s3\agf\include\agf\widget_event.h
 	<ACL/general.h>
 
 1635088714 d:\workspace\.mipt\s3\agf\include\agf\llgui_pre.h
@@ -120,7 +121,7 @@
 	<ACL/math/vector.h>
 	<ACL/type_traits.h>
 
-1634917325 d:\workspace\.mipt\s3\agf\include\agf\events.dsl.h
+1636101113 d:\workspace\.mipt\s3\agf\include\agf\events.dsl.h
 
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
@@ -132,15 +133,62 @@
 	<ACL/gui/color.h>
 	<ACL/gui/rect.h>
 
-1635702139 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
+1636219743 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
 	<AGF/widget.h>
+	<AGF/widgets/static_group.h>
 	<AGF/widgets/rectangle.h>
 	<AGF/widgets/label.h>
+
+1636138691 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
+	<AGF/widget.h>
+
+1636138706 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
+	<AGF/widget.h>
+
+1636133034 d:\workspace\.mipt\s3\agf\include\agf\widgets\all.h
+	<AGF/widgets/group.h>
+	<AGF/widgets/static_group.h>
+	<AGF/widgets/button.h>
+	<AGF/widgets/label.h>
+	<AGF/widgets/rectangle.h>
+
+1636204743 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
+	<AGF/widget.h>
+	<ACL/list.h>
+	<ACL/debug.h>
 	<AGF/events.dsl.h>
 
-1635324188 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
-	<AGF/widget.h>
+1635924867 d:\workspace\.mipt\s3\acl\include\acl\list.h
+	<ACL/general.h>
+	<ACL/vector.h>
+	<utility>
+	<cstdlib>
+	<optional>
+	<initializer_list>
+	<iterator>
+	<cassert>
+	<cstdio>
+	<iostream>
+	<ACL/list_iterator.tpl.h>
+	<ACL/list_iterator.tpl.h>
 
-1635702363 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
+1635925026 d:\workspace\.mipt\s3\acl\include\acl\list_iterator.tpl.h
+
+1636204963 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
 	<AGF/widget.h>
+	<ACL/list.h>
+	<ACL/type_traits.h>
+	<ACL/template_trinkets.h>
+	<ACL/debug.h>
+	<tuple>
+	<AGF/events.dsl.h>
+	<AGF/events.dsl.h>
+
+1636141367 d:\workspace\.mipt\s3\acl\include\acl\template_trinkets.h
+
+1636199822 d:\workspace\.mipt\s3\acl\include\acl\debug.h
+	<ACL/general.h>
+	<string>
+	<typeinfo>
+	<cstdlib>
 
