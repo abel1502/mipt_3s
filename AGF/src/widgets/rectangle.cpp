@@ -8,7 +8,7 @@ namespace abel::gui::widgets {
 
 
 Rectangle::Rectangle(Widget *parent_, const Rect<double> &region_, const Color &color_) :
-    Widget(parent_, region_), color{color_}, texture{new Texture((unsigned)region.w(), (unsigned)region.x())} {
+    Widget(parent_, region_), color{color_}, texture{new Texture((unsigned)region.w(), (unsigned)region.h())} {
 
     bakeTexture();
 }
