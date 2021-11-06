@@ -26,7 +26,7 @@ public:
 
 
     Signal<void (double deltaT)> sigTick{};
-    Signal<void (EVENT_CLS_NAME(MouseClick))> sigMouseClick{};
+    Signal<void (EVENT_CLS_NAME(MouseClick))> sigMouseClick{};  // TODO: Remove?
     Signal<void (EVENT_CLS_NAME(MouseMove))> sigMouseMove{};
 
 
@@ -84,6 +84,11 @@ public:
     constexpr bool isInitialized() const noexcept { return initialized; }
        inline bool isFinished   () const noexcept { return finished;    }
 
+    constexpr bool isMouseCaptured() const noexcept { return mouseCaptureHolder; }
+    void releaseMouse();
+    void releaseMouse(Widget *widget);
+    void captureMouse(Widget *widget);
+
 protected:
     static app_ptr_t instance;
 
@@ -92,6 +97,8 @@ protected:
     unique_ptr<Widget> mainWidget = nullptr;
     bool initialized = false;
     volatile bool finished = false;
+
+    Widget *mouseCaptureHolder = nullptr;
 
 
     static LRESULT CALLBACK _wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

@@ -62,6 +62,29 @@ void Application::deinit() {
 }
 
 
+// TODO: Maybe something more sophisticated
+
+void Application::releaseMouse() {
+    mouseCaptureHolder = nullptr;
+}
+
+void Application::releaseMouse(Widget *widget) {
+    DBG("Releasing by %p over %p", widget, mouseCaptureHolder);
+
+    REQUIRE(widget == mouseCaptureHolder);  // TODO: || !mouseCaptureHolder ?
+
+    releaseMouse();
+}
+
+void Application::captureMouse(Widget *widget) {
+    DBG("Capturing by %p over %p", widget, mouseCaptureHolder);
+
+    REQUIRE(!mouseCaptureHolder);
+
+    mouseCaptureHolder = widget;
+}
+
+
 LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     if (finished) {
         return 0;
@@ -127,7 +150,9 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         goto mouseClickEvent;
 
     mouseClickEvent: {
-        mainWidget->dispatchEvent(EVENT_CLS_NAME(MouseClick){
+        Widget *target = isMouseCaptured() ? mouseCaptureHolder : mainWidget.get();
+
+        target->dispatchEvent(EVENT_CLS_NAME(MouseClick){
             Vector2d{GET_X_LPARAM(lParam),
                      GET_Y_LPARAM(lParam)},
             MouseAttrs{wParam},
