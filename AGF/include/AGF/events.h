@@ -13,13 +13,17 @@
 #define EVENT_CLS_DECL_(EVENT_NAME) \
     struct EVENT_CLS_NAME(EVENT_NAME) : public WidgetEvent
 
+#define EVENT_CLS_DEMANDS_MODIFICATION_ \
+    static constexpr bool demands_modification = true;
+
 
 namespace abel::gui {
 // TODO: Implement all of these
 
 
-
 EVENT_CLS_DECL_(Render) {
+    EVENT_CLS_DEMANDS_MODIFICATION_
+
     Rect<double> region;  // Each widget, when forwarding this event to its children,
                           // should reset the region to be its own, so that they get to have relative addresses
     Texture &target;
@@ -36,10 +40,14 @@ EVENT_CLS_DECL_(Render) {
     }
 };
 
-EVENT_CLS_DECL_(Move) {};
+EVENT_CLS_DECL_(Move) {
+    // TODO: EVENT_CLS_DEMANDS_MODIFICATION_
+};
 
 /*/// May involve movement as well
 EVENT_CLS_DECL_(Resize) {
+    EVENT_CLS_DEMANDS_MODIFICATION_
+
     Rect<double> newRegion;  // This refers to the new size of the widget that gets this event
 
     constexpr EVENT_CLS_NAME(Resize)(const Rect<double> &newRegion_) :
@@ -61,6 +69,8 @@ EVENT_CLS_DECL_(Start) {};
 EVENT_CLS_DECL_(Exit) {};
 
 EVENT_CLS_DECL_(MouseClick) {
+    EVENT_CLS_DEMANDS_MODIFICATION_
+
     Vector2d pos;
     MouseAttrs attrs;
     MouseBtn button;
@@ -79,6 +89,8 @@ EVENT_CLS_DECL_(MouseClick) {
 };
 
 EVENT_CLS_DECL_(MouseMove) {
+    EVENT_CLS_DEMANDS_MODIFICATION_
+
     Vector2d pos0;
     Vector2d pos1;
     MouseAttrs attrs;

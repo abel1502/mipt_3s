@@ -9,6 +9,7 @@ namespace abel::gui {
 
 class WidgetEvent {
 public:
+    static constexpr bool demands_modification = false;
     // TODO: ?
 
 protected:

@@ -99,7 +99,50 @@ protected:
 
     Widget(Widget *parent_, const Rect<double> &region_);
 
+    /// Warning: it is preferable to avoid using this with events which
+    /// don't demand modification, and dispatch them by reference without copying
+    template <typename T>
+    inline T translateEvent(const T &event) {
+        static_assert(!T::demands_modification, "There should have been a full specialization "
+                                                "of this function that would modify the event "
+                                                "properly and return its copy.");
+
+        return event;
+    }
+
+    // TODO: Maybe create an optimized version to modify only once per function somehow...?
+    template <typename T>
+    EventStatus dispatchToChild(Widget &child, const T &event) {
+        if constexpr (!T::demands_modification) {
+            return child.dispatchEvent(event);
+        }
+
+        return child.dispatchEvent(translateEvent(event));
+    }
+
+    // TODO: Maybe some sort of dispatchToBase, but it doesn't seem to work
+
 };
+
+template <>
+inline EVENT_CLS_NAME(Render) Widget::translateEvent(const EVENT_CLS_NAME(Render) &event) {
+    return event.createSubEvent(region);
+}
+
+/*template <>
+inline EVENT_CLS_NAME(Move) Widget::translateEvent(const EVENT_CLS_NAME(Move) &event) {
+    // TODO: Implement
+}*/
+
+template <>
+inline EVENT_CLS_NAME(MouseClick) Widget::translateEvent(const EVENT_CLS_NAME(MouseClick) &event) {
+    return event.createSubEvent(region);
+}
+
+template <>
+inline EVENT_CLS_NAME(MouseMove) Widget::translateEvent(const EVENT_CLS_NAME(MouseMove) &event) {
+    return event.createSubEvent(region);
+}
 
 
 }

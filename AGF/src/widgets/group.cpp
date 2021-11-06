@@ -35,7 +35,7 @@ Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(Render) &event) {
     for (auto iter = --children.end(); iter != childrenEnd; --iter) {
         auto &child = *iter;
 
-        status = EVENT_HANDLER_CALL_INST(child, event);
+        status = dispatchToChild(*child, event);
 
         if (!status.shouldHandle(status.SIBL))
             break;
