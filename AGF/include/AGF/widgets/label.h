@@ -21,14 +21,17 @@ public:
         return fontSize;
     }
 
+    // TODO: Rename to set*?
     void updateText(const char *text_);
 
+    // TODO: Same
     void updateFontSize(double fontSize_);
 
     EVENT_HANDLER_OVERRIDE(Render)
 
 protected:
     double fontSize;
+    double deducedFontSize;
     const char *text;
 
     void bakeFont();

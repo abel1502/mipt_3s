@@ -19,7 +19,11 @@ void Label::updateText(const char *text_) {
 }
 
 void Label::bakeFont() {
-    // Empty for now, but may get populated eventually
+    deducedFontSize = fontSize;
+
+    if (abel::isZero(fontSize)) {
+        deducedFontSize = region.h() * 0.8;
+    }
 }
 
 EVENT_HANDLER_IMPL(Label, Render) {
@@ -28,7 +32,7 @@ EVENT_HANDLER_IMPL(Label, Render) {
     if (!status.shouldHandle(status.NODE))
         return status.update();
 
-    event.target.setFont("SEGOEUI", fontSize);
+    event.target.setFont("SEGOEUI", deducedFontSize);
     event.target.drawText(event.region.relRect(region), text);
     return status.update(true);
 }
