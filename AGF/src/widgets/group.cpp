@@ -17,10 +17,12 @@ void Group::clearChildren() {
     children.clear();
 }
 
-void Group::focusChild(const decltype(children)::const_iterator &child) {
+void Group::focusChild(const decltype(children)::iterator &child) {
+    children.front()->dispatchEvent(EVENT_CLS_NAME(FocusUpdate){false});
+
     children.swapFront(child);
 
-    children->
+    children.front()->dispatchEvent(EVENT_CLS_NAME(FocusUpdate){true});
 }
 
 // Render event has to be handled separately, because it works in reverse
