@@ -62,7 +62,12 @@ EVENT_CLS_DECL_(Resize) {
     }
 };*/
 
-EVENT_CLS_DECL_(FocusUpdate) {};
+EVENT_CLS_DECL_(FocusUpdate) {
+    bool focus;
+
+    constexpr EVENT_CLS_NAME(FocusUpdate)(bool focus_) :
+        focus{focus_} {}
+};
 
 EVENT_CLS_DECL_(Start) {};
 

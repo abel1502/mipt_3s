@@ -50,6 +50,23 @@ Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(Render) &event) {
     return status.update();
 }
 
+// FocusUpdates should only be passed to the active child
+template <>
+Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(FocusUpdate) &event) {
+    EventStatus status = Widget::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE))
+        return status.update();
+
+    if (children.isEmpty())
+        return status.update();
+
+    status = dispatchToChild(*children.front(), event);
+
+    return status.update();
+}
+
+
 #define EVENTS_DSL_ITEM_(NAME)          \
     EVENT_HANDLER_IMPL(Group, NAME) {   \
         return _processEvent(event);    \
