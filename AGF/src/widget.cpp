@@ -1,3 +1,4 @@
+#include <AGF/llgui.h>
 #include <AGF/widget.h>
 
 
@@ -10,6 +11,15 @@ namespace abel::gui {
 EVENT_HANDLER_IMPL(Widget, Render) {
     if (!visible)
         return EventStatus::done();
+
+    Rect<double> curRect = event.region.relRect(region);
+
+    if constexpr (DEBUG_RENDER_BOXES) {
+        event.target.drawLine(curRect.getVertex(0, 0), curRect.getVertex(0, 1), Color::ORANGE);
+        event.target.drawLine(curRect.getVertex(0, 1), curRect.getVertex(1, 1), Color::ORANGE);
+        event.target.drawLine(curRect.getVertex(1, 1), curRect.getVertex(1, 0), Color::ORANGE);
+        event.target.drawLine(curRect.getVertex(1, 0), curRect.getVertex(0, 0), Color::ORANGE);
+    }
 
     return EventStatus::skip();
 }

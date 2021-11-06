@@ -89,6 +89,9 @@ public:
     virtual void updateParent(Widget *parent_);
 
 protected:
+    static constexpr bool DEBUG_RENDER_BOXES = true;
+
+
     Widget *parent;
     Rect<double> region;
     bool visible = true;
