@@ -64,6 +64,11 @@ template <>
 constexpr bool Group::focusOnEvent<EVENT_CLS_NAME(MouseClick)> = true;
 
 
+template <>
+Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(Render) &event);
+template <>
+Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(FocusUpdate) &event);
+
 }
 
 
