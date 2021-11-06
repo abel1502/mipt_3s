@@ -1,12 +1,13 @@
 # depslib dependency file v1.0
-1634542252 source:d:\workspace\.mipt\s3\acl_tests\main.cpp
+1635923903 source:d:\workspace\.mipt\s3\acl_tests\main.cpp
 	<ACL/general.h>
 	<cstdio>
 	<cstdlib>
 	<cassert>
-	<ACL/event.h>
+	<ACL/signal.h>
+	<ACL/list.h>
 
-1634462393 d:\workspace\.mipt\s3\acl\include\acl\general.h
+1635098502 d:\workspace\.mipt\s3\acl\include\acl\general.h
 	<stdexcept>
 	<string>
 	<typeinfo>
@@ -17,7 +18,7 @@
 	<ACL/event.tpl.h>
 	<ACL/event.tpl.h>
 
-1634393212 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1635790665 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
 	<utility>
 	<initializer_list>
@@ -26,4 +27,30 @@
 	<memory>
 
 1634543263 d:\workspace\.mipt\s3\acl\include\acl\event.tpl.h
+
+1635172333 d:\workspace\.mipt\s3\acl\include\acl\signal.h
+	<ACL/general.h>
+	<ACL/vector.h>
+	<utility>
+	<functional>
+	<ACL/signal.tpl.h>
+	<ACL/signal.tpl.h>
+
+1635169881 d:\workspace\.mipt\s3\acl\include\acl\signal.tpl.h
+
+1635924867 d:\workspace\.mipt\s3\acl\include\acl\list.h
+	<ACL/general.h>
+	<ACL/vector.h>
+	<utility>
+	<cstdlib>
+	<optional>
+	<initializer_list>
+	<iterator>
+	<cassert>
+	<cstdio>
+	<iostream>
+	<ACL/list_iterator.tpl.h>
+	<ACL/list_iterator.tpl.h>
+
+1635925026 d:\workspace\.mipt\s3\acl\include\acl\list_iterator.tpl.h
 

@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <ACL/signal.h>
-//#include <ACL/list.h>
+#include <ACL/list.h>
 
 //#define UNSUB_
 
@@ -35,6 +35,15 @@ int main() {
 
     event();
     event();
+
+    abel::list<int> lst{};
+    lst.dump();
+    lst.insertBack(123);
+    lst.dump();
+    lst.insertBack(456);
+    lst.dump();
+    lst.eraseFront();
+    lst.dump();
 
     return 0;
 }
