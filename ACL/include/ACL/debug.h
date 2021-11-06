@@ -2,6 +2,8 @@
 #define ACL_DEBUG_H
 
 #include <ACL/general.h>
+#include <string>
+#include <typeinfo>
 #include <cstdlib>
 
 
@@ -10,83 +12,43 @@ namespace abel {
 
 class OpTracer {
 public:
-    OpTracer() {
-        msg("ctor");
+    OpTracer();
 
-        doCtor();
-    }
+    OpTracer(const OpTracer &other);
 
-    OpTracer(const OpTracer &other) {
-        msg("copy ctor", other);
+    OpTracer &operator=(const OpTracer &other);
 
-        doCtor();
-    }
+    OpTracer(OpTracer &&other);
 
-    OpTracer &operator=(const OpTracer &other) {
-        msg("copy asgn", other);
+    OpTracer &operator=(OpTracer &&other);
 
-        doAsgn();
-
-        return *this;
-    }
-
-    OpTracer(OpTracer &&other) {
-        msg("move ctor", other);
-
-        doCtor();
-    }
-
-    OpTracer &operator=(OpTracer &&other) {
-        msg("move asgn", other);
-
-        doAsgn();
-
-        return *this;
-    }
-
-    ~OpTracer() {
-        msg("dtor");
-
-        doDtor();
-    }
-
-
-    void doCtor() {
-        if (balance != 0)
-            bad();
-
-        balance++;
-    }
-
-    void doDtor() {
-        if (balance != 1)
-            bad();
-
-        balance--;
-    }
-
-    void doAsgn() {
-        if (balance != 1)
-            bad();
-    }
-
-    void msg(const char *src) {
-        DBG("OpTracer [%p].%d %s\n", this, balance, src);
-    }
-
-    void msg(const char *src, const OpTracer &other) {
-        DBG("OpTracer [%p].%d %s [%p].%d\n", this, balance, src, &other, other.balance);
-    }
-
-    void bad() {
-        ERR("OpTracer bad usage!!");
-        abort();
-    }
+    ~OpTracer();
 
 protected:
     int balance = 0;
 
+    void doCtor();
+
+    void doDtor();
+
+    void doAsgn();
+
+    void msg(const char *src);
+
+    void msg(const char *src, const OpTracer &other);
+
+    [[noreturn]] void bad();
+
 };
+
+
+std::string demangle(const char *name);
+
+
+template <typename T>
+std::string getTypeName() {
+    return demangle(typeid(T).name());
+}
 
 
 }

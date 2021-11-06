@@ -64,6 +64,7 @@
 		<Unit filename="include/ACL/type_traits.h" />
 		<Unit filename="include/ACL/unique_ptr.h" />
 		<Unit filename="include/ACL/vector.h" />
+		<Unit filename="src/debug.cpp" />
 		<Unit filename="src/general.cpp" />
 		<Unit filename="src/log.cpp" />
 		<Extensions>
