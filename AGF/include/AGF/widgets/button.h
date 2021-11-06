@@ -10,7 +10,7 @@
 namespace abel::gui::widgets {
 
 
-class SimpleButton : public StaticGroup<Rectangle, Label> {
+class Button : public StaticGroup<Rectangle, Label> {
 public:
     using Base = StaticGroup<Rectangle, Label>;
     EVENT_HANDLER_USING(Base)
@@ -22,7 +22,7 @@ public:
     Signal<bool ()> sigClick{};
 
 
-    SimpleButton(Widget *parent_, const Rect<double> &region_, const char *text_);
+    Button(Widget *parent_, const Rect<double> &region_, const char *text_);
 
     EVENT_HANDLER_OVERRIDE(MouseClick)
 
