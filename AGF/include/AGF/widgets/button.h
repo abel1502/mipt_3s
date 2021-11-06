@@ -29,8 +29,8 @@ public:
 protected:
     // TODO: Wrappers for body and label?
 
-    void onMouseDown(const EVENT_CLS_NAME(MouseClick) &event);
-    void onMouseUp  (const EVENT_CLS_NAME(MouseClick) &event);
+    void onMouseDown(const MouseClickEvent &event);
+    void onMouseUp  (const MouseClickEvent &event);
 
 };
 

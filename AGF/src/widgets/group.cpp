@@ -20,16 +20,16 @@ void Group::clearChildren() {
 }
 
 void Group::focusChild(const decltype(children)::iterator &child) {
-    children.front()->dispatchEvent(EVENT_CLS_NAME(FocusUpdate){false});
+    children.front()->dispatchEvent(FocusUpdateEvent{false});
 
     children.swapFront(child);
 
-    children.front()->dispatchEvent(EVENT_CLS_NAME(FocusUpdate){true});
+    children.front()->dispatchEvent(FocusUpdateEvent{true});
 }
 
 // Render event has to be handled separately, because it works in reverse
 template <>
-Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(Render) &event) {
+Widget::EventStatus Group::_processEvent(const RenderEvent &event) {
     EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))
@@ -45,14 +45,14 @@ Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(Render) &event) {
             break;
     }
 
-    static_assert(!focusOnEvent<EVENT_CLS_NAME(Render)>);
+    static_assert(!focusOnEvent<RenderEvent>);
 
     return status.update();
 }
 
 // FocusUpdates should only be passed to the active child
 template <>
-Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(FocusUpdate) &event) {
+Widget::EventStatus Group::_processEvent(const FocusUpdateEvent &event) {
     EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))

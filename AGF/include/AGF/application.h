@@ -26,8 +26,8 @@ public:
 
 
     Signal<void (double deltaT)> sigTick{};
-    Signal<void (EVENT_CLS_NAME(MouseClick))> sigMouseClick{};  // TODO: Remove?
-    Signal<void (EVENT_CLS_NAME(MouseMove))> sigMouseMove{};
+    Signal<void (const MouseClickEvent &event)> sigMouseClick{};  // TODO: Remove?
+    Signal<void (const MouseMoveEvent &event)> sigMouseMove{};
 
 
     /// =========== [ These should be implemented in some way in user code ] ===========

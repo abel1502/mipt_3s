@@ -111,7 +111,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         abel::gui::Texture texture{*wnd};
         texture.clear(Color::WHITE);  // TODO: Remove?
 
-        mainWidget->dispatchEvent(EVENT_CLS_NAME(Render){texture.getScreenRect(), texture});
+        mainWidget->dispatchEvent(RenderEvent{texture.getScreenRect(), texture});
 
         wnd->render(texture);
 
@@ -152,7 +152,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
     mouseClickEvent: {
         Widget *target = isMouseCaptured() ? mouseCaptureHolder : mainWidget.get();
 
-        target->dispatchEvent(EVENT_CLS_NAME(MouseClick){
+        target->dispatchEvent(MouseClickEvent{
             Vector2d{GET_X_LPARAM(lParam),
                      GET_Y_LPARAM(lParam)},
             MouseAttrs{wParam},

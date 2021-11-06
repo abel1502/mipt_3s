@@ -62,13 +62,13 @@ protected:
 
 // TODO: Maybe some other specific events as well?
 template <>
-constexpr bool Group::focusOnEvent<EVENT_CLS_NAME(MouseClick)> = true;
+constexpr bool Group::focusOnEvent<MouseClickEvent> = true;
 
 
 template <>
-Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(Render) &event);
+Widget::EventStatus Group::_processEvent(const RenderEvent &event);
 template <>
-Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(FocusUpdate) &event);
+Widget::EventStatus Group::_processEvent(const FocusUpdateEvent &event);
 
 
 }

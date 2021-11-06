@@ -125,22 +125,22 @@ protected:
 };
 
 template <>
-inline EVENT_CLS_NAME(Render) Widget::translateEvent(const EVENT_CLS_NAME(Render) &event) {
+inline RenderEvent Widget::translateEvent(const RenderEvent &event) {
     return event.createSubEvent(region);
 }
 
 /*template <>
-inline EVENT_CLS_NAME(Move) Widget::translateEvent(const EVENT_CLS_NAME(Move) &event) {
+inline MoveEvent Widget::translateEvent(const MoveEvent &event) {
     // TODO: Implement
 }*/
 
 template <>
-inline EVENT_CLS_NAME(MouseClick) Widget::translateEvent(const EVENT_CLS_NAME(MouseClick) &event) {
+inline MouseClickEvent Widget::translateEvent(const MouseClickEvent &event) {
     return event.createSubEvent(region);
 }
 
 template <>
-inline EVENT_CLS_NAME(MouseMove) Widget::translateEvent(const EVENT_CLS_NAME(MouseMove) &event) {
+inline MouseMoveEvent Widget::translateEvent(const MouseMoveEvent &event) {
     return event.createSubEvent(region);
 }
 

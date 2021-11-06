@@ -43,12 +43,12 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
 }
 
 
-void Button::onMouseDown(const EVENT_CLS_NAME(MouseClick) &) {
+void Button::onMouseDown(const MouseClickEvent &) {
     child<0>().recolor(COL_PRESSED);
     Application::getInstance().captureMouse(this);
 }
 
-void Button::onMouseUp(const EVENT_CLS_NAME(MouseClick) &) {
+void Button::onMouseUp(const MouseClickEvent &) {
     child<0>().recolor(COL_DEFAULT);
     Application::getInstance().releaseMouse(this);
     sigClick();

@@ -28,11 +28,11 @@ EVENT_CLS_DECL_(Render) {
                           // should reset the region to be its own, so that they get to have relative addresses
     Texture &target;
 
-    constexpr EVENT_CLS_NAME(Render)(const Rect<double> &region_, Texture &target_) :
+    constexpr RenderEvent(const Rect<double> &region_, Texture &target_) :
         region{region_}, target{target_} {}
 
-    constexpr EVENT_CLS_NAME(Render) createSubEvent(const Rect<double> &subRegion_) const {
-        EVENT_CLS_NAME(Render) subEvent{*this};
+    constexpr RenderEvent createSubEvent(const Rect<double> &subRegion_) const {
+        RenderEvent subEvent{*this};
 
         subEvent.region = region.relRect(subRegion_, true);  // TODO: Maybe the other way?
 
@@ -45,16 +45,16 @@ EVENT_CLS_DECL_(Move) {
 };
 
 /*/// May involve movement as well
-EVENT_CLS_DECL_(Resize) {
+ResizeEvent {
     EVENT_CLS_DEMANDS_MODIFICATION_
 
     Rect<double> newRegion;  // This refers to the new size of the widget that gets this event
 
-    constexpr EVENT_CLS_NAME(Resize)(const Rect<double> &newRegion_) :
+    constexpr ResizeEvent(const Rect<double> &newRegion_) :
         newRegion{newRegion_} {}
 
-    constexpr EVENT_CLS_NAME(Resize) createSubEvent(const Rect<double> &subNewRegion_) const {
-        EVENT_CLS_NAME(Resize) subEvent{*this};
+    constexpr ResizeEvent createSubEvent(const Rect<double> &subNewRegion_) const {
+        ResizeEvent subEvent{*this};
 
         subEvent.newRegion = subNewRegion_;
 
@@ -65,7 +65,7 @@ EVENT_CLS_DECL_(Resize) {
 EVENT_CLS_DECL_(FocusUpdate) {
     bool focus;
 
-    constexpr EVENT_CLS_NAME(FocusUpdate)(bool focus_) :
+    constexpr FocusUpdateEvent(bool focus_) :
         focus{focus_} {}
 };
 
@@ -81,11 +81,11 @@ EVENT_CLS_DECL_(MouseClick) {
     MouseBtn button;
     MouseClickType type;
 
-    constexpr EVENT_CLS_NAME(MouseClick)(const Vector2d &pos_, const MouseAttrs &attrs_, MouseBtn button_, MouseClickType type_) :
+    constexpr MouseClickEvent(const Vector2d &pos_, const MouseAttrs &attrs_, MouseBtn button_, MouseClickType type_) :
         pos{pos_}, attrs{attrs_}, button{button_}, type{type_} {}
 
-    constexpr EVENT_CLS_NAME(MouseClick) createSubEvent(const Rect<double> &region_) const {
-        EVENT_CLS_NAME(MouseClick) subEvent{*this};
+    constexpr MouseClickEvent createSubEvent(const Rect<double> &region_) const {
+        MouseClickEvent subEvent{*this};
 
         subEvent.pos -= region_.getStart();
 
@@ -101,11 +101,11 @@ EVENT_CLS_DECL_(MouseMove) {
     MouseAttrs attrs;
 
 
-    constexpr EVENT_CLS_NAME(MouseMove)(const Vector2d &pos0_, const Vector2d &pos1_, const MouseAttrs &attrs_) :
+    constexpr MouseMoveEvent(const Vector2d &pos0_, const Vector2d &pos1_, const MouseAttrs &attrs_) :
         pos0{pos0_}, pos1{pos1_}, attrs{attrs_} {}
 
-    constexpr EVENT_CLS_NAME(MouseMove) createSubEvent(const Rect<double> &region_) const {
-        EVENT_CLS_NAME(MouseMove) subEvent{*this};
+    constexpr MouseMoveEvent createSubEvent(const Rect<double> &region_) const {
+        MouseMoveEvent subEvent{*this};
 
         subEvent.pos0 -= region_.getStart();
         subEvent.pos1 -= region_.getStart();

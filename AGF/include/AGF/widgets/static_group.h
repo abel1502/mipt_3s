@@ -100,7 +100,7 @@ protected:
             this,
             getTypeName<T>().data());
 
-        if constexpr (std::is_same_v<T, EVENT_CLS_NAME(MouseClick)>) {
+        if constexpr (std::is_same_v<T, MouseClickEvent>) {
             DBG("Mouse pos: %ld %lg", event.pos.x(), event.pos.y());
         }*/
 
