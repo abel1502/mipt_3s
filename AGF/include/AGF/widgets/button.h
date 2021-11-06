@@ -2,6 +2,7 @@
 #define AGF_WIDGETS_BUTTON_H
 
 #include <AGF/widget.h>
+#include <AGF/widgets/static_group.h>
 #include <AGF/widgets/rectangle.h>
 #include <AGF/widgets/label.h>
 
@@ -9,9 +10,10 @@
 namespace abel::gui::widgets {
 
 
-class SimpleButton : public Widget {
+class SimpleButton : public StaticGroup<Rectangle, Label> {
 public:
-    EVENT_HANDLER_USING(Widget)
+    using Base = StaticGroup<Rectangle, Label>;
+    EVENT_HANDLER_USING(Base)
 
     static constexpr Color COL_DEFAULT{0.9f};
     static constexpr Color COL_PRESSED{0.6f};
@@ -22,35 +24,13 @@ public:
 
     SimpleButton(Widget *parent_, const Rect<double> &region_, const char *text_);
 
-    #define EVENTS_DSL_ITEM_(NAME) \
-        EVENT_HANDLER_OVERRIDE(NAME);
-
-    #include <AGF/events.dsl.h>
-
-    ~SimpleButton();
+    EVENT_HANDLER_OVERRIDE(MouseClick)
 
 protected:
-    unique_ptr<Rectangle> body{nullptr};
-    unique_ptr<Label> label{nullptr};
+    // TODO: Wrappers for body and label?
 
-private:  // TODO: maybe keep in protected instead
-    template <typename T>
-    EventStatus _processEvent(const T &event) {
-        EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
-
-        if (!status.shouldHandle(status.NODE))
-            return status.update();
-
-        assert(label);
-        status = EVENT_HANDLER_CALL_INST(label, event);
-        if (!status.shouldHandle(status.SIBL))
-            return status.update();
-
-        assert(body);
-        status = EVENT_HANDLER_CALL_INST(body, event);
-
-        return status.update();
-    }
+    void onMouseDown(const EVENT_CLS_NAME(MouseClick) &event);
+    void onMouseUp  (const EVENT_CLS_NAME(MouseClick) &event);
 
 };
 

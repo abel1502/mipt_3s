@@ -1,22 +1,31 @@
 #include <AGF/llgui.h>
 #include <AGF/widgets/button.h>
 #include <ACL/general.h>
+#include <AGF/application.h>
 
 
 namespace abel::gui::widgets {
 
 
 SimpleButton::SimpleButton(Widget *parent_, const Rect<double> &region_, const char *text_) :
-    Widget(parent_, region_),
-    body{new Rectangle(this, region, COL_DEFAULT)},
-    label{new Label(this, region, text_, region.h() * 0.8)} {}
+    Base(parent_, region_,
+         new Rectangle(this, Rect<double>(Vector2d::ZERO, region_.getDiag()), COL_DEFAULT),
+         new Label    (this, Rect<double>(Vector2d::ZERO, region_.getDiag()), text_, region_.h() * 0.3)) {}
 
 
-template <>
-Widget::EventStatus SimpleButton::_processEvent(const EVENT_CLS_NAME(MouseClick) &event) {
-    assert(body);
+EVENT_HANDLER_IMPL(SimpleButton, MouseClick) {
+    // DBG("[%1zu] %4s at (%3lg %3lg)<=((%3lg %3lg))<=(%3lg %3lg) - %s",
+    //     ((size_t)this) % 7,
+    //     event.type == decltype(event.type)::Down ? "down" : "up",
+    //     region.getStart().x(), region.getStart().y(),
+    //     event.pos.x(), event.pos.y(),
+    //     region.getEnd().x(), region.getEnd().y(),
+    //     region.contains(event.pos) ? "hit" : "miss");
 
-    EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
+    assert(areChildrenSet());
+
+    // Intentionally skipping SimpleButton::dispatchEvent, not to pass this to our children
+    EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))
         return status.update();
@@ -25,43 +34,25 @@ Widget::EventStatus SimpleButton::_processEvent(const EVENT_CLS_NAME(MouseClick)
         return status.update();
 
     if (event.type == decltype(event.type)::Down) {
-        body->recolor(COL_PRESSED);
+        onMouseDown(event);
     } else {
-        body->recolor(COL_DEFAULT);
-        sigClick();
+        onMouseUp(event);
     }
 
     return EventStatus::stop(EventStatus::TREE);
 }
 
-// Render should be handled in reverse
-template <>
-Widget::EventStatus SimpleButton::_processEvent(const EVENT_CLS_NAME(Render) &event) {
-    EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
 
-    if (!status.shouldHandle(status.NODE))
-        return status.update();
-
-    assert(body);
-    status = EVENT_HANDLER_CALL_INST(body, event);
-    if (!status.shouldHandle(status.SIBL))
-        return status.update();
-
-    assert(label);
-    status = EVENT_HANDLER_CALL_INST(label, event);
-
-    return status.update();
+void SimpleButton::onMouseDown(const EVENT_CLS_NAME(MouseClick) &) {
+    child<0>().recolor(COL_PRESSED);
+    Application::getInstance().captureMouse(this);
 }
 
+void SimpleButton::onMouseUp(const EVENT_CLS_NAME(MouseClick) &) {
+    child<0>().recolor(COL_DEFAULT);
+    Application::getInstance().releaseMouse(this);
+    sigClick();
+}
 
-#define EVENTS_DSL_ITEM_(NAME)                  \
-    EVENT_HANDLER_IMPL(SimpleButton, NAME) {    \
-        return _processEvent(event);            \
-    }
-
-#include <AGF/events.dsl.h>
-
-
-SimpleButton::~SimpleButton() = default;
 
 }
