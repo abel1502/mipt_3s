@@ -47,13 +47,15 @@ protected:
         }
 
         if constexpr (focusOnEvent<T>) {
-            focusChild(targetChild);
+            if (targetChild != children.end()) {
+                focusChild(targetChild);
+            }
         }
 
         return status.update();
     }
 
-    void focusChild(const decltype(children)::const_iterator &child);
+    void focusChild(const decltype(children)::iterator &child);
 
 };
 
