@@ -17,7 +17,6 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
-					<Add directory="../ACL/build/lib64" />
 				</Linker>
 			</Target>
 			<Target title="x32">
@@ -31,7 +30,6 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
-					<Add directory="../ACL/build/lib32" />
 				</Linker>
 			</Target>
 		</Build>

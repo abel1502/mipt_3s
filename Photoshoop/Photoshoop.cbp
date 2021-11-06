@@ -36,8 +36,8 @@
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
-			<Add library="ACL" />
 			<Add library="AGF" />
+			<Add library="ACL" />
 			<Add directory="../ACL/build/lib64" />
 			<Add directory="../AGF/build/lib64" />
 		</Linker>
