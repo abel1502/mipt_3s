@@ -52,6 +52,7 @@
 		<Unit filename="include/AGF/widget.h" />
 		<Unit filename="include/AGF/widget_event.h" />
 		<Unit filename="include/AGF/widget_pos.h" />
+		<Unit filename="include/AGF/widgets/all.h" />
 		<Unit filename="include/AGF/widgets/button.h" />
 		<Unit filename="include/AGF/widgets/group.h" />
 		<Unit filename="include/AGF/widgets/label.h" />
