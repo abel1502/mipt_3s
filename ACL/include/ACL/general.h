@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <cstdlib>
 
 
 // I couldn't figure out a way to disable those in code::blocks settings

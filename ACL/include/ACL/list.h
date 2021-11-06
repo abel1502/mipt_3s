@@ -9,6 +9,8 @@
 #include <initializer_list>
 #include <iterator>
 #include <cassert>
+#include <cstdio>
+#include <iostream>
 
 
 namespace abel {
@@ -93,6 +95,18 @@ public:
 
             emplaceVal(std::forward<As>(args)...);
         }
+
+        void dump(const list &lst) const {
+            printf("  [%02d]->[[%02u]]->[%02d] (%s)",
+                   (int)prev, lst.ptrToIdx(this), (int)next,
+                   isFree() ? "FREE" : isUsed() ? "USED" : "ROOT");
+
+            if (isUsed()) {
+                std::cout << " = " << *value;
+            }
+
+            printf("\n");
+        }
     };
     //--------------------------------------------------------------------------------
 
@@ -135,12 +149,12 @@ public:
 
           iterator begin()       noexcept { return ++end(); }
     const_iterator begin() const noexcept { return ++end(); }
-          iterator end  ()       noexcept { return iterator(this, &buf[0]); }
-    const_iterator end  () const noexcept { return iterator(this, &buf[0]); }
-    const T &front() const { return *++begin(); }
-          T &front()       { return *++begin(); }
-    const T &back () const { return *--begin(); }
-          T &back ()       { return *--begin(); }
+          iterator end  ()       noexcept { return       iterator(this, &buf[0]); }
+    const_iterator end  () const noexcept { return const_iterator(this, &buf[0]); }
+    const T &front() const { return *++end(); }
+          T &front()       { return *++end(); }
+    const T &back () const { return *--end(); }
+          T &back ()       { return *--end(); }
 
     void clear() {
         buf[0].markRoot();
@@ -156,7 +170,7 @@ public:
     #define DECLARE_INSERT_BODY_(TARGETS_INIT, MARK_USED_ARGS) {    \
         const idx_t idx = claimFree();                              \
         TARGETS_INIT                                                \
-        if (target0 > buf.getSize() || target1 > buf.getSize())     \
+        if (target0 >= buf.getSize() || target1 >= buf.getSize())   \
             throw error("Target index out of range");               \
         buf[idx].markUsed(target0, target1, MARK_USED_ARGS);        \
         buf[target0].next = idx;                                    \
@@ -210,9 +224,6 @@ public:
     DECLARE_INSERTS_BIDIR_(Back, Front, , 0)
 
     DECLARE_INSERTS_BIDIR_(Before, After, demandValidIter(iter),
-                           ptrToIdx(iter.node), const const_iterator &iter)
-
-    DECLARE_INSERTS_BIDIR_(Before, After, demandValidIter(iter),
                            ptrToIdx(iter.node), const iterator &iter)
 
     protected:
@@ -237,7 +248,7 @@ public:
 
     #define DECLARE_EXTENDS_(NAME)                                              \
         template <typename ... As>                                              \
-        inline void extend##NAME(const const_iterator &iter, As &&... args) {   \
+        inline void extend##NAME(const iterator &iter, As &&... args) {   \
             demandValidIter(iter);                                              \
             extend##NAME(ptrToIdx(iter.node), std::forward<As>(args)...);       \
         }                                                                       \
@@ -279,10 +290,17 @@ public:
 
     //--------------------------------------------------------------------------------
     // Erases
-    inline void erase(const const_iterator &iter) { demandValidIter(iter); erase(ptrToIdx(iter.node)); }
+    inline void erase(const iterator &iter) { demandValidIter(iter); erase(ptrToIdx(iter.node)); }
+
+    inline void eraseBack () { assert(buf.getSize() > 0); erase(buf[0].prev); }
+    inline void eraseFront() { assert(buf.getSize() > 0); erase(buf[0].next); }
 
     protected:
     void erase(idx_t idx) {
+        if (!size) {
+            throw error("Can't erase from empty list");
+        }
+
         assert(idx < buf.getSize());
 
         if (!buf[idx].isUsed()) {
@@ -296,23 +314,25 @@ public:
         buf[next].prev = prev;
         buf[prev].next = next;
         returnUsed(idx);
+
+        size--;
     }
     public:
     //--------------------------------------------------------------------------------
 
-    inline void swapElems(const const_iterator &iterA,
-                          const const_iterator &iterB) {
+    inline void swapElems(const iterator &iterA,
+                          const iterator &iterB) {
         demandValidIter(iterA);
         demandValidIter(iterB);
         return swapElems(ptrToIdx(iterA.node), ptrToIdx(iterB.node));
     }
 
-    inline void swapFront(const const_iterator &iter) {
+    inline void swapFront(const iterator &iter) {
         demandValidIter(iter);
         return swapElems(buf[0].next, ptrToIdx(iter.node));
     }
 
-    inline void swapBack(const const_iterator &iter) {
+    inline void swapBack(const iterator &iter) {
         demandValidIter(iter);
         return swapElems(buf[0].prev, ptrToIdx(iter.node));
     }
@@ -352,6 +372,14 @@ public:
         return iter.lst == this && buf.testWithin(iter.node);
     }
 
+    void dump() const {
+        printf("list [%p] (size = %u) {\n", this, size);
+        for (const Node &node : buf) {
+            node.dump(*this);
+        }
+        printf("}\n");
+    }
+
 protected:
     vector<Node> buf;
     unsigned size = 0;
@@ -364,6 +392,7 @@ protected:
             return;
 
         buf.append();
+        markRangeFree(buf.getSize() - 1);
     }
 
     void ensureFree(unsigned cnt) {
@@ -389,8 +418,9 @@ protected:
             to = buf.getSize();
         }
 
-        if (buf.getSize() <= from || from <= to)
+        if (buf.getSize() <= from || from >= to) {
             return;
+        }
 
         if (lastFree != BAD_IDX) {
             assert(buf[lastFree].isFree() && buf[lastFree].next == BAD_IDX);

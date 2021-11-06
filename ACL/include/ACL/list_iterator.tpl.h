@@ -47,7 +47,7 @@ public:
         }
 
         idx_t prevIdx = node->prev;
-        REQUIRE(prevIdx == BAD_IDX);  // The list is corrupt otherwise
+        REQUIRE(prevIdx != BAD_IDX);  // The list is corrupt otherwise
         node = &lst->buf[prevIdx];
         return *this;
     }
@@ -55,7 +55,7 @@ public:
     NAME_ operator--(int) {
         assert(lst && node);
         NAME_ backup = *this;
-        --this;
+        --*this;
         return backup;
     }
 
@@ -74,7 +74,7 @@ public:
     }
 
     constexpr bool operator!=(const NAME_ &other) const {
-        return *this != other;
+        return !(*this == other);
     }
 
     EXTRA_
