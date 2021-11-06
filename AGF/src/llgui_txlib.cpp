@@ -111,6 +111,7 @@ Texture::Texture() :
 Texture::Texture(unsigned width, unsigned height) :
     width_{width}, height_{height} {
 
+    REQUIRE(width > 0 && height > 0);
     handle = txCreateDIBSection(width, height, &buf);
 
     if (!handle) {
