@@ -33,7 +33,7 @@ Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(Render) &event) {
     if (!status.shouldHandle(status.NODE))
         return status.update();
 
-    auto childrenEnd = children.end();  // We rely on our loop bein cyclic
+    auto childrenEnd = children.end();  // We rely on our loop being cyclic
     for (auto iter = --children.end(); iter != childrenEnd; --iter) {
         auto &child = *iter;
 
