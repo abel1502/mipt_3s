@@ -27,8 +27,6 @@ public:
 
     EVENT_HANDLER_OVERRIDE(Render)
 
-    EVENT_HANDLER_OVERRIDE(Resize)
-
 protected:
     double fontSize;
     const char *text;

@@ -33,13 +33,5 @@ EVENT_HANDLER_IMPL(Label, Render) {
     return status.update(true);
 }
 
-EVENT_HANDLER_IMPL(Label, Resize) {
-    EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
-
-    bakeFont();
-
-    return status.update(true);
-}
-
 
 }

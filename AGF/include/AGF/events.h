@@ -38,7 +38,7 @@ EVENT_CLS_DECL_(Render) {
 
 EVENT_CLS_DECL_(Move) {};
 
-/// May involve movement as well
+/*/// May involve movement as well
 EVENT_CLS_DECL_(Resize) {
     Rect<double> newRegion;  // This refers to the new size of the widget that gets this event
 
@@ -52,7 +52,7 @@ EVENT_CLS_DECL_(Resize) {
 
         return subEvent;
     }
-};
+};*/
 
 EVENT_CLS_DECL_(FocusUpdate) {};
 

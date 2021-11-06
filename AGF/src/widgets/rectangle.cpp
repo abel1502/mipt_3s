@@ -36,15 +36,5 @@ EVENT_HANDLER_IMPL(Rectangle, Render) {
     return status.update();
 }
 
-EVENT_HANDLER_IMPL(Rectangle, Resize) {
-    EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
-
-    if (status.shouldHandle(status.NODE)) {
-        texture->resize(event.newRegion.getDiag());
-        bakeTexture();
-    }
-
-    return status.update();
-}
 
 }

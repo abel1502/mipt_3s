@@ -20,8 +20,6 @@ public:
 
     EVENT_HANDLER_OVERRIDE(Render)
 
-    EVENT_HANDLER_OVERRIDE(Resize)
-
     void recolor(const Color &color_);
 
 protected:

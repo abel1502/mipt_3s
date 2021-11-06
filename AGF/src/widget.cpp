@@ -18,11 +18,11 @@ EVENT_HANDLER_IMPL(Widget, Move) {
     return EventStatus::skip();
 }
 
-EVENT_HANDLER_IMPL(Widget, Resize) {
+/*EVENT_HANDLER_IMPL(Widget, Resize) {
     region = event.newRegion;
 
     return EventStatus::done();
-}
+}*/
 
 EVENT_HANDLER_IMPL(Widget, FocusUpdate) {
     return EventStatus::skip();
