@@ -31,10 +31,10 @@ EVENT_CLS_DECL_(Render) {
     constexpr EVENT_CLS_NAME(Render)(const Rect<double> &region_, Texture &target_) :
         region{region_}, target{target_} {}
 
-    constexpr EVENT_CLS_NAME(Render) createSubEvent(const Rect<double> &subRegion_) {
+    constexpr EVENT_CLS_NAME(Render) createSubEvent(const Rect<double> &subRegion_) const {
         EVENT_CLS_NAME(Render) subEvent{*this};
 
-        subEvent.region = subRegion_;
+        subEvent.region = region.relRect(subRegion_, true);  // TODO: Maybe the other way?
 
         return subEvent;
     }
@@ -53,7 +53,7 @@ EVENT_CLS_DECL_(Resize) {
     constexpr EVENT_CLS_NAME(Resize)(const Rect<double> &newRegion_) :
         newRegion{newRegion_} {}
 
-    constexpr EVENT_CLS_NAME(Resize) createSubEvent(const Rect<double> &subNewRegion_) {
+    constexpr EVENT_CLS_NAME(Resize) createSubEvent(const Rect<double> &subNewRegion_) const {
         EVENT_CLS_NAME(Resize) subEvent{*this};
 
         subEvent.newRegion = subNewRegion_;
@@ -79,10 +79,10 @@ EVENT_CLS_DECL_(MouseClick) {
     constexpr EVENT_CLS_NAME(MouseClick)(const Vector2d &pos_, const MouseAttrs &attrs_, MouseBtn button_, MouseClickType type_) :
         pos{pos_}, attrs{attrs_}, button{button_}, type{type_} {}
 
-    constexpr EVENT_CLS_NAME(MouseClick) createSubEvent(const Vector2d &pos_) {
+    constexpr EVENT_CLS_NAME(MouseClick) createSubEvent(const Rect<double> &region_) const {
         EVENT_CLS_NAME(MouseClick) subEvent{*this};
 
-        subEvent.pos = pos_;
+        subEvent.pos -= region_.getStart();
 
         return subEvent;
     }
@@ -94,6 +94,20 @@ EVENT_CLS_DECL_(MouseMove) {
     Vector2d pos0;
     Vector2d pos1;
     MouseAttrs attrs;
+
+
+    constexpr EVENT_CLS_NAME(MouseMove)(const Vector2d &pos0_, const Vector2d &pos1_, const MouseAttrs &attrs_) :
+        pos0{pos0_}, pos1{pos1_}, attrs{attrs_} {}
+
+    constexpr EVENT_CLS_NAME(MouseMove) createSubEvent(const Rect<double> &region_) const {
+        EVENT_CLS_NAME(MouseMove) subEvent{*this};
+
+        subEvent.pos0 -= region_.getStart();
+        subEvent.pos1 -= region_.getStart();
+
+        return subEvent;
+    }
+
 };
 
 EVENT_CLS_DECL_(Keyboard) {};
@@ -104,6 +118,7 @@ EVENT_CLS_DECL_(User) {};
 
 }
 
+#undef EVENT_CLS_DEMANDS_MODIFICATION_
 #undef EVENT_CLS_DECL_
 
 #endif // AGF_EVENTS_H
