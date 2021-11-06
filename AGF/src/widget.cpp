@@ -58,5 +58,9 @@ EVENT_HANDLER_IMPL(Widget, User) {
 Widget::Widget(Widget *parent_, const Rect<double> &region_) :
     parent{parent_}, region{region_} {}
 
+void Widget::updateParent(Widget *parent_) {
+    parent = parent_;
+}
+
 
 }

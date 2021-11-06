@@ -58,7 +58,8 @@ public:
 
         static constexpr EventStatus skip()            { return EventStatus{     }; }
         static constexpr EventStatus done()            { return EventStatus{CONT }; }
-        static constexpr EventStatus stop(Level level) { return EventStatus{level}; }
+        static constexpr EventStatus stop(Level level) { // assert(level != SIBL);  // TODO: Not sure about this, maybe should ban
+                                                         return EventStatus{level}; }
 
         constexpr bool shouldHandle(Level level) { return level > stopLvl; }
 
@@ -84,6 +85,8 @@ public:
 
     constexpr const Rect<double> &getRegion() const { return region; }
     constexpr       Rect<double> &getRegion()       { return region; }
+
+    virtual void updateParent(Widget *parent_);
 
 protected:
     Widget *parent;
