@@ -117,7 +117,14 @@ public:
         return unique_ptr(new T(std::forward<As>(args)...));
     }
 
-    // TODO: Comparisons?
+    // TODO: Other comparisons as well?
+    inline bool operator==(std::nullptr_t) const noexcept {
+        return ptr == nullptr;
+    }
+
+    inline bool operator!=(std::nullptr_t) const noexcept {
+        return ptr != nullptr;
+    }
 
 protected:
     pointer ptr;
