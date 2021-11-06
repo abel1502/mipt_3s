@@ -61,6 +61,7 @@
 		<Unit filename="include/ACL/math/vector.tpl.h" />
 		<Unit filename="include/ACL/signal.h" />
 		<Unit filename="include/ACL/signal.tpl.h" />
+		<Unit filename="include/ACL/template_trinkets.h" />
 		<Unit filename="include/ACL/type_traits.h" />
 		<Unit filename="include/ACL/unique_ptr.h" />
 		<Unit filename="include/ACL/vector.h" />
