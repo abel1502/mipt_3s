@@ -8,7 +8,8 @@
 namespace abel::gui::widgets {
 
 
-class Group : public virtual Widget {
+// TODO: Maybe inherit virtually
+class Group : public /*virtual*/ Widget {
 public:
     EVENT_HANDLER_USING(Widget)
 
