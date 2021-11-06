@@ -232,7 +232,7 @@ void Texture::setFont(const char *name, double sizeY) {
         throw llgui_error("TXLib font not found");
     }
 
-    txSelectFont(name, sizeY);
+    txSelectFont(name, sizeY, sizeY * 0.4, FW_DONTCARE, false, false, false, 0, handle);
 }
 
 void Texture::destroy() noexcept {
