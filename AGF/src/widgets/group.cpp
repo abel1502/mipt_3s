@@ -26,7 +26,7 @@ void Group::focusChild(const decltype(children)::const_iterator &child) {
 // Render event has to be handled separately, because it works in reverse
 template <>
 Widget::EventStatus Group::_processEvent(const EVENT_CLS_NAME(Render) &event) {
-    EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
+    EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))
         return status.update();

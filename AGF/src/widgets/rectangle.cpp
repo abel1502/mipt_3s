@@ -26,7 +26,7 @@ void Rectangle::bakeTexture() {
 }
 
 EVENT_HANDLER_IMPL(Rectangle, Render) {
-    EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
+    EventStatus status = Widget::dispatchEvent(event);
 
     if (status.shouldHandle(status.NODE)) {
         assert(texture);
@@ -35,6 +35,5 @@ EVENT_HANDLER_IMPL(Rectangle, Render) {
 
     return status.update();
 }
-
 
 }

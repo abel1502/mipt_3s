@@ -30,14 +30,14 @@ protected:
 
     template <typename T>
     EventStatus _processEvent(const T &event) {
-        EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
+        EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE))
             return status.update();
 
         auto targetChild = children.begin();
         for (auto &child : children) {
-            status = EVENT_HANDLER_CALL_INST(child, event);
+            status = dispatchToChild(*child, event);
 
             if (!status.shouldHandle(status.SIBL))
                 break;

@@ -23,7 +23,7 @@ void Label::bakeFont() {
 }
 
 EVENT_HANDLER_IMPL(Label, Render) {
-    EventStatus status = EVENT_HANDLER_CALL_BASE(Widget, event);
+    EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))
         return status.update();
