@@ -58,6 +58,7 @@
 		<Unit filename="include/AGF/widgets/label.h" />
 		<Unit filename="include/AGF/widgets/rectangle.h" />
 		<Unit filename="include/AGF/widgets/static_group.h" />
+		<Unit filename="include/AGF/widgets/window.h" />
 		<Unit filename="src/application.cpp" />
 		<Unit filename="src/llgui_txlib.cpp" />
 		<Unit filename="src/main.cpp" />
@@ -66,6 +67,7 @@
 		<Unit filename="src/widgets/group.cpp" />
 		<Unit filename="src/widgets/label.cpp" />
 		<Unit filename="src/widgets/rectangle.cpp" />
+		<Unit filename="src/widgets/window.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

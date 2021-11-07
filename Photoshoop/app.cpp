@@ -24,7 +24,7 @@ void MyApp::init(int argc, const char **argv) {
     using namespace abel::gui::widgets;
     using abel::gui::Rect;
 
-    Group *grp = new Group(nullptr, Rect<double>::wh(0, 0, 140, 170));
+    Group *grp = new Group(nullptr, Rect<double>::wh(150, 50, 140, 170));
 
     Button &btn1 = grp->createChild<Button>(Rect<double>::wh(20, 20, 100, 60), "Button one");
     btn1.sigClick += [](){
@@ -38,7 +38,12 @@ void MyApp::init(int argc, const char **argv) {
         return !(--cnt);
     };
 
-    mainWidget = grp;
+    // mainWidget = grp;
+
+    WindowManager *mgr = new WindowManager(nullptr, Rect<double>::se(10, 10, 800 - 10, 600 - 10));
+    mgr->createWindow(Rect<double>::wh(140, 50, 140, 170), "Sample window", grp);
+
+    mainWidget = mgr;
 
     Application::init(argc, argv);
 }

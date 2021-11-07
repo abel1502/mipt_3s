@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1636281261 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
+1636288438 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
 	<AGF/llgui.h>
 	"app.h"
 	<AGF/widgets/all.h>
@@ -99,7 +99,7 @@
 
 1635319522 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
 
-1635319737 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+1636311499 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
 	<ACL/math/vector.h>
 	<ACL/type_traits.h>
 	<ACL/math/cmath.h>
@@ -133,7 +133,7 @@
 	<ACL/gui/color.h>
 	<ACL/gui/rect.h>
 
-1636279957 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
+1636282514 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
 	<AGF/widget.h>
 	<AGF/widgets/static_group.h>
 	<AGF/widgets/rectangle.h>
@@ -142,19 +142,21 @@
 1636138691 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
 	<AGF/widget.h>
 
-1636230433 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
+1636301758 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
 	<AGF/widget.h>
 
-1636133034 d:\workspace\.mipt\s3\agf\include\agf\widgets\all.h
+1636292504 d:\workspace\.mipt\s3\agf\include\agf\widgets\all.h
 	<AGF/widgets/group.h>
 	<AGF/widgets/static_group.h>
 	<AGF/widgets/button.h>
 	<AGF/widgets/label.h>
 	<AGF/widgets/rectangle.h>
+	<AGF/widgets/window.h>
 
-1636281349 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
+1636294538 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
 	<AGF/widget.h>
 	<ACL/list.h>
+	<AGF/events.dsl.h>
 	<AGF/events.dsl.h>
 
 1636281017 d:\workspace\.mipt\s3\acl\include\acl\list.h
@@ -173,7 +175,7 @@
 
 1635925026 d:\workspace\.mipt\s3\acl\include\acl\list_iterator.tpl.h
 
-1636281104 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
+1636294680 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
 	<AGF/widget.h>
 	<ACL/list.h>
 	<ACL/type_traits.h>
@@ -183,11 +185,19 @@
 	<AGF/events.dsl.h>
 	<AGF/events.dsl.h>
 
-1636141367 d:\workspace\.mipt\s3\acl\include\acl\template_trinkets.h
+1636294519 d:\workspace\.mipt\s3\acl\include\acl\template_trinkets.h
 
 1636199822 d:\workspace\.mipt\s3\acl\include\acl\debug.h
 	<ACL/general.h>
 	<string>
 	<typeinfo>
 	<cstdlib>
+
+1636311480 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
+	<AGF/widget.h>
+	<AGF/widgets/group.h>
+	<AGF/widgets/static_group.h>
+	<AGF/widgets/rectangle.h>
+	<AGF/widgets/label.h>
+	<AGF/widgets/button.h>
 
