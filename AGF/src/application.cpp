@@ -69,16 +69,14 @@ void Application::releaseMouse() {
 }
 
 void Application::releaseMouse(Widget *widget) {
-    DBG("Releasing by %p over %p", widget, mouseCaptureHolder);
-
+    // DBG("Releasing by %p over %p", widget, mouseCaptureHolder);
     REQUIRE(widget == mouseCaptureHolder);  // TODO: || !mouseCaptureHolder ?
 
     releaseMouse();
 }
 
 void Application::captureMouse(Widget *widget) {
-    DBG("Capturing by %p over %p", widget, mouseCaptureHolder);
-
+    // DBG("Capturing by %p over %p", widget, mouseCaptureHolder);
     REQUIRE(!mouseCaptureHolder);
 
     mouseCaptureHolder = widget;

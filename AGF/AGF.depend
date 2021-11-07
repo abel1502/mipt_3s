@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1636212803 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
+1636275445 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
 	<AGF/llgui.h>
 	<utility>
 	<cassert>
@@ -8,7 +8,7 @@
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
 
-1635694003 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+1636275363 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
@@ -51,11 +51,11 @@
 	<ACL/type_traits.h>
 	<ACL/math/cmath.h>
 
-1636219917 source:d:\workspace\.mipt\s3\agf\src\application.cpp
+1636279762 source:d:\workspace\.mipt\s3\agf\src\application.cpp
 	<AGF/llgui.h>
 	<AGF/application.h>
 
-1636220018 d:\workspace\.mipt\s3\agf\include\agf\application.h
+1636278295 d:\workspace\.mipt\s3\agf\include\agf\application.h
 	<cassert>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -86,7 +86,7 @@
 
 1634664618 d:\workspace\.mipt\s3\acl\include\acl\event.tpl.h
 
-1636214249 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+1636279603 d:\workspace\.mipt\s3\agf\include\agf\widget.h
 	<ACL/general.h>
 	<ACL/signal.h>
 	<AGF/events.h>
@@ -102,7 +102,7 @@
 1636099137 d:\workspace\.mipt\s3\agf\include\agf\widget_event.h
 	<ACL/general.h>
 
-1636213433 d:\workspace\.mipt\s3\agf\include\agf\events.h
+1636275162 d:\workspace\.mipt\s3\agf\include\agf\events.h
 	<AGF/widget_event.h>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -119,7 +119,7 @@
 	<ACL/math/vector.h>
 	<ACL/gui/rect.h>
 
-1636214221 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
+1636279679 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
 	<AGF/llgui.h>
 	<AGF/widget.h>
 
@@ -146,13 +146,13 @@
 
 1635169881 d:\workspace\.mipt\s3\acl\include\acl\signal.tpl.h
 
-1636219991 source:d:\workspace\.mipt\s3\agf\src\widgets\button.cpp
+1636280003 source:d:\workspace\.mipt\s3\agf\src\widgets\button.cpp
 	<AGF/llgui.h>
 	<AGF/widgets/button.h>
 	<ACL/general.h>
 	<AGF/application.h>
 
-1636219743 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
+1636279957 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
 	<AGF/widget.h>
 	<AGF/widgets/static_group.h>
 	<AGF/widgets/rectangle.h>
@@ -165,7 +165,7 @@
 1636138691 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
 	<AGF/widget.h>
 
-1636213047 source:d:\workspace\.mipt\s3\agf\src\widgets\rectangle.cpp
+1636278126 source:d:\workspace\.mipt\s3\agf\src\widgets\rectangle.cpp
 	<AGF/llgui.h>
 	<ACL/general.h>
 	<AGF/widgets/rectangle.h>
@@ -177,27 +177,26 @@
 	<windowsx.h>
 	<winuser.h>
 
-1636139578 source:d:\workspace\.mipt\s3\agf\src\widgets\label.cpp
+1636278094 source:d:\workspace\.mipt\s3\agf\src\widgets\label.cpp
 	<AGF/llgui.h>
 	<ACL/general.h>
 	<AGF/widgets/label.h>
 
-1636138706 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
+1636230433 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
 	<AGF/widget.h>
 
-1636203923 source:d:\workspace\.mipt\s3\agf\src\widgets\group.cpp
+1636277782 source:d:\workspace\.mipt\s3\agf\src\widgets\group.cpp
 	<AGF/llgui.h>
 	<ACL/general.h>
 	<AGF/widgets/group.h>
 	<AGF/events.dsl.h>
 
-1636204743 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
+1636281349 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
 	<AGF/widget.h>
 	<ACL/list.h>
-	<ACL/debug.h>
 	<AGF/events.dsl.h>
 
-1635924867 d:\workspace\.mipt\s3\acl\include\acl\list.h
+1636281017 d:\workspace\.mipt\s3\acl\include\acl\list.h
 	<ACL/general.h>
 	<ACL/vector.h>
 	<utility>
@@ -213,7 +212,7 @@
 
 1635925026 d:\workspace\.mipt\s3\acl\include\acl\list_iterator.tpl.h
 
-1636204963 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
+1636281104 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
 	<AGF/widget.h>
 	<ACL/list.h>
 	<ACL/type_traits.h>
