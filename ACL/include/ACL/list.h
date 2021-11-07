@@ -176,6 +176,7 @@ public:
         buf[target0].next = idx;                                    \
         buf[target1].prev = idx;                                    \
         size++;                                                     \
+        return buf[idx].getVal();                                   \
     }
 
     #define DIB_AFTER_(TARGET, MARK_USED_ARGS)                      \
@@ -193,25 +194,25 @@ public:
         )
 
     #define DECLARE_INSERTS_(NAME, CHECKS, BODY_MACRO, TARGET, ...) \
-        void insert##NAME(__VA_ARGS__) {                            \
+        T &insert##NAME(__VA_ARGS__) {                            \
             CHECKS;                                                 \
             BODY_MACRO((TARGET), T{})                               \
         }                                                           \
                                                                     \
-        void insert##NAME(__VA_ARGS__ __VA_OPT__ (,)                \
+        T &insert##NAME(__VA_ARGS__ __VA_OPT__ (,)                \
                           const T &value) {                         \
             CHECKS;                                                 \
             BODY_MACRO((TARGET), value)                             \
         }                                                           \
                                                                     \
-        void insert##NAME(__VA_ARGS__ __VA_OPT__ (,)                \
+        T &insert##NAME(__VA_ARGS__ __VA_OPT__ (,)                \
                           T &&value) {                              \
             CHECKS;                                                 \
             BODY_MACRO((TARGET), std::move(value))                  \
         }                                                           \
                                                                     \
         template <typename ... Ts>                                  \
-        void insert##NAME##Emplace(__VA_ARGS__ __VA_OPT__ (,)       \
+        T &insert##NAME##Emplace(__VA_ARGS__ __VA_OPT__ (,)       \
                                    Ts &&... args) {                 \
             CHECKS;                                                 \
             BODY_MACRO((TARGET), std::forward<Ts>(args)...)         \
