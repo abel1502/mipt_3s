@@ -48,7 +48,10 @@ protected:
 
     template <typename ... As>
     StaticGroup(Widget *parent_, const Rect<double> &region_, As &&... args) :
-        Widget(parent_, region_), children{std::forward<As>(args)...} {}
+        Widget(parent_, region_), children{std::forward<As>(args)...} {
+
+        // TODO: Change children's parents...?
+    }
 
     template <unsigned I>
     constexpr const unique_ptr<typename Types::item<I> > &childPtr() const noexcept {
@@ -81,6 +84,9 @@ protected:
 
     template <typename T, unsigned I = 0>
     EventStatus _dispatchToChildren(const T &event) {
+        static_assert(!std::is_same_v<T, RenderEvent>, "There should have been a separate mechanism "
+                                                       "propagating render events in reverse");
+
         EventStatus status = dispatchToChild(child<I>(), event);
 
         if constexpr (I + 1 < Types::size) {
@@ -92,8 +98,20 @@ protected:
         return status;
     }
 
-    // Be aware: unlike Group, StaticGroup doesn't differentiate RenderEvent from the rest,
-    // so it gets handled in the same order as the types go in the parameter pack
+    template <unsigned I = 0>
+    EventStatus _dispatchToChildren(const RenderEvent &event) {
+        if constexpr (I + 1 < Types::size) {
+            EventStatus status = _dispatchToChildren<I + 1>(event);
+
+            if (!status.shouldHandle(status.SIBL)) {
+                return status;
+            }
+        }
+
+        return dispatchToChild(child<I>(), event);
+    }
+
+    // TODO: Inline?
     template <typename T>
     EventStatus _processEvent(const T &event) {
         /*DBG("[%p] got %s",
