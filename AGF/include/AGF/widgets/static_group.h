@@ -53,6 +53,12 @@ public:
         EVENT_HANDLER_OVERRIDE(NAME)
     #include <AGF/events.dsl.h>
 
+    virtual void staticShift(const Vector2d &by) override {
+        Widget::staticShift(by);
+
+        _staticShiftChildren(by);
+    }
+
 protected:
     std::tuple<unique_ptr<Ts>...> children{};
 
@@ -81,6 +87,15 @@ protected:
     template <unsigned I>
     typename Types::item<I> &child() {
         return *std::get<I>(children);
+    }
+
+    template <unsigned I = 0>
+    void _staticShiftChildren(const Vector2d &by) {
+        if constexpr (I < Types::size) {
+            child<I>().staticShift(by);
+
+            _staticShiftChildren<I + 1>(by);
+        }
     }
 
     template <unsigned I = 0>

@@ -39,6 +39,14 @@ public:
         EVENT_HANDLER_OVERRIDE(NAME)
     #include <AGF/events.dsl.h>
 
+    virtual void staticShift(const Vector2d &by) override {
+        Widget::staticShift(by);
+
+        for (auto &child: children) {
+            child->staticShift(by);
+        }
+    }
+
 protected:
     list<unique_ptr<ITEM>> children{};
 

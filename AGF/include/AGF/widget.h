@@ -88,6 +88,8 @@ public:
 
     virtual void updateParent(Widget *parent_);
 
+    virtual void staticShift(const Vector2d &by);
+
 protected:
     static constexpr enum {
         DRB_NONE,

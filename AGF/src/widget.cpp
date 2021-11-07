@@ -66,7 +66,16 @@ Widget::Widget(Widget *parent_, const Rect<double> &region_) :
     parent{parent_}, region{region_} {}
 
 void Widget::updateParent(Widget *parent_) {
+    Vector2d oldPos = parent  ? parent ->region.getPos() : Vector2d::ZERO;
+    Vector2d newPos = parent_ ? parent_->region.getPos() : Vector2d::ZERO;
+
     parent = parent_;
+
+    staticShift(newPos - oldPos);
+}
+
+void Widget::staticShift(const Vector2d &by) {
+    region += by;
 }
 
 
