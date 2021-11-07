@@ -6,14 +6,32 @@
 namespace abel::gui::widgets {
 
 
-Label::Label(Widget *parent_, const Rect<double> &region_, const char *text_, double fontSize_) :
-    Widget(parent_, region_), fontSize{fontSize_}, text{text_} {
+Label::Label(Widget *parent_, const Rect<double> &region_, const char *text_, double fontSize_, unsigned format_) :
+    Widget(parent_, region_), fontSize{fontSize_}, text{text_}, format{format_} {
 
     bakeFont();
 }
 
-void Label::updateText(const char *text_) {
+void Label::setText(const char *text_) {
     text = text_;
+
+    bakeFont();
+}
+
+void Label::setFontSize(double fontSize_) {
+    fontSize = fontSize_;
+
+    bakeFont();
+}
+
+void Label::resetFormat() {
+    format = -1u;
+
+    bakeFont();
+}
+
+void Label::setFormat(unsigned format_) {
+    format = format_;
 
     bakeFont();
 }
