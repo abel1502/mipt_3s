@@ -22,7 +22,7 @@
 namespace abel::gui::widgets {
 
 
-namespace {
+namespace _impl {
     template <typename ... Ts>
     struct are_all_widgets;
 
@@ -44,7 +44,7 @@ namespace {
 template <typename ... Ts>
 class StaticGroup : public /*virtual*/ Widget {
 public:
-    static_assert(are_all_widgets_v<Ts...>);
+    static_assert(_impl::are_all_widgets_v<Ts...>);
     using Types = TypeArray<Ts...>;
 
     EVENT_HANDLER_USING(Widget)

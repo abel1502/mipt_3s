@@ -5,7 +5,7 @@
 namespace abel {
 
 
-namespace {
+namespace _impl {
     template <typename ... Ts>
     struct TypeArrayEmpty;
 
@@ -87,12 +87,12 @@ template <typename ... Ts>
 struct TypeArray {
 protected:
     template <typename T>
-    using _finder = TypeArrayItemFinder<T, 0, Ts...>;
+    using _finder = _impl::TypeArrayItemFinder<T, 0, Ts...>;
 
     template <unsigned I>
-    using _item = TypeArrayItem<I, Ts...>;
+    using _item = _impl::TypeArrayItem<I, Ts...>;
 
-    using _sizer = TypeArraySizer<Ts...>;
+    using _sizer = _impl::TypeArraySizer<Ts...>;
 
 public:
 
