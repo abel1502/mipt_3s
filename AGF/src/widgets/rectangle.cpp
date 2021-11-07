@@ -30,7 +30,7 @@ EVENT_HANDLER_IMPL(Rectangle, Render) {
 
     if (status.shouldHandle(status.NODE)) {
         assert(texture);
-        event.target.embed(event.region.relRect(region), *texture);
+        event.target.embed(region, *texture);
     }
 
     return status.update();

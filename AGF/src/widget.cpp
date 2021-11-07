@@ -12,10 +12,10 @@ EVENT_HANDLER_IMPL(Widget, Render) {
     if (!visible)
         return EventStatus::done();
 
-    Rect<double> curRect = event.region.relRect(region);
-
-    if constexpr (DEBUG_RENDER_BOXES) {
-        event.target.drawBounds(curRect, Color::ORANGE);
+    if constexpr (DEBUG_RENDER_BOXES == DRB_OBJECT) {
+        event.target.drawBounds(region, Color::ORANGE);
+    } else if constexpr (DEBUG_RENDER_BOXES == DRB_EVENT) {
+        event.target.drawBounds(event.region, Color::GREEN);
     }
 
     return EventStatus::skip();

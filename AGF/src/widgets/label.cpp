@@ -33,7 +33,7 @@ EVENT_HANDLER_IMPL(Label, Render) {
         return status.update();
 
     event.target.setFont("SEGOEUI", deducedFontSize);
-    event.target.drawText(event.region.relRect(region), text);
+    event.target.drawText(region, text);
     return status.update(true);
 }
 

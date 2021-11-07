@@ -89,7 +89,11 @@ public:
     virtual void updateParent(Widget *parent_);
 
 protected:
-    static constexpr bool DEBUG_RENDER_BOXES = true;
+    static constexpr enum {
+        DRB_NONE,
+        DRB_OBJECT,
+        DRB_EVENT,
+    } DEBUG_RENDER_BOXES = DRB_OBJECT;
 
 
     Widget *parent;
@@ -128,22 +132,6 @@ template <>
 inline RenderEvent Widget::translateEvent(const RenderEvent &event) {
     return event.createSubEvent(region);
 }
-
-/*template <>
-inline MoveEvent Widget::translateEvent(const MoveEvent &event) {
-    // TODO: Implement
-}*/
-
-template <>
-inline MouseClickEvent Widget::translateEvent(const MouseClickEvent &event) {
-    return event.createSubEvent(region);
-}
-
-template <>
-inline MouseMoveEvent Widget::translateEvent(const MouseMoveEvent &event) {
-    return event.createSubEvent(region);
-}
-
 
 }
 

@@ -24,24 +24,23 @@ namespace abel::gui {
 EVENT_CLS_DECL_(Render) {
     EVENT_CLS_DEMANDS_MODIFICATION_
 
-    Rect<double> region;  // Each widget, when forwarding this event to its children,
-                          // should reset the region to be its own, so that they get to have relative addresses
+    Rect<double> region;  // The (suggested) limiting bounds, by default, the borders of the parent widget
     Texture &target;
 
     constexpr RenderEvent(const Rect<double> &region_, Texture &target_) :
         region{region_}, target{target_} {}
 
-    constexpr RenderEvent createSubEvent(const Rect<double> &subRegion_) const {
+    constexpr RenderEvent createSubEvent(const Rect<double> &region_) const {
         RenderEvent subEvent{*this};
 
-        subEvent.region = region.relRect(subRegion_, true);  // TODO: Maybe the other way?
+        subEvent.region = region_;
 
         return subEvent;
     }
 };
 
 EVENT_CLS_DECL_(Move) {
-    // TODO: EVENT_CLS_DEMANDS_MODIFICATION_
+    // TODO
 };
 
 /*/// May involve movement as well
@@ -74,8 +73,6 @@ EVENT_CLS_DECL_(Start) {};
 EVENT_CLS_DECL_(Exit) {};
 
 EVENT_CLS_DECL_(MouseClick) {
-    EVENT_CLS_DEMANDS_MODIFICATION_
-
     Vector2d pos;
     MouseAttrs attrs;
     MouseBtn button;
@@ -83,19 +80,9 @@ EVENT_CLS_DECL_(MouseClick) {
 
     constexpr MouseClickEvent(const Vector2d &pos_, const MouseAttrs &attrs_, MouseBtn button_, MouseClickType type_) :
         pos{pos_}, attrs{attrs_}, button{button_}, type{type_} {}
-
-    constexpr MouseClickEvent createSubEvent(const Rect<double> &region_) const {
-        MouseClickEvent subEvent{*this};
-
-        subEvent.pos -= region_.getStart();
-
-        return subEvent;
-    }
 };
 
 EVENT_CLS_DECL_(MouseMove) {
-    EVENT_CLS_DEMANDS_MODIFICATION_
-
     Vector2d pos0;
     Vector2d pos1;
     MouseAttrs attrs;
@@ -103,16 +90,6 @@ EVENT_CLS_DECL_(MouseMove) {
 
     constexpr MouseMoveEvent(const Vector2d &pos0_, const Vector2d &pos1_, const MouseAttrs &attrs_) :
         pos0{pos0_}, pos1{pos1_}, attrs{attrs_} {}
-
-    constexpr MouseMoveEvent createSubEvent(const Rect<double> &region_) const {
-        MouseMoveEvent subEvent{*this};
-
-        subEvent.pos0 -= region_.getStart();
-        subEvent.pos1 -= region_.getStart();
-
-        return subEvent;
-    }
-
 };
 
 EVENT_CLS_DECL_(Keyboard) {};

@@ -9,8 +9,8 @@ namespace abel::gui::widgets {
 
 Button::Button(Widget *parent_, const Rect<double> &region_, const char *text_) :
     Base(parent_, region_,
-         new Rectangle(this, Rect<double>(Vector2d::ZERO, region_.getDiag()), COL_DEFAULT),
-         new Label    (this, Rect<double>(Vector2d::ZERO, region_.getDiag()), text_, region_.h() * 0.3)) {}
+         new Label    (this, region_, text_, region_.h() * 0.3),
+         new Rectangle(this, region_, COL_DEFAULT)) {}
 
 
 EVENT_HANDLER_IMPL(Button, MouseClick) {
