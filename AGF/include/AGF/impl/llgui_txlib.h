@@ -136,6 +136,8 @@ public:
 
     void drawRect(const Rect<double> &at, const Color &color = Color::BLUE);
 
+    void drawBounds(const Rect<double> &at, const Color &color = Color::ORANGE);
+
     void drawText(const Rect<double> &at, const char *text,
                   unsigned format = DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_WORD_ELLIPSIS,
                   const Color &color = Color::BLACK);

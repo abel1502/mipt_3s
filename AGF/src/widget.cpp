@@ -15,10 +15,7 @@ EVENT_HANDLER_IMPL(Widget, Render) {
     Rect<double> curRect = event.region.relRect(region);
 
     if constexpr (DEBUG_RENDER_BOXES) {
-        event.target.drawLine(curRect.getVertex(0, 0), curRect.getVertex(0, 1), Color::ORANGE);
-        event.target.drawLine(curRect.getVertex(0, 1), curRect.getVertex(1, 1), Color::ORANGE);
-        event.target.drawLine(curRect.getVertex(1, 1), curRect.getVertex(1, 0), Color::ORANGE);
-        event.target.drawLine(curRect.getVertex(1, 0), curRect.getVertex(0, 0), Color::ORANGE);
+        event.target.drawBounds(curRect, Color::ORANGE);
     }
 
     return EventStatus::skip();

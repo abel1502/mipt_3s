@@ -220,6 +220,13 @@ void Texture::drawRect(const Rect<double> &at, const Color &color) {
     }
 }
 
+void Texture::drawBounds(const Rect<double> &at, const Color &color) {
+    drawLine(at.getVertex(0, 0), at.getVertex(0, 1), color);
+    drawLine(at.getVertex(0, 1), at.getVertex(1, 1), color);
+    drawLine(at.getVertex(1, 1), at.getVertex(1, 0), color);
+    drawLine(at.getVertex(1, 0), at.getVertex(0, 0), color);
+}
+
 void Texture::drawText(const Rect<double> &at, const char *text, unsigned format, const Color &color) {
     setColor(color);
 
