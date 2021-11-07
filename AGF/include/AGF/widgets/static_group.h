@@ -66,7 +66,7 @@ protected:
     StaticGroup(Widget *parent_, const Rect<double> &region_, As &&... args) :
         Widget(parent_, region_), children{std::forward<As>(args)...} {
 
-        // TODO: Change children's parents...?
+        _updateParents();
     }
 
     template <unsigned I>
@@ -95,6 +95,17 @@ protected:
             child<I>().staticShift(by);
 
             _staticShiftChildren<I + 1>(by);
+        }
+    }
+
+    template <unsigned I = 0>
+    void _updateParents() {
+        // TODO: Decide whether I want to update parents, or, on the contrary, validate that they are nullptr's
+
+        if constexpr (I < Types::size) {
+            child<I>().updateParent(this);
+
+            _updateParents<I + 1>();
         }
     }
 
