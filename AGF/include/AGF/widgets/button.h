@@ -10,9 +10,9 @@
 namespace abel::gui::widgets {
 
 
-class Button : public StaticGroup<Rectangle, Label> {
+class Button : public StaticGroup<Label, Rectangle> {
 public:
-    using Base = StaticGroup<Rectangle, Label>;
+    using Base = StaticGroup<Label, Rectangle>;
     EVENT_HANDLER_USING(Base)
 
     static constexpr Color COL_DEFAULT{0.9f};
@@ -27,10 +27,13 @@ public:
     EVENT_HANDLER_OVERRIDE(MouseClick)
 
 protected:
-    // TODO: Wrappers for body and label?
+    bool isDown = false;
 
-    void onMouseDown(const MouseClickEvent &event);
-    void onMouseUp  (const MouseClickEvent &event);
+    SGRP_DECLARE_BINDING_T(body,  Rectangle)
+    SGRP_DECLARE_BINDING_T(label, Label)
+
+    void onMouseDown(const MouseClickEvent &event, bool hit);
+    void onMouseUp  (const MouseClickEvent &event, bool hit);
 
 };
 

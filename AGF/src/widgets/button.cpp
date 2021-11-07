@@ -30,28 +30,48 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
     if (!status.shouldHandle(status.NODE))
         return status.update();
 
-    if (!region.contains(event.pos))
+    bool hit = region.contains(event.pos);
+
+    if (!hit && !Application::getInstance().isMouseCaptured(this))
+        return status.update();
+
+    if (event.button != decltype(event.button)::Left)
         return status.update();
 
     if (event.type == decltype(event.type)::Down) {
-        onMouseDown(event);
+        onMouseDown(event, hit);
     } else {
-        onMouseUp(event);
+        onMouseUp(event, hit);
     }
 
     return EventStatus::stop(EventStatus::TREE);
 }
 
 
-void Button::onMouseDown(const MouseClickEvent &) {
-    child<0>().recolor(COL_PRESSED);
+void Button::onMouseDown(const MouseClickEvent &, bool hit) {
+    if (isDown)
+        return;
+
+    assert(hit);  // The other way shouldn't be possible
+
+    isDown = true;
+
+    body().recolor(COL_PRESSED);
     Application::getInstance().captureMouse(this);
 }
 
-void Button::onMouseUp(const MouseClickEvent &) {
-    child<0>().recolor(COL_DEFAULT);
+void Button::onMouseUp(const MouseClickEvent &, bool hit) {
+    if (!isDown)
+        return;
+
+    isDown = false;
+
+    body().recolor(COL_DEFAULT);
     Application::getInstance().releaseMouse(this);
-    sigClick();
+
+    if (hit) {
+        sigClick();
+    }
 }
 
 
