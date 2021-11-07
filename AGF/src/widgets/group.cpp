@@ -27,45 +27,6 @@ void Group::focusChild(const decltype(children)::iterator &child) {
     children.front()->dispatchEvent(FocusUpdateEvent{true});
 }
 
-// Render event has to be handled separately, because it works in reverse
-template <>
-Widget::EventStatus Group::_processEvent(const RenderEvent &event) {
-    EventStatus status = Widget::dispatchEvent(event);
-
-    if (!status.shouldHandle(status.NODE))
-        return status.update();
-
-    auto childrenEnd = children.end();  // We rely on our loop being cyclic
-    for (auto iter = --children.end(); iter != childrenEnd; --iter) {
-        auto &child = *iter;
-
-        status = dispatchToChild(*child, event);
-
-        if (!status.shouldHandle(status.SIBL))
-            break;
-    }
-
-    static_assert(!focusOnEvent<RenderEvent>);
-
-    return status.update();
-}
-
-// FocusUpdates should only be passed to the active child
-template <>
-Widget::EventStatus Group::_processEvent(const FocusUpdateEvent &event) {
-    EventStatus status = Widget::dispatchEvent(event);
-
-    if (!status.shouldHandle(status.NODE))
-        return status.update();
-
-    if (children.isEmpty())
-        return status.update();
-
-    status = dispatchToChild(*children.front(), event);
-
-    return status.update();
-}
-
 
 #define EVENTS_DSL_ITEM_(NAME)          \
     EVENT_HANDLER_IMPL(Group, NAME) {   \

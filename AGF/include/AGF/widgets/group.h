@@ -16,9 +16,15 @@ public:
 
     Group(Widget *parent_, const Rect<double> &region_);
 
-    void addChild(Widget *child);
+    template <typename T, typename ... As>
+    T &createChild(const Rect<double> &relRegion, As &&... args) {
+        static_assert(std::is_base_of_v<Widget, T>);
 
-    void clearChildren();
+        // TODO: Maybe disallow overflow?
+        Widget &child = *children.insertBack(new T(this, region.relRect(relRegion, true), std::forward<As>(args)...));
+
+        return dynamic_cast<T &>(child);
+    }
 
     #define EVENTS_DSL_ITEM_(NAME) \
         EVENT_HANDLER_OVERRIDE(NAME)
@@ -30,8 +36,14 @@ protected:
     template <typename T>
     static constexpr bool focusOnEvent = false;
 
+    // TODO: A public alternative
+    void addChild(Widget *child);
+
+    // TODO: Same
+    void clearChildren();
+
     template <typename T>
-    EventStatus _processEvent(const T &event) {
+    inline EventStatus _processEvent(const T &event) {
         EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE))
@@ -65,10 +77,48 @@ template <>
 constexpr bool Group::focusOnEvent<MouseClickEvent> = true;
 
 
+// Render event has to be handled separately, because it works in reverse
 template <>
-Widget::EventStatus Group::_processEvent(const RenderEvent &event);
+inline Widget::EventStatus Group::_processEvent(const RenderEvent &event) {
+    EventStatus status = Widget::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE))
+        return status.update();
+
+    static_assert(RenderEvent::demands_modification);
+    RenderEvent subEvent = event.createSubEvent(region);
+
+    auto childrenEnd = children.end();  // We rely on our loop being cyclic
+    for (auto iter = --children.end(); iter != childrenEnd; --iter) {
+        auto &child = *iter;
+
+        status = child->dispatchEvent(subEvent);
+
+        if (!status.shouldHandle(status.SIBL))
+            break;
+    }
+
+    static_assert(!focusOnEvent<RenderEvent>);
+
+    return status.update();
+}
+
+
+// FocusUpdates should only be passed to the active child
 template <>
-Widget::EventStatus Group::_processEvent(const FocusUpdateEvent &event);
+inline Widget::EventStatus Group::_processEvent(const FocusUpdateEvent &event) {
+    EventStatus status = Widget::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE))
+        return status.update();
+
+    if (children.isEmpty())
+        return status.update();
+
+    status = dispatchToChild(*children.front(), event);
+
+    return status.update();
+}
 
 
 }

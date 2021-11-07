@@ -25,12 +25,19 @@ void MyApp::init(int argc, const char **argv) {
     using abel::gui::Rect;
 
     Group *grp = new Group(nullptr, Rect<double>::wh(0, 0, 140, 170));
-    Button *btn1 = new Button(nullptr, Rect<double>::wh(20, 20, 100, 60), "Button one");
-    btn1->sigClick += [](){ DBG("Knopochka"); return false; };
-    Button *btn2 = new Button(nullptr, Rect<double>::wh(20, 90, 100, 60), "Button two");
-    btn2->sigClick += [](){ static unsigned cnt = 4; DBG("Another knopochka"); return !(--cnt); };
-    grp->addChild(btn1);
-    grp->addChild(btn2);
+
+    Button &btn1 = grp->createChild<Button>(Rect<double>::wh(20, 20, 100, 60), "Button one");
+    btn1.sigClick += [](){
+        DBG("Knopochka"); return false;
+    };
+
+    Button &btn2 = grp->createChild<Button>(Rect<double>::wh(20, 90, 100, 60), "Button two");
+    btn2.sigClick += [](){
+        static unsigned cnt = 5;
+        DBG("Another knopochka (%u presses left)", cnt - 1);
+        return !(--cnt);
+    };
+
     mainWidget = grp;
 
     Application::init(argc, argv);

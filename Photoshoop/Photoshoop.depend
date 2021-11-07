@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1636214304 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
+1636281261 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
 	<AGF/llgui.h>
 	"app.h"
 	<AGF/widgets/all.h>
@@ -14,7 +14,7 @@
 	<typeinfo>
 	<cstdlib>
 
-1636220018 d:\workspace\.mipt\s3\agf\include\agf\application.h
+1636278295 d:\workspace\.mipt\s3\agf\include\agf\application.h
 	<cassert>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -52,7 +52,7 @@
 	<ACL/general.h>
 	<memory>
 
-1636214249 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+1636279603 d:\workspace\.mipt\s3\agf\include\agf\widget.h
 	<ACL/general.h>
 	<ACL/signal.h>
 	<AGF/events.h>
@@ -61,7 +61,7 @@
 	<ACL/unique_ptr.h>
 	<AGF/events.dsl.h>
 
-1636213433 d:\workspace\.mipt\s3\agf\include\agf\events.h
+1636275162 d:\workspace\.mipt\s3\agf\include\agf\events.h
 	<AGF/widget_event.h>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -126,14 +126,14 @@
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
 
-1635694003 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+1636275363 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<ACL/gui/color.h>
 	<ACL/gui/rect.h>
 
-1636219743 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
+1636279957 d:\workspace\.mipt\s3\agf\include\agf\widgets\button.h
 	<AGF/widget.h>
 	<AGF/widgets/static_group.h>
 	<AGF/widgets/rectangle.h>
@@ -142,7 +142,7 @@
 1636138691 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
 	<AGF/widget.h>
 
-1636138706 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
+1636230433 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
 	<AGF/widget.h>
 
 1636133034 d:\workspace\.mipt\s3\agf\include\agf\widgets\all.h
@@ -152,13 +152,12 @@
 	<AGF/widgets/label.h>
 	<AGF/widgets/rectangle.h>
 
-1636204743 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
+1636281349 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
 	<AGF/widget.h>
 	<ACL/list.h>
-	<ACL/debug.h>
 	<AGF/events.dsl.h>
 
-1635924867 d:\workspace\.mipt\s3\acl\include\acl\list.h
+1636281017 d:\workspace\.mipt\s3\acl\include\acl\list.h
 	<ACL/general.h>
 	<ACL/vector.h>
 	<utility>
@@ -174,7 +173,7 @@
 
 1635925026 d:\workspace\.mipt\s3\acl\include\acl\list_iterator.tpl.h
 
-1636204963 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
+1636281104 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
 	<AGF/widget.h>
 	<ACL/list.h>
 	<ACL/type_traits.h>
