@@ -54,8 +54,8 @@ public:
     constexpr void  y(T val) noexcept { y_ = val; }
     constexpr void  w(T val) noexcept { w_ = val; }
     constexpr void  h(T val) noexcept { h_ = val; }
-    constexpr void x0(T val) noexcept { x_ = val; }
-    constexpr void y0(T val) noexcept { y_ = val; }
+    constexpr void x0(T val) noexcept { x_ = val; w_ += val; }
+    constexpr void y0(T val) noexcept { y_ = val; h_ += val; }
     constexpr void x1(T val) noexcept { w_ = val - x_; }
     constexpr void y1(T val) noexcept { h_ = val - y_; }
 
@@ -82,13 +82,19 @@ public:
 
     using Vector2T = typename abel::math::Vector2<typename abel::make_signed_t<T>>;
 
-    constexpr Vector2T getStart() const { return Vector2T(x0(), y0()); }
-    constexpr Vector2T getEnd()   const { return Vector2T(x1(), y1()); }
-    constexpr Vector2T getDiag()  const { return Vector2T(w(), h());   }
+    // Pos and Start differ!
+    // Pos refers to x and y of wh, whereas Start refers to x0 and y0 of se
+    // Thus, setting them maintains either Diag or End, respectively
 
-    constexpr void setStart(const Vector2T &value) const { x0() = value.x(); y0() = value.y(); }
-    constexpr void setEnd  (const Vector2T &value) const { x1() = value.x(); y1() = value.y(); }
-    constexpr void setDiag (const Vector2T &value) const { w () = value.x(); h () = value.y(); }
+    constexpr Vector2T getStart() const { return Vector2T(x0(), y0()); }
+    constexpr Vector2T getEnd  () const { return Vector2T(x1(), y1()); }
+    constexpr Vector2T getPos  () const { return Vector2T(x (), y ()); }
+    constexpr Vector2T getDiag () const { return Vector2T(w (), h ()); }
+
+    constexpr void setStart(const Vector2T &value) { x0(value.x()); y0(value.y()); }
+    constexpr void setEnd  (const Vector2T &value) { x1(value.x()); y1(value.y()); }
+    constexpr void setPos  (const Vector2T &value) { x (value.x()); y (value.y()); }
+    constexpr void setDiag (const Vector2T &value) { w (value.x()); h (value.y()); }
 
     constexpr Vector2T getVertex(bool xCoord, bool yCoord) const {
         return Vector2T(x() + xCoord * w(),
@@ -111,8 +117,8 @@ public:
     constexpr Rect(const Vector2T &from, const Vector2T &to, int) noexcept {
         x0(from.x());
         y0(from.y());
-        x1(to.x());
-        y1(to.y());
+        x1(to  .x());
+        y1(to  .y());
     }
 
     static constexpr Rect se(const Vector2T &start, const Vector2T &end) noexcept {
@@ -125,7 +131,7 @@ public:
     }
 
     constexpr Rect relRect(const Rect &relative, bool allowOverflow = false) const noexcept {
-        Rect result = Rect::wh(getStart() + relative.getStart(), relative.getDiag());
+        Rect result = Rect::wh(getPos() + relative.getPos(), relative.getDiag());
 
         if (!allowOverflow) {
             result.clamp(*this);
@@ -135,13 +141,92 @@ public:
     }
 
     constexpr Rect relVec(const Vector2T &relative, bool allowOverflow = false) const noexcept {
-        Vector2T result = getStart() + relative;
+        Vector2T result = getPos() + relative;
 
         if (!allowOverflow) {
             result.clamp(getDiag());
         }
 
         return result;
+    }
+
+    constexpr Rect &pad(int left, int right, int top, int bottom) noexcept {
+        x0(x0() + left);
+        x1(x1() - right);
+        y0(y0() + top);
+        y1(y1() - bottom);
+
+        return *this;
+    }
+
+    constexpr Rect &pad(int horizontal, int vertical) noexcept {
+        return pad(horizontal, horizontal, vertical, vertical);
+    }
+
+    constexpr Rect &pad(int amount) noexcept {
+        return pad(amount, amount);
+    }
+
+    constexpr Rect &padH(int amount) noexcept {
+        return pad(amount, 0);
+    }
+
+    constexpr Rect &padV(int amount) noexcept {
+        return pad(0, amount);
+    }
+
+    constexpr Rect padded(int left, int right, int top, int bottom) const noexcept {
+        Rect result{*this};
+
+        return result.pad(left, right, top, bottom);
+    }
+
+    constexpr Rect padded(int horizontal, int vertiacal) noexcept {
+        Rect result{*this};
+
+        return result.pad(horizontal, vertiacal);
+    }
+
+    constexpr Rect padded(int amount) noexcept {
+        Rect result{*this};
+
+        return result.pad(amount);
+    }
+
+    constexpr Rect paddedH(int amount) noexcept {
+        Rect result{*this};
+
+        return result.padH(amount);
+    }
+
+    constexpr Rect paddedV(int amount) noexcept {
+        Rect result{*this};
+
+        return result.padV(amount);
+    }
+
+    constexpr Rect &operator+=(const Vector2T &delta) {
+        setPos(getPos() + delta);
+
+        return *this;
+    }
+
+    constexpr Rect &operator-=(const Vector2T &delta) {
+        setPos(getPos() - delta);
+
+        return *this;
+    }
+
+    constexpr Rect operator+(const Vector2T &delta) {
+        Rect result{*this};
+
+        return result += delta;
+    }
+
+    constexpr Rect operator-(const Vector2T &delta) {
+        Rect result{*this};
+
+        return result -= delta;
     }
 
 protected:

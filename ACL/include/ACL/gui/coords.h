@@ -19,7 +19,7 @@ public:
         screenPlane{screenPlane_}, virtualPlane{virtualPlane_} {
 
         if constexpr (!NOVALIDATE) {
-            if (!screenPlane.getStart().isZero()) {
+            if (!screenPlane.getPos().isZero()) {
                 DBG("Weird coordinate system chosen. "
                     "Are you sure you don't want the screen coordinates "
                     "to start at the top left corner?");
@@ -32,7 +32,7 @@ public:
         screenPlane{screenPlane_}, virtualPlane{} {
 
         if constexpr (!NOVALIDATE) {
-            if (!screenPlane.getStart().isZero()) {
+            if (!screenPlane.getPos().isZero()) {
                 DBG("Weird coordinate system chosen. "
                     "Are you sure you don't want the screen coordinates "
                     "to start at the top left corner?");
@@ -65,16 +65,15 @@ public:
     }
 
     constexpr Vector2d screen2virt(const Vector2d &screen) const {
-
         return virtualPlane.getStart() + scale_s2v(screen - screenPlane.getStart());
     }
 
     constexpr Rect<double> virt2screen(const Rect<double> &virt) const {
-        return Rect<double>::wh(virt2screen(virt.getStart()), scale_v2s(virt.getDiag()));
+        return Rect<double>::wh(virt2screen(virt.getPos()), scale_v2s(virt.getDiag()));
     }
 
     constexpr Rect<double> screen2virt(const Rect<double> &screen) const {
-        return Rect<double>::wh(screen2virt(screen.getStart()), scale_s2v(screen.getDiag()));
+        return Rect<double>::wh(screen2virt(screen.getPos()), scale_s2v(screen.getDiag()));
     }
 
     constexpr const Rect<double> &getScreenPlane () const { return screenPlane;  }
