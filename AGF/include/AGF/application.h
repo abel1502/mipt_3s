@@ -84,7 +84,8 @@ public:
     constexpr bool isInitialized() const noexcept { return initialized; }
        inline bool isFinished   () const noexcept { return finished;    }
 
-    constexpr bool isMouseCaptured() const noexcept { return mouseCaptureHolder; }
+    constexpr bool isMouseCaptured()               const noexcept { return mouseCaptureHolder; }
+    constexpr bool isMouseCaptured(Widget *widget) const noexcept { return mouseCaptureHolder == widget; }
     void releaseMouse();
     void releaseMouse(Widget *widget);
     void captureMouse(Widget *widget);
