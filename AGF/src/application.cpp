@@ -172,26 +172,24 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
     } return 0;
 
     case WM_MOUSEMOVE: {
+        static bool lastPosSet = false;
+        static Vector2d lastPos{0, 0};
+
         Widget *target = isMouseCaptured() ? mouseCaptureHolder : mainWidget.get();
+        assert(target);
 
-        Vector2d pos1{GET_X_LPARAM(lParam),
-                      GET_Y_LPARAM(lParam)};
+        Vector2d curPos{GET_X_LPARAM(lParam),
+                        GET_Y_LPARAM(lParam)};
 
-        MOUSEMOVEPOINT mpIn{GET_X_LPARAM(lParam),
-                            GET_Y_LPARAM(lParam)/*,
-                            GetMessageTime()*/};
+        // curPos = wnd->getMousePos();
 
-        MOUSEMOVEPOINT mpOut{};
+        if (!lastPosSet) {
+            lastPos = curPos;
+            lastPosSet = true;
+        }
 
-        int res = GetMouseMovePointsEx(sizeof(MOUSEMOVEPOINT), &mpIn, &mpOut, 1, GMMP_USE_DISPLAY_POINTS);
-        REQUIRE(res > 0);
-        if (res < 1)
-            mpOut = mpIn;  // We'll just pretend the mouse didn't move initially
-
-        target->dispatchEvent(MouseMoveEvent{
-            Vector2d{mpIn .x, mpIn .y},
-            Vector2d{mpOut.x, mpOut.y},
-            MouseAttrs{wParam});
+        target->dispatchEvent(MouseMoveEvent{lastPos, curPos, MouseAttrs{wParam}});
+        lastPos = curPos;
     } return 0;
 
     case WM_CLOSE: {
