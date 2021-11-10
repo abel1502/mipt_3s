@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1636288438 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
+1636366994 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
 	<AGF/llgui.h>
 	"app.h"
 	<AGF/widgets/all.h>
@@ -52,7 +52,7 @@
 	<ACL/general.h>
 	<memory>
 
-1636279603 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+1636314216 d:\workspace\.mipt\s3\agf\include\agf\widget.h
 	<ACL/general.h>
 	<ACL/signal.h>
 	<AGF/events.h>
@@ -99,12 +99,12 @@
 
 1635319522 d:\workspace\.mipt\s3\acl\include\acl\math\vector.tpl.h
 
-1636311499 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+1636366460 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
 	<ACL/math/vector.h>
 	<ACL/type_traits.h>
 	<ACL/math/cmath.h>
 
-1634465450 d:\workspace\.mipt\s3\acl\include\acl\gui\coords.h
+1636314080 d:\workspace\.mipt\s3\acl\include\acl\gui\coords.h
 	<ACL/general.h>
 	<ACL/math/vector.h>
 	<ACL/gui/rect.h>
@@ -153,7 +153,7 @@
 	<AGF/widgets/rectangle.h>
 	<AGF/widgets/window.h>
 
-1636294538 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
+1636362544 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
 	<AGF/widget.h>
 	<ACL/list.h>
 	<AGF/events.dsl.h>
@@ -175,7 +175,7 @@
 
 1635925026 d:\workspace\.mipt\s3\acl\include\acl\list_iterator.tpl.h
 
-1636294680 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
+1636314607 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
 	<AGF/widget.h>
 	<ACL/list.h>
 	<ACL/type_traits.h>
@@ -193,7 +193,7 @@
 	<typeinfo>
 	<cstdlib>
 
-1636311480 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
+1636369286 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
 	<AGF/widget.h>
 	<AGF/widgets/group.h>
 	<AGF/widgets/static_group.h>
