@@ -304,6 +304,10 @@ public:
         std::swap(capacity, other.capacity);
     }
 
+    friend constexpr void swap(vector &a, vector &b) noexcept {
+        a.swap(b);
+    }
+
     /// Keep only the elements that match the predicate. Maintains the order of the ones remaining
     template <typename P>
     constexpr void filter(P predicate) {
@@ -362,12 +366,6 @@ protected:
 };
 
 
-}
-
-
-template <typename T>
-constexpr void std::swap(abel::vector<T> &a, abel::vector<T> &b) noexcept {
-    a.swap(b);
 }
 
 

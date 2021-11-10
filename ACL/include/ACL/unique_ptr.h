@@ -107,6 +107,10 @@ public:
         std::swap(ptr, other.ptr);
     }
 
+    friend constexpr void swap(unique_ptr &a, unique_ptr &b) noexcept {
+        a.swap(b);
+    }
+
     template <typename ... As>
     void emplace(As &&... args) {
         reset(new T(std::forward<As>(args)...));
@@ -137,12 +141,6 @@ template <typename T, typename Deleter>
 class unique_ptr<T[], Deleter>;
 
 
-}
-
-
-template <typename T>
-constexpr void std::swap(abel::unique_ptr<T> &a, abel::unique_ptr<T> &b) noexcept {
-    a.swap(b);
 }
 
 
