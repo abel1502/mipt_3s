@@ -27,10 +27,11 @@ EVENT_CLS_DECL_(Render) {
     Rect<double> region;  // The (suggested) limiting bounds, by default, the borders of the parent widget
     Texture &target;
 
-    constexpr RenderEvent(const Rect<double> &region_, Texture &target_) :
+
+    constexpr RenderEvent(const Rect<double> &region_, Texture &target_) noexcept :
         region{region_}, target{target_} {}
 
-    constexpr RenderEvent createSubEvent(const Rect<double> &region_) const {
+    constexpr RenderEvent createSubEvent(const Rect<double> &region_) const noexcept {
         RenderEvent subEvent{*this};
 
         subEvent.region = region_;
@@ -49,6 +50,7 @@ ResizeEvent {
 
     Rect<double> newRegion;  // This refers to the new size of the widget that gets this event
 
+
     constexpr ResizeEvent(const Rect<double> &newRegion_) :
         newRegion{newRegion_} {}
 
@@ -64,7 +66,8 @@ ResizeEvent {
 EVENT_CLS_DECL_(FocusUpdate) {
     bool focus;
 
-    constexpr FocusUpdateEvent(bool focus_) :
+
+    constexpr FocusUpdateEvent(bool focus_) noexcept :
         focus{focus_} {}
 };
 
@@ -78,7 +81,8 @@ EVENT_CLS_DECL_(MouseClick) {
     MouseBtn button;
     MouseClickType type;
 
-    constexpr MouseClickEvent(const Vector2d &pos_, const MouseAttrs &attrs_, MouseBtn button_, MouseClickType type_) :
+
+    constexpr MouseClickEvent(const Vector2d &pos_, const MouseAttrs &attrs_, MouseBtn button_, MouseClickType type_) noexcept :
         pos{pos_}, attrs{attrs_}, button{button_}, type{type_} {}
 };
 
@@ -88,8 +92,12 @@ EVENT_CLS_DECL_(MouseMove) {
     MouseAttrs attrs;
 
 
-    constexpr MouseMoveEvent(const Vector2d &pos0_, const Vector2d &pos1_, const MouseAttrs &attrs_) :
+    constexpr MouseMoveEvent(const Vector2d &pos0_, const Vector2d &pos1_, const MouseAttrs &attrs_) noexcept :
         pos0{pos0_}, pos1{pos1_}, attrs{attrs_} {}
+
+    constexpr Vector2d getDelta() const noexcept {
+        return pos1 - pos0;
+    }
 };
 
 EVENT_CLS_DECL_(Keyboard) {};
