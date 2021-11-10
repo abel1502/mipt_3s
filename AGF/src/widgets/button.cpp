@@ -9,7 +9,7 @@ namespace abel::gui::widgets {
 
 Button::Button(Widget *parent_, const Rect<double> &region_, const char *text_) :
     Base(parent_, region_,
-         new Label    (this, region_, text_, region_.h() * 0.3),
+         new Label    (this, region_, text_, /*region_.h() * 0.3*/ 16),
          new Rectangle(this, region_, COL_DEFAULT)) {}
 
 
@@ -24,7 +24,7 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
 
     assert(areChildrenSet());
 
-    // Intentionally skipping Button::dispatchEvent, not to pass this to our children
+    // Intentionally skipping StaticGroup::dispatchEvent, not to pass this to our children
     EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))
@@ -49,10 +49,7 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
 
 
 void Button::onMouseDown(const MouseClickEvent &, bool hit) {
-    if (isDown)
-        return;
-
-    assert(hit);  // The other way shouldn't be possible
+    assert(hit && !isDown);  // The other way shouldn't be possible
 
     isDown = true;
 
@@ -61,8 +58,7 @@ void Button::onMouseDown(const MouseClickEvent &, bool hit) {
 }
 
 void Button::onMouseUp(const MouseClickEvent &, bool hit) {
-    if (!isDown)
-        return;
+    assert(isDown);
 
     isDown = false;
 
