@@ -54,8 +54,8 @@ public:
     constexpr void  y(T val) noexcept { y_ = val; }
     constexpr void  w(T val) noexcept { w_ = val; }
     constexpr void  h(T val) noexcept { h_ = val; }
-    constexpr void x0(T val) noexcept { x_ = val; w_ += val; }
-    constexpr void y0(T val) noexcept { y_ = val; h_ += val; }
+    constexpr void x0(T val) noexcept { w_ += x_ - val; x_ = val; }
+    constexpr void y0(T val) noexcept { h_ += y_ - val; y_ = val; }
     constexpr void x1(T val) noexcept { w_ = val - x_; }
     constexpr void y1(T val) noexcept { h_ = val - y_; }
 
