@@ -167,7 +167,7 @@ public:
     //--------------------------------------------------------------------------------
     // Inserts
     // TODO: Comments with actual eventual headers!
-    #define DECLARE_INSERT_BODY_(TARGETS_INIT, MARK_USED_ARGS) {    \
+    #define DIB_(TARGETS_INIT, MARK_USED_ARGS) {                    \
         const idx_t idx = claimFree();                              \
         TARGETS_INIT                                                \
         if (target0 >= buf.getSize() || target1 >= buf.getSize())   \
@@ -180,39 +180,39 @@ public:
     }
 
     #define DIB_AFTER_(TARGET, MARK_USED_ARGS)                      \
-        DECLARE_INSERT_BODY_(                                       \
+        DIB_(                                                       \
             const idx_t target0 = (TARGET);                         \
             const idx_t target1 = buf[target0].next;,               \
             MARK_USED_ARGS                                          \
         )
 
     #define DIB_BEFORE_(TARGET, MARK_USED_ARGS)                     \
-        DECLARE_INSERT_BODY_(                                       \
+        DIB_(                                                       \
             const idx_t target1 = (TARGET);                         \
             const idx_t target0 = buf[target1].prev;,               \
             MARK_USED_ARGS                                          \
         )
 
     #define DECLARE_INSERTS_(NAME, CHECKS, BODY_MACRO, TARGET, ...) \
-        T &insert##NAME(__VA_ARGS__) {                            \
+        T &insert##NAME(__VA_ARGS__) {                              \
             CHECKS;                                                 \
             BODY_MACRO((TARGET), T{})                               \
         }                                                           \
                                                                     \
-        T &insert##NAME(__VA_ARGS__ __VA_OPT__ (,)                \
+        T &insert##NAME(__VA_ARGS__ __VA_OPT__ (,)                  \
                           const T &value) {                         \
             CHECKS;                                                 \
             BODY_MACRO((TARGET), value)                             \
         }                                                           \
                                                                     \
-        T &insert##NAME(__VA_ARGS__ __VA_OPT__ (,)                \
+        T &insert##NAME(__VA_ARGS__ __VA_OPT__ (,)                  \
                           T &&value) {                              \
             CHECKS;                                                 \
             BODY_MACRO((TARGET), std::move(value))                  \
         }                                                           \
                                                                     \
         template <typename ... Ts>                                  \
-        T &insert##NAME##Emplace(__VA_ARGS__ __VA_OPT__ (,)       \
+        T &insert##NAME##Emplace(__VA_ARGS__ __VA_OPT__ (,)         \
                                    Ts &&... args) {                 \
             CHECKS;                                                 \
             BODY_MACRO((TARGET), std::forward<Ts>(args)...)         \
@@ -235,7 +235,7 @@ public:
     #undef DECLARE_INSERTS_
     #undef DIB_BEFORE_
     #undef DIB_AFTER_
-    #undef DECLARE_INSERT_BODY_
+    #undef DIB_
     //--------------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------------
@@ -321,6 +321,8 @@ public:
     public:
     //--------------------------------------------------------------------------------
 
+    //--------------------------------------------------------------------------------
+    // Swaps
     inline void swapElems(const iterator &iterA,
                           const iterator &iterB) {
         demandValidIter(iterA);
@@ -358,8 +360,52 @@ public:
         std::swap(buf[ idxA].prev, buf[ idxB].prev);
         std::swap(buf[ idxA].next, buf[ idxB].next);
     }
-
     public:
+    //--------------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------------
+    // Moves
+    #define DMB_(IDXS_INIT) {                           \
+        IDXS_INIT;                                      \
+        if (from >= buf.getSize() ||                    \
+            to0  >= buf.getSize() ||                    \
+            to1  >= buf.getSize())                      \
+            throw error("Target index out of range");   \
+        buf[buf[from].prev].next = buf[from].next;      \
+        buf[buf[from].next].prev = buf[from].prev;      \
+        buf[from].prev = to0;                           \
+        buf[from].next = to1;                           \
+        buf[to0].next = from;                           \
+        buf[to1].prev = from;                           \
+    }
+
+    #define DMB_BIDIR_(NAME0, NAME1, TARGET, FROM_INIT, ...)    \
+        void move##NAME0(__VA_ARGS__) {                         \
+            DMB_(                                               \
+                FROM_INIT;                                      \
+                idx_t to1 = (TARGET);                           \
+                idx_t to0 = buf[to1].prev;                      \
+            )                                                   \
+        }                                                       \
+                                                                \
+        void move##NAME1(__VA_ARGS__) {                         \
+            DMB_(                                               \
+                FROM_INIT;                                      \
+                idx_t to0 = (TARGET);                           \
+                idx_t to1 = buf[to0].next;                      \
+            )                                                   \
+        }
+
+    DMB_BIDIR_(Back, Front, 0,
+               demandValidIter(iter);
+               idx_t from = ptrToIdx(iter.node);,
+               const iterator &iter);
+
+    // TODO: Finish
+
+    #undef DMB_BIDIR_
+    #undef DMB_
+    //--------------------------------------------------------------------------------
 
     constexpr bool isEmpty() const noexcept {
         return size == 0;
