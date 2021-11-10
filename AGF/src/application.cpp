@@ -82,6 +82,11 @@ void Application::captureMouse(Widget *widget) {
     mouseCaptureHolder = widget;
 }
 
+void Application::demandRedraw() {
+    if (wnd)
+        wnd->demandRedraw();
+}
+
 
 LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     if (finished) {
@@ -120,7 +125,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         }
 
         abel::gui::Texture texture{*wnd};
-        texture.clear(Color::WHITE);  // TODO: Remove?
+        texture.clear(Color::WHITE);  // TODO: Remove, or maybe move to WM_ERASEBKGND?
 
         mainWidget->dispatchEvent(RenderEvent{texture.getScreenRect(), texture});
 

@@ -24,7 +24,7 @@ public:
 
     using app_ptr_t = unique_ptr<Application>;
 
-    static constexpr uint64_t FPS_LIMIT = 60;
+    static constexpr uint64_t FPS_LIMIT = 0;
 
 
     Signal<void (double deltaT)> sigTick{};
@@ -91,6 +91,8 @@ public:
     void releaseMouse();
     void releaseMouse(Widget *widget);
     void captureMouse(Widget *widget);
+
+    void demandRedraw();
 
 protected:
     static app_ptr_t instance;
