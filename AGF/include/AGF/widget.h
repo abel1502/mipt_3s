@@ -56,20 +56,26 @@ public:
         constexpr EventStatus(Level stopLvl_) :
             stopLvl{stopLvl_}, handled{true} {}
 
-        static constexpr EventStatus skip()            { return EventStatus{     }; }
-        static constexpr EventStatus done()            { return EventStatus{CONT }; }
-        static constexpr EventStatus stop(Level level) { // assert(level != SIBL);  // TODO: Not sure about this, maybe should ban
-                                                         return EventStatus{level}; }
+        static constexpr EventStatus skip()            noexcept { return EventStatus{     }; }
+        static constexpr EventStatus done()            noexcept { return EventStatus{CONT }; }
+        static constexpr EventStatus stop(Level level) noexcept { // assert(level != SIBL);  // TODO: Not sure about this, maybe should ban
+                                                                  return EventStatus{level}; }
 
-        constexpr bool shouldHandle(Level level) { return level > stopLvl; }
+        constexpr bool shouldHandle(Level level) const noexcept { return level > stopLvl; }
 
-        // TODO: Rework implementation and perhaps usage
-        constexpr EventStatus &update(bool handled_ = false) {
-            handled |= handled_;
+        /// Called on the status returned from a child.
+        /// Modifies the status to be correct for the current event
+        /// Returns whether the children handling should cease.
+        constexpr bool update() {
+            bool shouldStop = !shouldHandle(SIBL);
+
             if (stopLvl <= SIBL)
                 stopLvl = CONT;
-            return *this;
+
+            return shouldStop;
         }
+
+        constexpr EventStatus &markHandled() { handled = true; return *this; }
 
     };
     #pragma pack(pop)

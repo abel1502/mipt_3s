@@ -69,7 +69,7 @@ protected:
         EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE))
-            return status.update();
+            return status;
 
         static_assert(RenderEvent::demands_modification);
         RenderEvent subEvent = event.createSubEvent(region);
@@ -80,13 +80,13 @@ protected:
 
             status = child->dispatchEvent(subEvent);
 
-            if (!status.shouldHandle(status.SIBL))
+            if (status.update())
                 break;
         }
 
         static_assert(!eventCapturesFocus<RenderEvent>);
 
-        return status.update();
+        return status;
     }
 
     // FocusUpdates should only be passed to the active child
@@ -94,14 +94,14 @@ protected:
         EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE))
-            return status.update();
+            return status;
 
         if (children.isEmpty())
-            return status.update();
+            return status;
 
         status = dispatchToChild(*children.front(), event);
-
-        return status.update();
+        status.update();
+        return status;
     }
 
     template <typename T>
@@ -115,13 +115,13 @@ protected:
         EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE))
-            return status.update();
+            return status;
 
         auto targetChild = children.begin();
         for (auto &child : children) {
             status = dispatchToChild(*child, event);
 
-            if (!status.shouldHandle(status.SIBL))
+            if (status.update())
                 break;
 
             ++targetChild;
@@ -133,7 +133,7 @@ protected:
             }
         }
 
-        return status.update();
+        return status;
     }
 
     void focusChild(const typename decltype(children)::iterator &child)  {

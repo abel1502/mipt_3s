@@ -28,12 +28,13 @@ void Rectangle::bakeTexture() {
 EVENT_HANDLER_IMPL(Rectangle, Render) {
     EventStatus status = Widget::dispatchEvent(event);
 
-    if (status.shouldHandle(status.NODE)) {
-        assert(texture);
-        event.target.embed(region, *texture);
-    }
+    if (!status.shouldHandle(status.NODE))
+        return status;
 
-    return status.update();
+    assert(texture);
+    event.target.embed(region, *texture);
+
+    return EventStatus::done();
 }
 
 }

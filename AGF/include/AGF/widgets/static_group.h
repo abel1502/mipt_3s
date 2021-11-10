@@ -125,8 +125,8 @@ protected:
 
         EventStatus status = dispatchToChild(child<I>(), event);
 
-        if constexpr (I + 1 < Types::size) {
-            if (status.shouldHandle(status.SIBL)) {
+        if (!status.update()) {
+            if constexpr (I + 1 < Types::size) {
                 return _dispatchToChildren<T, I + 1>(event);
             }
         }
@@ -139,7 +139,7 @@ protected:
         if constexpr (I + 1 < Types::size) {
             EventStatus status = _dispatchToChildren<I + 1>(event);
 
-            if (!status.shouldHandle(status.SIBL)) {
+            if (status.update()) {
                 return status;
             }
         }
@@ -161,11 +161,11 @@ protected:
         EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE))
-            return status.update();
+            return status;
 
         REQUIRE(areChildrenSet());
 
-        return _dispatchToChildren(event).update();
+        return _dispatchToChildren(event);
     }
 
 };

@@ -28,15 +28,15 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
     EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))
-        return status.update();
+        return status;
 
     bool hit = region.contains(event.pos);
 
     if (!hit && !Application::getInstance().isMouseCaptured(this))
-        return status.update();
+        return status;
 
     if (event.button != decltype(event.button)::Left)
-        return status.update();
+        return status;
 
     if (event.type == decltype(event.type)::Down) {
         onMouseDown(event, hit);

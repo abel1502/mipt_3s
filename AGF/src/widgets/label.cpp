@@ -48,11 +48,11 @@ EVENT_HANDLER_IMPL(Label, Render) {
     EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))
-        return status.update();
+        return status;
 
     event.target.setFont("SEGOEUI", deducedFontSize);
     event.target.drawText(region, text);
-    return status.update(true);
+    return EventStatus::done();
 }
 
 

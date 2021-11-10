@@ -18,33 +18,31 @@ Header::Header(Window *parent_, const Rect<double> &region_, const char *title_)
          ) {}
 
 EVENT_HANDLER_IMPL(Header, MouseMove) {
+    if (grabbed) {
+        sigDrag(event.getDelta());
+        return EventStatus::stop(EventStatus::TREE);
+    }
+
     EventStatus status = Base::dispatchEvent(event);
 
-    // TODO: Verify that this works as I intend it to
-    if (!status.shouldHandle(NODE)) {
-        return status.update();
-    }
+    /*if (!status.shouldHandle(status.NODE)) {
+        return status;
+    }*/
 
-    if (!grabbed) {
-        return status.update();
-    }
-
-    sigDrag(event.getDelta());
-
-    return EventStatus::stop(EventStatus::TREE);
+    return status;
 }
 
 EVENT_HANDLER_IMPL(Header, MouseClick) {
     EventStatus status = Base::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE))
-        return status.update();
+        return status;
 
     if (!region.contains(event.pos) && !Application::getInstance().isMouseCaptured(this))
-        return status.update();
+        return status;
 
     if (event.button != decltype(event.button)::Left)
-        return status.update();
+        return status;
 
     if (event.type == decltype(event.type)::Down) {
         onMouseDown(event);
