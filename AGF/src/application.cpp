@@ -106,6 +106,19 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
     switch (uMsg) {
         // TODO: Translate applicable ones to widget_events
     case WM_PAINT: {
+        if constexpr (FPS_LIMIT) {
+            static uint64_t renderTimer = 0;
+            static uint64_t lastTickCount = 0;
+
+            uint64_t curTickCount = GetTickCount64();
+            renderTimer += curTickCount - lastTickCount;
+            lastTickCount = curTickCount;
+
+            if (renderTimer < 1000 / FPS_LIMIT)
+                return 0;
+            renderTimer = 0;
+        }
+
         abel::gui::Texture texture{*wnd};
         texture.clear(Color::WHITE);  // TODO: Remove?
 

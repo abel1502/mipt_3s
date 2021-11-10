@@ -24,6 +24,8 @@ public:
 
     using app_ptr_t = unique_ptr<Application>;
 
+    static constexpr uint64_t FPS_LIMIT = 60;
+
 
     Signal<void (double deltaT)> sigTick{};
     Signal<void (const MouseClickEvent &event)> sigMouseClick{};  // TODO: Remove?
