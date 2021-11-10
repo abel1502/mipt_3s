@@ -77,8 +77,5 @@
     <ClInclude Include="include\ACL\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ACL\va_opt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

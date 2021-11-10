@@ -40,7 +40,6 @@
     <ClInclude Include="include\ACL\template_trinkets.h" />
     <ClInclude Include="include\ACL\type_traits.h" />
     <ClInclude Include="include\ACL\unique_ptr.h" />
-    <ClInclude Include="include\ACL\va_opt.h" />
     <ClInclude Include="include\ACL\vector.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
