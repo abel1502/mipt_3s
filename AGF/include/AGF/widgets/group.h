@@ -128,18 +128,19 @@ protected:
         }
 
         if constexpr (eventCapturesFocus<T>) {
-            if (targetChild != children.end()) {
-                focusChild(targetChild);
-            }
+            focusChild(targetChild);
         }
 
         return status;
     }
 
     void focusChild(const typename decltype(children)::iterator &child)  {
+        if (child == children.end() || child == children.begin())
+            return;
+
         children.front()->dispatchEvent(FocusUpdateEvent{false});
 
-        children.swapFront(child);
+        children.moveFront(child);
 
         children.front()->dispatchEvent(FocusUpdateEvent{true});
     }
