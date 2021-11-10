@@ -58,7 +58,8 @@ void Button::onMouseDown(const MouseClickEvent &, bool hit) {
 }
 
 void Button::onMouseUp(const MouseClickEvent &, bool hit) {
-    assert(isDown);
+    if (!isDown)
+        return;
 
     isDown = false;
 
