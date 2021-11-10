@@ -30,17 +30,17 @@ public:
     using Base = StaticGroup<Label, Button, Button>;
     EVENT_HANDLER_USING(Base)
 
-    friend class Window;
+    friend class abel::gui::widgets::Window;
 
     static constexpr unsigned
         HEADER_HEIGHT = 30,
 
         LABEL_TPAD = 0,
         LABEL_BPAD = 0,
-        LABEL_LPAD = 20,
+        LABEL_LPAD = 10,
         BTN_TPAD = 0,
         BTN_BPAD = 0,
-        BTN_WIDTH = 60,
+        BTN_WIDTH = 50,
         BTN_CLOSE_RPAD = LABEL_LPAD,
         BTN_MINIMIZE_RPAD = 0,
 
@@ -48,17 +48,30 @@ public:
         BTN_CLOSE_LDX = BTN_CLOSE_RDX + BTN_WIDTH,
         BTN_MINIMIZE_RDX = BTN_CLOSE_LDX + BTN_MINIMIZE_RPAD,
         BTN_MINIMIZE_LDX = BTN_MINIMIZE_RDX + BTN_WIDTH,
-        LABEL_RPAD = BTN_MINIMIZE_LDX + 20,
+        LABEL_RPAD = BTN_MINIMIZE_LDX + LABEL_LPAD,
 
         MIN_WIDTH = LABEL_RPAD + LABEL_LPAD;
 
 
+    Signal<void (const Vector2d &delta)> sigDrag{};
+
+
     Header(Window *parent_, const Rect<double> &region_, const char *title_);
 
+    EVENT_HANDLER_OVERRIDE(MouseMove)
+
+    EVENT_HANDLER_OVERRIDE(MouseClick)
+
 protected:
+    bool grabbed = false;
+
+
     SGRP_DECLARE_BINDING_I(title, 0)
     SGRP_DECLARE_BINDING_I(closeBtn, 1)
     SGRP_DECLARE_BINDING_I(minimizeBtn, 2)
+
+    void onMouseDown(const MouseClickEvent &event);
+    void onMouseUp  (const MouseClickEvent &event);
 
 };
 
@@ -70,7 +83,7 @@ public:
     static constexpr unsigned
         BORDER_WIDTH = 5;
 
-    friend class Window;
+    friend class abel::gui::widgets::Window;
 
 
     Borders(Window *parent_, const Rect<double> &region_);
@@ -91,23 +104,27 @@ public:
     // friend class Window;
 
 
-    WindowManager(Widget *parent_, const Rect<double> &region_) :
-        Base(parent_, region_) {}
+    WindowManager(Widget *parent_, const Rect<double> &region_);
 
     template <typename C = Window, typename ... As>
-    inline std::enable_if_t<std::is_base_of_v<Window, C>, C> &
+    inline std::enable_if_t<std::is_base_of_v<Window, C>, C &>
     createWindow(Rect<double> relRegion, As &&... args) {
         // relRegion passed by value, since we have to pad it anyway
 
         static constexpr unsigned BORDER_WIDTH = -_impl::Borders::BORDER_WIDTH;
         static constexpr unsigned HEADER_HEIGHT = -_impl::Header::HEADER_HEIGHT;
 
-        return createChild<C>(relRegion.pad(HEADER_HEIGHT, HEADER_HEIGHT, BORDER_WIDTH, HEADER_HEIGHT),
-                              std::forward<As>(args)...);
+        return dynamic_cast<C &>(addChild(
+            new C(nullptr, relRegion.pad(HEADER_HEIGHT,
+                                         HEADER_HEIGHT,
+                                         BORDER_WIDTH,
+                                         HEADER_HEIGHT),
+            std::forward<As>(args)...)
+        ));
     }
 
 protected:
-    using Base::addChild;
+    using Base::createChild;
 
     //
 
@@ -121,6 +138,9 @@ public:
     EVENT_HANDLER_USING(Base)
 
     friend class WindowManager;
+    // TODO: ?
+    friend class _impl::Header;
+    friend class _impl::Borders;
 
 
     inline const WindowManager *getParentPtr() const { return dynamic_cast<WindowManager *>(parent); }
@@ -144,6 +164,22 @@ protected:
 
             REQUIRE(region.h() >= _impl::Header::HEADER_HEIGHT + _impl::Borders::BORDER_WIDTH);
             REQUIRE(region.w() >= _impl::Borders::BORDER_WIDTH * 2 + _impl::Header::MIN_WIDTH);
+
+            contents().staticShift(Vector2d(0, _impl::Header::HEADER_HEIGHT));
+
+            header().closeBtn().sigClick += [](){
+                DBG("Closing.");
+                return false;
+            };
+
+            header().minimizeBtn().sigClick += [](){
+                DBG("Minimizing.");
+                return false;
+            };
+
+            header().sigDrag += [this](const Vector2d &delta){
+                dispatchEvent(MoveEvent(delta));
+            };
         }
 
 };

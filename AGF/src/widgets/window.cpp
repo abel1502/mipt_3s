@@ -10,12 +10,68 @@ namespace _impl {
 Header::Header(Window *parent_, const Rect<double> &region_, const char *title_) :
     Base(parent_, region_,
          new Label(this, region_.padded(LABEL_LPAD, LABEL_RPAD, LABEL_TPAD, LABEL_BPAD),
-                   title_, 14, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS),
+                   title_, 16, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS),
          new Button(this, Rect<double>::se(region_.x1() - BTN_CLOSE_LDX, region_.y0() + BTN_TPAD,
                                            region_.x1() - BTN_CLOSE_RDX, region_.y1()), "x"),
          new Button(this, Rect<double>::se(region_.x1() - BTN_MINIMIZE_LDX, region_.y0() + BTN_TPAD,
                                            region_.x1() - BTN_MINIMIZE_RDX, region_.y1()), "_")
          ) {}
+
+EVENT_HANDLER_IMPL(Header, MouseMove) {
+    EventStatus status = Base::dispatchEvent(event);
+
+    // TODO: Verify that this works as I intend it to
+    if (!status.shouldHandle(NODE)) {
+        return status.update();
+    }
+
+    if (!grabbed) {
+        return status.update();
+    }
+
+    sigDrag(event.getDelta());
+
+    return EventStatus::stop(EventStatus::TREE);
+}
+
+EVENT_HANDLER_IMPL(Header, MouseClick) {
+    EventStatus status = Base::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE))
+        return status.update();
+
+    if (!region.contains(event.pos) && !Application::getInstance().isMouseCaptured(this))
+        return status.update();
+
+    if (event.button != decltype(event.button)::Left)
+        return status.update();
+
+    if (event.type == decltype(event.type)::Down) {
+        onMouseDown(event);
+    } else {
+        onMouseUp(event);
+    }
+
+    return EventStatus::stop(EventStatus::TREE);
+}
+
+void Header::onMouseDown(const MouseClickEvent &) {
+    assert(!grabbed);  // The other way shouldn't be possible
+
+    grabbed = true;
+
+    Application::getInstance().captureMouse(this);
+}
+
+void Header::onMouseUp(const MouseClickEvent &) {
+    if (!grabbed)
+        return;
+
+    grabbed = false;
+
+    Application::getInstance().releaseMouse(this);
+}
+
 
 Borders::Borders(Window *parent_, const Rect<double> &region_) :
     Base(parent_, region_,
@@ -26,6 +82,9 @@ Borders::Borders(Window *parent_, const Rect<double> &region_) :
 
 
 }
+
+WindowManager(Widget *parent_, const Rect<double> &region_) :
+    Base(parent_, region_) {}
 
 
 template
