@@ -35,6 +35,14 @@ public:
         return dynamic_cast<T &>(child);
     }
 
+    ITEM &addChild(ITEM *child) {
+        assert(child);
+        children.insertBack(child);
+        child->updateParent(this);
+
+        return *child;
+    }
+
     #define EVENTS_DSL_ITEM_(NAME) \
         EVENT_HANDLER_OVERRIDE(NAME)
     #include <AGF/events.dsl.h>
@@ -52,13 +60,6 @@ protected:
 
 
     // TODO: A public alternative
-    void addChild(ITEM *child) {
-        assert(child);
-        children.insertBack(child);
-        child->updateParent(this);
-    }
-
-    // TODO: Same
     void clearChildren() {
         children.clear();
     }
