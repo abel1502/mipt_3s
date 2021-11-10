@@ -105,10 +105,21 @@ void Window::resetWndProc() {
 
 Vector2d Window::getMousePos() {
     POINT pos{};
-    REQUIRE(GetCursorPos(&pos));
-    REQUIRE(ScreenToClient(window, &pos));
+    if (!GetCursorPos(&pos)) {
+        throw llgui_error("GetCursorPos failed");
+    }
+
+    if (!ScreenToClient(window, &pos)) {
+        throw llgui_error("ScreenToClient failed");
+    }
 
     return Vector2d{(double)pos.x, (double)pos.y};
+}
+
+void Window::demandRedraw() {
+    if (!InvalidateRect(window, nullptr, false)) {  // TODO: Maybe true for erase
+        throw llgui_error("InvalidateRect failed");
+    }
 }
 
 //================================================================================

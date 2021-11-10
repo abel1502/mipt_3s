@@ -75,6 +75,8 @@ public:
 
     Vector2d getMousePos();
 
+    void demandRedraw();
+
 protected:
     static unsigned exists;
 
