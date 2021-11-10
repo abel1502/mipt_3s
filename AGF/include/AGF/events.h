@@ -41,7 +41,11 @@ EVENT_CLS_DECL_(Render) {
 };
 
 EVENT_CLS_DECL_(Move) {
-    // TODO
+    Vector2d delta;
+
+
+    constexpr MoveEvent(const Vector2d &delta_) noexcept :
+        delta{delta_} {}
 };
 
 /*/// May involve movement as well
