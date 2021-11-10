@@ -43,6 +43,8 @@ void Label::updated() {
     if (abel::isZero(fontSize)) {
         deducedFontSize = region.h() * 0.8;
     }
+
+    Application::getInstance().demandRedraw();
 }
 
 EVENT_HANDLER_IMPL(Label, Render) {

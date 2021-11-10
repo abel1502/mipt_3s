@@ -1,6 +1,7 @@
 #include <AGF/llgui.h>
 #include <ACL/general.h>
 #include <AGF/widgets/rectangle.h>
+#include <AGF/application.h>
 #include <cassert>
 
 
@@ -23,6 +24,8 @@ void Rectangle::bakeTexture() {
 
     texture->clear(color);
     texture->update();
+
+    Application::getInstance().demandRedraw();
 }
 
 EVENT_HANDLER_IMPL(Rectangle, Render) {

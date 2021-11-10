@@ -1,5 +1,6 @@
 #include <AGF/llgui.h>
 #include <AGF/widget.h>
+#include <AGF/application.h>
 
 
 namespace abel::gui {
@@ -24,7 +25,9 @@ EVENT_HANDLER_IMPL(Widget, Render) {
 EVENT_HANDLER_IMPL(Widget, Move) {
     region += event.delta;
 
-    return EventStatus::skip();
+    Application::getInstance().demandRedraw();
+
+    return EventStatus::done();
 }
 
 /*EVENT_HANDLER_IMPL(Widget, Resize) {

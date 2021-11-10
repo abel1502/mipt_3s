@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1636558086 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
+1636579344 source:d:\workspace\.mipt\s3\agf\src\llgui_txlib.cpp
 	<AGF/llgui.h>
 	<utility>
 	<cassert>
@@ -8,7 +8,7 @@
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
 
-1636557838 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+1636579176 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
@@ -51,11 +51,11 @@
 	<ACL/type_traits.h>
 	<ACL/math/cmath.h>
 
-1636558354 source:d:\workspace\.mipt\s3\agf\src\application.cpp
+1636579781 source:d:\workspace\.mipt\s3\agf\src\application.cpp
 	<AGF/llgui.h>
 	<AGF/application.h>
 
-1636558222 d:\workspace\.mipt\s3\agf\include\agf\application.h
+1636579191 d:\workspace\.mipt\s3\agf\include\agf\application.h
 	<cassert>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -76,7 +76,7 @@
 	<ACL/event.tpl.h>
 	<ACL/event.tpl.h>
 
-1635790665 d:\workspace\.mipt\s3\acl\include\acl\vector.h
+1636578914 d:\workspace\.mipt\s3\acl\include\acl\vector.h
 	<ACL/general.h>
 	<utility>
 	<initializer_list>
@@ -119,9 +119,10 @@
 	<ACL/math/vector.h>
 	<ACL/gui/rect.h>
 
-1636540091 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
+1636579525 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
 	<AGF/llgui.h>
 	<AGF/widget.h>
+	<AGF/application.h>
 
 1635175217 source:d:\workspace\.mipt\s3\agf\src\main.cpp
 	<AGF/llgui.h>
@@ -158,17 +159,18 @@
 	<AGF/widgets/rectangle.h>
 	<AGF/widgets/label.h>
 
-1636138467 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
+1636578888 d:\workspace\.mipt\s3\acl\include\acl\unique_ptr.h
 	<ACL/general.h>
 	<memory>
 
 1636138691 d:\workspace\.mipt\s3\agf\include\agf\widgets\rectangle.h
 	<AGF/widget.h>
 
-1636537474 source:d:\workspace\.mipt\s3\agf\src\widgets\rectangle.cpp
+1636579709 source:d:\workspace\.mipt\s3\agf\src\widgets\rectangle.cpp
 	<AGF/llgui.h>
 	<ACL/general.h>
 	<AGF/widgets/rectangle.h>
+	<AGF/application.h>
 	<cassert>
 
 1635322883 d:\workspace\.mipt\s3\agf\include\agf\mouse.h
@@ -177,12 +179,13 @@
 	<windowsx.h>
 	<winuser.h>
 
-1636537959 source:d:\workspace\.mipt\s3\agf\src\widgets\label.cpp
+1636579878 source:d:\workspace\.mipt\s3\agf\src\widgets\label.cpp
 	<AGF/llgui.h>
 	<ACL/general.h>
 	<AGF/widgets/label.h>
+	<AGF/application.h>
 
-1636301758 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
+1636579844 d:\workspace\.mipt\s3\agf\include\agf\widgets\label.h
 	<AGF/widget.h>
 
 1636292702 source:d:\workspace\.mipt\s3\agf\src\widgets\group.cpp
