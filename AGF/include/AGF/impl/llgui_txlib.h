@@ -7,6 +7,8 @@
 
 // Has to be included before everything else
 #define TX_CONSOLE_MODE SW_SHOW
+#define WIN32_LEAN_AND_MEAN
+#define _WIN32_WINNT _WIN32_WINNT_WIN7
 #include <TXLib.h>
 
 #include <ACL/general.h>
@@ -70,6 +72,8 @@ public:
     void setWndProc(WNDPROC wndProc);
 
     void resetWndProc();
+
+    Vector2d getMousePos();
 
 protected:
     static unsigned exists;

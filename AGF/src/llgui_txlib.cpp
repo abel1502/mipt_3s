@@ -103,6 +103,14 @@ void Window::resetWndProc() {
     txSetWindowsHook();
 }
 
+Vector2d Window::getMousePos() {
+    POINT pos{};
+    REQUIRE(GetCursorPos(&pos));
+    REQUIRE(ScreenToClient(window, &pos));
+
+    return Vector2d{(double)pos.x, (double)pos.y};
+}
+
 //================================================================================
 
 Texture::Texture() :
