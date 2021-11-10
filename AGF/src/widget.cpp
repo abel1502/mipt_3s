@@ -22,6 +22,8 @@ EVENT_HANDLER_IMPL(Widget, Render) {
 }
 
 EVENT_HANDLER_IMPL(Widget, Move) {
+    region += event.delta;
+
     return EventStatus::skip();
 }
 
