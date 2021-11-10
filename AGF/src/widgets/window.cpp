@@ -1,5 +1,6 @@
 #include <AGF/llgui.h>
 #include <AGF/widgets/window.h>
+#include <AGF/application.h>
 
 
 namespace abel::gui::widgets {
@@ -79,11 +80,39 @@ Borders::Borders(Window *parent_, const Rect<double> &region_) :
 }  // namespace _impl
 
 
+WindowManager::WindowManager(Widget *parent_, const Rect<double> &region_) :
+    Base(parent_, region_) {}
+
+Window::Window(WindowManager *parent_, const Rect<double> &region_,
+       const char *title_, Content *contents_) :
+    Base(parent_, region_, contents_,
+         new _impl::Header(this, Rect<double>::wh(region_.x(), region_.y(), region_.w(), _impl::Header::HEADER_HEIGHT),
+                           title_),
+         new _impl::Borders(this, region_)) {
+    REQUIRE(region.h() >= _impl::Header::HEADER_HEIGHT + _impl::Borders::BORDER_WIDTH);
+    REQUIRE(region.w() >= _impl::Borders::BORDER_WIDTH * 2 + _impl::Header::MIN_WIDTH);
+
+    contents().staticShift(Vector2d(0, _impl::Header::HEADER_HEIGHT));
+
+    header().closeBtn().sigClick += [](){
+        DBG("Closing.");
+        return false;
+    };
+
+    header().minimizeBtn().sigClick += [](){
+        DBG("Minimizing.");
+        return false;
+    };
+
+    header().sigDrag += [this](const Vector2d &delta){
+        dispatchEvent(MoveEvent(delta));
+    };
 }
 
-WindowManager(Widget *parent_, const Rect<double> &region_) :
-    Base(parent_, region_) {}
+}
 
 
 template
 class abel::unique_ptr<abel::gui::widgets::Window>;
+
+
