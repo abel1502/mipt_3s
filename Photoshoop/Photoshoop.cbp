@@ -28,6 +28,23 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
+			<Target title="Profile">
+				<Option output="build/bin/profile/Photoshoop" prefix_auto="1" extension_auto="1" />
+				<Option object_output="build/obj/profile/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLibDirsRelation="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-pg" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+					<Add directory="../ACL/build/lib64/profile" />
+					<Add directory="../AGF/build/lib64/profile" />
+				</Linker>
+			</Target>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="Debug;Release;" />

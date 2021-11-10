@@ -14,7 +14,7 @@
 	<typeinfo>
 	<cstdlib>
 
-1636278295 d:\workspace\.mipt\s3\agf\include\agf\application.h
+1636558222 d:\workspace\.mipt\s3\agf\include\agf\application.h
 	<cassert>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -52,7 +52,7 @@
 	<ACL/general.h>
 	<memory>
 
-1636314216 d:\workspace\.mipt\s3\agf\include\agf\widget.h
+1636544391 d:\workspace\.mipt\s3\agf\include\agf\widget.h
 	<ACL/general.h>
 	<ACL/signal.h>
 	<AGF/events.h>
@@ -61,7 +61,7 @@
 	<ACL/unique_ptr.h>
 	<AGF/events.dsl.h>
 
-1636275162 d:\workspace\.mipt\s3\agf\include\agf\events.h
+1636379592 d:\workspace\.mipt\s3\agf\include\agf\events.h
 	<AGF/widget_event.h>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -126,7 +126,7 @@
 1634464557 d:\workspace\.mipt\s3\agf\include\agf\llgui.h
 	<AGF/impl/llgui_txlib.h>
 
-1636275363 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
+1636557838 d:\workspace\.mipt\s3\agf\include\agf\impl\llgui_txlib.h
 	<TXLib.h>
 	<ACL/general.h>
 	<ACL/math/vector.h>
@@ -153,13 +153,13 @@
 	<AGF/widgets/rectangle.h>
 	<AGF/widgets/window.h>
 
-1636362544 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
+1636544541 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
 	<AGF/widget.h>
 	<ACL/list.h>
 	<AGF/events.dsl.h>
 	<AGF/events.dsl.h>
 
-1636281017 d:\workspace\.mipt\s3\acl\include\acl\list.h
+1636546519 d:\workspace\.mipt\s3\acl\include\acl\list.h
 	<ACL/general.h>
 	<ACL/vector.h>
 	<utility>
@@ -175,7 +175,7 @@
 
 1635925026 d:\workspace\.mipt\s3\acl\include\acl\list_iterator.tpl.h
 
-1636314607 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
+1636537163 d:\workspace\.mipt\s3\agf\include\agf\widgets\static_group.h
 	<AGF/widget.h>
 	<ACL/list.h>
 	<ACL/type_traits.h>
@@ -193,7 +193,7 @@
 	<typeinfo>
 	<cstdlib>
 
-1636369286 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
+1636540200 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
 	<AGF/widget.h>
 	<AGF/widgets/group.h>
 	<AGF/widgets/static_group.h>
