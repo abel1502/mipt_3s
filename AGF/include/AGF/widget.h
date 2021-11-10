@@ -63,6 +63,7 @@ public:
 
         constexpr bool shouldHandle(Level level) { return level > stopLvl; }
 
+        // TODO: Rework implementation and perhaps usage
         constexpr EventStatus &update(bool handled_ = false) {
             handled |= handled_;
             if (stopLvl <= SIBL)

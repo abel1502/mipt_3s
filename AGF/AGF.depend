@@ -46,7 +46,7 @@
 	<ACL/math/vector.h>
 	<cstdint>
 
-1636314414 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
+1636366460 d:\workspace\.mipt\s3\acl\include\acl\gui\rect.h
 	<ACL/math/vector.h>
 	<ACL/type_traits.h>
 	<ACL/math/cmath.h>
@@ -146,7 +146,7 @@
 
 1635169881 d:\workspace\.mipt\s3\acl\include\acl\signal.tpl.h
 
-1636282514 source:d:\workspace\.mipt\s3\agf\src\widgets\button.cpp
+1636362696 source:d:\workspace\.mipt\s3\agf\src\widgets\button.cpp
 	<AGF/llgui.h>
 	<AGF/widgets/button.h>
 	<ACL/general.h>
@@ -188,7 +188,7 @@
 1636292702 source:d:\workspace\.mipt\s3\agf\src\widgets\group.cpp
 	<AGF/widgets/group.h>
 
-1636314303 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
+1636362544 d:\workspace\.mipt\s3\agf\include\agf\widgets\group.h
 	<AGF/widget.h>
 	<ACL/list.h>
 	<AGF/events.dsl.h>
@@ -228,11 +228,11 @@
 	<typeinfo>
 	<cstdlib>
 
-1636311435 source:d:\workspace\.mipt\s3\agf\src\widgets\window.cpp
+1636366667 source:d:\workspace\.mipt\s3\agf\src\widgets\window.cpp
 	<AGF/llgui.h>
 	<AGF/widgets/window.h>
 
-1636312364 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
+1636369286 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
 	<AGF/widget.h>
 	<AGF/widgets/group.h>
 	<AGF/widgets/static_group.h>
