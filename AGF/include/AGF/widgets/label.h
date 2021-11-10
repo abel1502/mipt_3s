@@ -33,7 +33,7 @@ protected:
     const char *text;
     unsigned format;
 
-    void bakeFont();
+    void updated();
 
 };
 
