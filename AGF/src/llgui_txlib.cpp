@@ -122,6 +122,18 @@ void Window::demandRedraw() {
     }
 }
 
+bool Window::isMouseCaptured() {
+    return GetCapture() == window;
+}
+
+void Window::captureMouse() {
+    SetCapture(window);
+}
+void Window::releaseMouse() {
+    if (!ReleaseCapture())
+        throw llgui_error("ReleaseCapture failed");
+}
+
 //================================================================================
 
 Texture::Texture() :

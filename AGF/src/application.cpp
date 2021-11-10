@@ -66,6 +66,9 @@ void Application::deinit() {
 
 void Application::releaseMouse() {
     mouseCaptureHolder = nullptr;
+
+    REQUIRE(wnd);
+    wnd->releaseMouse();
 }
 
 void Application::releaseMouse(Widget *widget) {
@@ -80,6 +83,9 @@ void Application::captureMouse(Widget *widget) {
     REQUIRE(!mouseCaptureHolder);
 
     mouseCaptureHolder = widget;
+
+    REQUIRE(wnd);
+    wnd->captureMouse();
 }
 
 void Application::demandRedraw() {
