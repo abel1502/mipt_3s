@@ -17,60 +17,58 @@ public:
 
 
     constexpr NAME_() :
-        lst{nullptr}, node{nullptr} {}
+        lst{nullptr}, idx{BAD_IDX} {}
 
-    constexpr NAME_(CONST_ list *lst_, CONST_ Node *node_) :
-        lst{lst_}, node{node_} {
+    constexpr NAME_(CONST_ list *lst_, CONST_ idx_t idx_) :
+        lst{lst_}, idx{idx_} {
 
-        assert(lst && node);
+        validate();
     }
 
     NAME_ &operator++() {
-        assert(lst && node);
-        idx_t nextIdx = node->next;
+        validate();
+
+        idx_t nextIdx = node().next;
         REQUIRE(nextIdx != BAD_IDX);  // The list is corrupt otherwise
-        node = &lst->buf[nextIdx];
+        idx = nextIdx;
         return *this;
     }
 
     NAME_ operator++(int) {
-        assert(lst && node);
         NAME_ backup = *this;
         ++*this;
         return backup;
     }
 
     NAME_ &operator--() {
-        assert(lst && node);
-        if (node->isFree()) {
+        validate();
+
+        if (node().isFree()) {
             throw error("Backwards iteration isn't supported for free nodes");
         }
 
-        idx_t prevIdx = node->prev;
+        idx_t prevIdx = node().prev;
         REQUIRE(prevIdx != BAD_IDX);  // The list is corrupt otherwise
-        node = &lst->buf[prevIdx];
+        idx = prevIdx;
         return *this;
     }
 
     NAME_ operator--(int) {
-        assert(lst && node);
         NAME_ backup = *this;
         --*this;
         return backup;
     }
 
     reference operator*() CONST_ {
-        assert(lst && node);
-        return node->getVal();
+        return node().getVal();
     }
 
     pointer operator->() CONST_ {
-        assert(lst && node);
         return &**this;  // I know this looks weird, but trust me)
     }
 
     constexpr bool operator==(const NAME_ &other) const {
-        return node == other.node;
+        return lst == other.lst && idx == other.idx;
     }
 
     constexpr bool operator!=(const NAME_ &other) const {
@@ -81,9 +79,19 @@ public:
 
 protected:
     CONST_ list *lst;
-    CONST_ Node *node;
+    CONST_ idx_t idx;
 
     friend class list;
+
+    inline CONST_ Node &node() {
+        validate();
+
+        return lst->buf[idx];
+    }
+
+    inline void validate() {
+        assert(lst && idx < lst->buf.getSize());
+    }
 
 };
 

@@ -122,7 +122,7 @@ public:
     #define CONST_ const
     #define EXTRA_                              \
         constexpr NAME_(const iterator &iter) : \
-            lst{iter.lst}, node{iter.node} {}
+            lst{iter.lst}, idx{iter.idx} {}
     #include <ACL/list_iterator.tpl.h>
 
     #undef ACL_LIST_ITERATOR_TPL_GUARD
@@ -149,8 +149,8 @@ public:
 
           iterator begin()       noexcept { return ++end(); }
     const_iterator begin() const noexcept { return ++end(); }
-          iterator end  ()       noexcept { return       iterator(this, &buf[0]); }
-    const_iterator end  () const noexcept { return const_iterator(this, &buf[0]); }
+          iterator end  ()       noexcept { return       iterator(this, 0); }
+    const_iterator end  () const noexcept { return const_iterator(this, 0); }
     const T &front() const { return *++end(); }
           T &front()       { return *++end(); }
     const T &back () const { return *--end(); }
@@ -225,7 +225,7 @@ public:
     DECLARE_INSERTS_BIDIR_(Back, Front, , 0, )
 
     DECLARE_INSERTS_BIDIR_(Before, After, demandValidIter(iter),
-                           ptrToIdx(iter.node), MACROCOMMA, const iterator &iter)
+                           iter.idx, MACROCOMMA, const iterator &iter)
 
     protected:
     DECLARE_INSERTS_BIDIR_(Before, After, , node, MACROCOMMA, idx_t node)
@@ -249,9 +249,9 @@ public:
 
     #define DECLARE_EXTENDS_(NAME)                                              \
         template <typename ... As>                                              \
-        inline void extend##NAME(const iterator &iter, As &&... args) {   \
+        inline void extend##NAME(const iterator &iter, As &&... args) {         \
             demandValidIter(iter);                                              \
-            extend##NAME(ptrToIdx(iter.node), std::forward<As>(args)...);       \
+            extend##NAME(iter.idx, std::forward<As>(args)...);                  \
         }                                                                       \
                                                                                 \
         protected:                                                              \
@@ -268,7 +268,7 @@ public:
         }                                                                       \
                                                                                 \
         template <typename InputIt>                                             \
-        void extend##NAME(idx_t idx, InputIt begin_, InputIt end_) {                  \
+        void extend##NAME(idx_t idx, InputIt begin_, InputIt end_) {            \
             DEB_(NAME, ; begin_ != end_; ++begin_, *begin_)                     \
         }                                                                       \
         public:
@@ -291,7 +291,7 @@ public:
 
     //--------------------------------------------------------------------------------
     // Erases
-    inline void erase(const iterator &iter) { demandValidIter(iter); erase(ptrToIdx(iter.node)); }
+    inline void erase(const iterator &iter) { demandValidIter(iter); erase(iter.idx); }
 
     inline void eraseBack () { assert(buf.getSize() > 0); erase(buf[0].prev); }
     inline void eraseFront() { assert(buf.getSize() > 0); erase(buf[0].next); }
@@ -327,17 +327,17 @@ public:
                           const iterator &iterB) {
         demandValidIter(iterA);
         demandValidIter(iterB);
-        return swapElems(ptrToIdx(iterA.node), ptrToIdx(iterB.node));
+        return swapElems(iterA.idx, iterB.idx);
     }
 
     inline void swapFront(const iterator &iter) {
         demandValidIter(iter);
-        return swapElems(buf[0].next, ptrToIdx(iter.node));
+        return swapElems(buf[0].next, iter.idx);
     }
 
     inline void swapBack(const iterator &iter) {
         demandValidIter(iter);
-        return swapElems(buf[0].prev, ptrToIdx(iter.node));
+        return swapElems(buf[0].prev, iter.idx);
     }
 
     protected:
@@ -397,9 +397,15 @@ public:
         }
 
     DMB_BIDIR_(Back, Front, 0,
-               demandValidIter(iter);
-               idx_t from = ptrToIdx(iter.node);,
-               const iterator &iter);
+               demandValidIter(fromIter);
+               idx_t from = fromIter.idx;,
+               const iterator &fromIter);
+    
+    DMB_BIDIR_(Before, After, toIter.idx,
+               demandValidIter(toIter);
+               demandValidIter(fromIter);
+               idx_t from = fromIter.idx;,
+               const iterator &toIter, const iterator &fromIter);
 
     // TODO: Finish
 
@@ -416,7 +422,7 @@ public:
     }
 
     bool validateIter(const const_iterator &iter) const {
-        return iter.lst == this && buf.testWithin(iter.node);
+        return iter.lst == this && iter.idx < buf.getSize();
     }
 
     void dump() const {
