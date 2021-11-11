@@ -88,6 +88,8 @@ public:
 
     Borders(Window *parent_, const Rect<double> &region_);
 
+    EVENT_HANDLER_OVERRIDE(MouseClick)
+
 protected:
     SGRP_DECLARE_BINDING_I(body, 0)
 
@@ -141,6 +143,11 @@ public:
     // TODO: ?
     friend class _impl::Header;
     friend class _impl::Borders;
+
+    class EmptyBody : public Widget {
+    public:
+        EmptyBody(Window * parent_ = nullptr);
+    };
 
 
     inline const WindowManager *getParentPtr() const { return dynamic_cast<WindowManager *>(parent); }

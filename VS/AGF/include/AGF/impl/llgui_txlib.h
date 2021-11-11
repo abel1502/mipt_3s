@@ -77,6 +77,10 @@ public:
 
     void demandRedraw();
 
+    bool isMouseCaptured();
+    void captureMouse();
+    void releaseMouse();
+
 protected:
     static unsigned exists;
 

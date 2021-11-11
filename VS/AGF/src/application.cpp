@@ -10,6 +10,44 @@ Application::app_ptr_t Application::instance = nullptr;
 
 Application::Application() {}
 
+void Application::enqueueAction(action_cb_t &&callback, ActionPriority priority) {
+    switch (priority) {
+    case P_NORMAL:
+        actionQueueMutex.lock();
+        actionQueue.push_back(std::move(callback));
+        actionQueueMutex.unlock();
+        break;
+
+    case P_HIGH:
+        actionQueueMutex.lock();
+        actionQueue.push_front(std::move(callback));
+        actionQueueMutex.unlock();
+        break;
+
+    case P_IMMEDIATE:
+    {
+        actionExecMutex.lock();
+        callback(*this);
+        actionExecMutex.unlock();
+    } break;
+
+    NODEFAULT
+    }
+}
+
+void Application::executeQueuedAction() {
+    if (!hasQueuedActions())
+        return;
+
+    actionQueueMutex.lock();
+    action_cb_t action = std::move(actionQueue.front());
+    actionQueue.pop_front();
+    actionQueueMutex.unlock();
+
+    actionExecMutex.lock();
+    action(*this);
+    actionExecMutex.unlock();
+}
 
 void Application::setup() {
     if (instance)
@@ -22,14 +60,12 @@ void Application::setup() {
     }
 }
 
-
 void Application::teardown() {
     if (!instance)
         return;
 
     instance = nullptr;
 }
-
 
 void Application::init(int /*argc*/, const char **/*argv*/) {
     if (initialized)
@@ -41,16 +77,18 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
     wnd->setWndProc(&_wndproc);
 }
 
-
 void Application::run() {
     wnd->update();
 
     while (!finished) {
+        if (hasQueuedActions()) {
+            executeQueuedAction();
+        }
+
         // asm volatile ("pause");
         YieldProcessor();
     }
 }
-
 
 void Application::deinit() {
     if (!initialized)
@@ -62,11 +100,13 @@ void Application::deinit() {
     wnd.reset();
 }
 
-
 // TODO: Maybe something more sophisticated
 
 void Application::releaseMouse() {
     mouseCaptureHolder = nullptr;
+
+    REQUIRE(wnd);
+    wnd->captureMouse();
 }
 
 void Application::releaseMouse(Widget *widget) {
@@ -81,6 +121,9 @@ void Application::captureMouse(Widget *widget) {
     REQUIRE(!mouseCaptureHolder);
 
     mouseCaptureHolder = widget;
+
+    REQUIRE(wnd);
+    wnd->captureMouse();
 }
 
 void Application::demandRedraw() {
@@ -112,7 +155,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
     switch (uMsg) {
         // TODO: Translate applicable ones to widget_events
     case WM_PAINT: {
-        if constexpr (FPS_LIMIT > 0) {
+        if constexpr (FPS_LIMIT) {
             static uint64_t renderTimer = 0;
             static uint64_t lastTickCount = 0;
 
@@ -128,7 +171,8 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         abel::gui::Texture texture{*wnd};
         texture.clear(Color::WHITE);  // TODO: Remove, or maybe move to WM_ERASEBKGND?
 
-        mainWidget->dispatchEvent(RenderEvent{texture.getScreenRect(), texture});
+        // Render event must be synchronous due to WINAPI's limitations
+        enqueueEvent(RenderEvent{texture.getScreenRect(), texture}, P_IMMEDIATE);
 
         wnd->render(texture);
 
@@ -167,9 +211,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         goto mouseClickEvent;
 
     mouseClickEvent: {
-        Widget *target = isMouseCaptured() ? mouseCaptureHolder : mainWidget.get();
-
-        target->dispatchEvent(MouseClickEvent{
+        enqueueEvent(MouseClickEvent{
             Vector2d{(double)GET_X_LPARAM(lParam),
                      (double)GET_Y_LPARAM(lParam)},
             MouseAttrs{wParam},
@@ -181,9 +223,6 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         static bool lastPosSet = false;
         static Vector2d lastPos{0, 0};
 
-        Widget *target = isMouseCaptured() ? mouseCaptureHolder : mainWidget.get();
-        assert(target);
-
         Vector2d curPos{(double)GET_X_LPARAM(lParam),
                         (double)GET_Y_LPARAM(lParam)};
 
@@ -194,7 +233,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
             lastPosSet = true;
         }
 
-        target->dispatchEvent(MouseMoveEvent{lastPos, curPos, MouseAttrs{wParam}});
+        enqueueEvent(MouseMoveEvent{lastPos, curPos, MouseAttrs{wParam}});
         lastPos = curPos;
     } return 0;
 
@@ -204,16 +243,16 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
     } return TX_WMSG_HANDLED | 0;
 
     /*case WM_DESTROY:
-    case WM_QUIT: {
+        case WM_QUIT: {
         if (initialized) {
-            asm volatile ("pause");
+        asm volatile ("pause");
         }
-    } return 0;*/
+        } return 0;*/
 
-    // TODO: WM_QUIT
+    // TODO: WM_QUIT?
 
     default: {
-        //DBG("Windows message: %u %zu %zu", uMsg, wParam, lParam);
+        // DBG("Windows message: %u %zu %zu", uMsg, wParam, lParam);
     } return 0;
 
     }
