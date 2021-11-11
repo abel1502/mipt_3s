@@ -2,24 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="All" />
-	<File name="include\ACL\signal.h" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\ACL\gui\rect.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="438" topLine="60" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\type_traits.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="69" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\math\vector.tpl.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4472" topLine="148" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\list.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="16073" topLine="388" />
+			<Cursor1 position="1815" topLine="48" />
 		</Cursor>
 	</File>
 	<File name="include\ACL\gui\coords.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -27,54 +12,14 @@
 			<Cursor1 position="2545" topLine="56" />
 		</Cursor>
 	</File>
-	<File name="include\ACL\math\vector.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\ACL\log.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="345" topLine="54" />
+			<Cursor1 position="1656" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="include\ACL\math\matrix.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\ACL\math\vector.tpl.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="161" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\log.cpp" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="26" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\math\getneutral.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="347" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\signal.tpl.h" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="122" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\math\cmath.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="523" topLine="2" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\vector.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3086" topLine="109" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\template_trinkets.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2699" topLine="100" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\list_iterator.tpl.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2106" topLine="57" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\debug.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="672" topLine="28" />
+			<Cursor1 position="4472" topLine="148" />
 		</Cursor>
 	</File>
 	<File name="include\ACL\math\binpow.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -82,14 +27,24 @@
 			<Cursor1 position="462" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="include\ACL\general.h" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\ACL\debug.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="621" topLine="8" />
+			<Cursor1 position="672" topLine="28" />
 		</Cursor>
 	</File>
-	<File name="include\ACL\gui\color.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\ACL\unique_ptr.h" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2446" topLine="75" />
+			<Cursor1 position="2587" topLine="98" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\math\cmath.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="523" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\type_traits.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="69" topLine="18" />
 		</Cursor>
 	</File>
 	<File name="src\general.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -97,24 +52,69 @@
 			<Cursor1 position="783" topLine="21" />
 		</Cursor>
 	</File>
-	<File name="include\ACL\gui\rect.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1815" topLine="48" />
-		</Cursor>
-	</File>
-	<File name="include\ACL\log.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1656" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="src\debug.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1696" topLine="83" />
 		</Cursor>
 	</File>
-	<File name="include\ACL\unique_ptr.h" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\ACL\math\vector.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3019" topLine="104" />
+			<Cursor1 position="345" topLine="54" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\list.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15970" topLine="387" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\general.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="621" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\signal.h" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="438" topLine="60" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\math\getneutral.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="347" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\math\matrix.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="161" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\template_trinkets.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2699" topLine="100" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\signal.tpl.h" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="122" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\log.cpp" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="26" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\gui\color.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2446" topLine="75" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\vector.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7724" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\ACL\list_iterator.tpl.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="780" topLine="4" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
