@@ -144,6 +144,11 @@ public:
     friend class _impl::Header;
     friend class _impl::Borders;
 
+    class EmptyBody : public Widget {
+    public:
+        EmptyBody(Window *parent_ = nullptr);
+    };
+
 
     inline const WindowManager *getParentPtr() const { return dynamic_cast<WindowManager *>(parent); }
     inline       WindowManager *getParentPtr()       { return dynamic_cast<WindowManager *>(parent); }
