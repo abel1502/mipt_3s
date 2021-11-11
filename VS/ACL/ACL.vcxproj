@@ -30,13 +30,16 @@
     <ClInclude Include="include\ACL\gui\coords.h" />
     <ClInclude Include="include\ACL\gui\rect.h" />
     <ClInclude Include="include\ACL\list.h" />
+    <ClInclude Include="include\ACL\list_iterator.tpl.h" />
     <ClInclude Include="include\ACL\log.h" />
     <ClInclude Include="include\ACL\math\binpow.h" />
     <ClInclude Include="include\ACL\math\cmath.h" />
     <ClInclude Include="include\ACL\math\getneutral.h" />
     <ClInclude Include="include\ACL\math\matrix.h" />
     <ClInclude Include="include\ACL\math\vector.h" />
+    <ClInclude Include="include\ACL\math\vector.tpl.h" />
     <ClInclude Include="include\ACL\signal.h" />
+    <ClInclude Include="include\ACL\signal.tpl.h" />
     <ClInclude Include="include\ACL\template_trinkets.h" />
     <ClInclude Include="include\ACL\type_traits.h" />
     <ClInclude Include="include\ACL\unique_ptr.h" />
@@ -125,7 +128,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4201;4146;4100;4189</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -149,7 +152,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4201;4146;4100;4189</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -173,7 +176,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4201;4146;4100;4189</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -197,7 +200,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4201;4146;4100;4189</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>

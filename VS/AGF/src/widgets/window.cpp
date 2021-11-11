@@ -109,6 +109,11 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
 
     header().closeBtn().sigClick += [](){
         DBG("Closing.");
+        /*Application::getInstance().enqueueAction(
+            [](Application &app){
+                //
+            }
+        );*/
         return false;
     };
 

@@ -77,5 +77,14 @@
     <ClInclude Include="include\ACL\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\ACL\list_iterator.tpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ACL\math\vector.tpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ACL\signal.tpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

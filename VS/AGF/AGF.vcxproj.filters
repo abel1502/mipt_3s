@@ -92,5 +92,8 @@
     <ClInclude Include="include\AGF\widget_pos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AGF\events.dsl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
