@@ -1,6 +1,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include <AGF/llgui.h>
 #include <ACL/general.h>
 #include <AGF/application.h>
 

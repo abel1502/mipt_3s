@@ -1,10 +1,11 @@
 # depslib dependency file v1.0
-1636366994 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
+1636619169 source:d:\workspace\.mipt\s3\photoshoop\app.cpp
 	<AGF/llgui.h>
 	"app.h"
 	<AGF/widgets/all.h>
 
-1635088312 d:\workspace\.mipt\s3\photoshoop\app.h
+1636621294 d:\workspace\.mipt\s3\photoshoop\app.h
+	<AGF/llgui.h>
 	<ACL/general.h>
 	<AGF/application.h>
 
@@ -14,7 +15,7 @@
 	<typeinfo>
 	<cstdlib>
 
-1636579191 d:\workspace\.mipt\s3\agf\include\agf\application.h
+1636625326 d:\workspace\.mipt\s3\agf\include\agf\application.h
 	<cassert>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -25,7 +26,8 @@
 	<AGF/widget.h>
 	<AGF/widget_event.h>
 	<AGF/events.h>
-	<windef.h>
+	<deque>
+	<functional>
 
 1633511159 d:\workspace\.mipt\s3\acl\include\acl\type_traits.h
 	<type_traits>
@@ -193,7 +195,7 @@
 	<typeinfo>
 	<cstdlib>
 
-1636540200 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
+1636619561 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
 	<AGF/widget.h>
 	<AGF/widgets/group.h>
 	<AGF/widgets/static_group.h>
