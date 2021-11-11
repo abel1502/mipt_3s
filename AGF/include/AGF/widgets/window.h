@@ -88,6 +88,8 @@ public:
 
     Borders(Window *parent_, const Rect<double> &region_);
 
+    EVENT_HANDLER_OVERRIDE(MouseClick)
+
 protected:
     SGRP_DECLARE_BINDING_I(body, 0)
 

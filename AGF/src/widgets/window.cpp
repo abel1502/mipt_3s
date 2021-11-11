@@ -77,6 +77,19 @@ Borders::Borders(Window *parent_, const Rect<double> &region_) :
          new Rectangle{this, region_, Color::LBLUE}
          ) {}
 
+EVENT_HANDLER_IMPL(Borders, MouseClick) {
+    EventStatus status = Base::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE))
+        return status;
+
+    if (region.contains(event.pos))
+        return EventStatus::stop(EventStatus::TREE);
+
+    return EventStatus::skip();
+}
+
+
 }  // namespace _impl
 
 
