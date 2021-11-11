@@ -11,7 +11,10 @@
 #include <AGF/widget.h>
 #include <AGF/widget_event.h>
 #include <AGF/events.h>
-#include <windef.h>
+#include <deque>
+#include <functional>
+#include <mutex>
+#include <atomic>
 
 
 namespace abel::gui {
@@ -23,13 +26,18 @@ public:
     DECLARE_ERROR(error, abel::error)
 
     using app_ptr_t = unique_ptr<Application>;
+    using action_cb_t = std::function<void (Application &app)>;
 
     static constexpr uint64_t FPS_LIMIT = 0;
 
+    enum ActionPriority {
+        P_NORMAL,
+        P_HIGH,
+        P_IMMEDIATE,  /// Ensures synchronous execution in the *calling* thread
+    };
+
 
     Signal<void (double deltaT)> sigTick{};
-    Signal<void (const MouseClickEvent &event)> sigMouseClick{};  // TODO: Remove?
-    Signal<void (const MouseMoveEvent &event)> sigMouseMove{};
 
 
     /// =========== [ These should be implemented in some way in user code ] ===========
@@ -57,10 +65,37 @@ public:
     /// ================================================================================
 
     template <typename T>
-    void dispatchEvent(const T &event) {
+    inline void dispatchEvent(const T &event) {
         static_assert(std::is_base_of_v<WidgetEvent, T>);
+        static_assert(!std::is_same_v<MouseClickEvent, T>);
+        static_assert(!std::is_same_v<MouseMoveEvent, T>);
 
         getMainWidget().dispatchEvent(event);
+    }
+
+    inline void dispatchEvent(const MouseClickEvent &event) {
+        Widget &target = isMouseCaptured() ? *mouseCaptureHolder : getMainWidget();
+
+        target.dispatchEvent(event);
+    }
+
+    inline void dispatchEvent(const MouseMoveEvent &event) {
+        Widget &target = isMouseCaptured() ? *mouseCaptureHolder : getMainWidget();
+
+        target.dispatchEvent(event);
+    }
+
+    inline bool hasQueuedActions() const noexcept { return !actionQueue.empty(); }
+
+    void enqueueAction(action_cb_t &&callback, ActionPriority priority = P_NORMAL);
+
+    template <typename T>
+    inline void enqueueEvent(T &&event, ActionPriority priority = P_NORMAL) {
+        static_assert(std::is_base_of_v<WidgetEvent, T>);
+
+        enqueueAction([event = std::forward<T>(event)](Application &app){
+            app.dispatchEvent(event);
+        }, priority);
     }
 
     // Called from library main to set up the application initially
@@ -101,14 +136,20 @@ protected:
     unique_ptr<Window> wnd = nullptr;
     unique_ptr<Widget> mainWidget = nullptr;
     bool initialized = false;
-    volatile bool finished = false;
+    std::atomic<bool> finished = false;
 
     Widget *mouseCaptureHolder = nullptr;
+
+    std::mutex actionQueueMutex{};
+    std::mutex actionExecMutex{};
+    std::deque<action_cb_t> actionQueue{};
 
 
     static LRESULT CALLBACK _wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     Application();
+
+    void executeQueuedAction();
 
 };
 

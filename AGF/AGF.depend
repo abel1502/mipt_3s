@@ -55,7 +55,7 @@
 	<AGF/llgui.h>
 	<AGF/application.h>
 
-1636579191 d:\workspace\.mipt\s3\agf\include\agf\application.h
+1636627796 d:\workspace\.mipt\s3\agf\include\agf\application.h
 	<cassert>
 	<ACL/general.h>
 	<AGF/llgui_pre.h>
@@ -66,7 +66,10 @@
 	<AGF/widget.h>
 	<AGF/widget_event.h>
 	<AGF/events.h>
-	<windef.h>
+	<deque>
+	<functional>
+	<mutex>
+	<atomic>
 
 1634674298 d:\workspace\.mipt\s3\acl\include\acl\event.h
 	<ACL/general.h>
@@ -119,7 +122,7 @@
 	<ACL/math/vector.h>
 	<ACL/gui/rect.h>
 
-1636580669 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
+1636619352 source:d:\workspace\.mipt\s3\agf\src\widget.cpp
 	<AGF/llgui.h>
 	<AGF/widget.h>
 	<AGF/application.h>
@@ -231,12 +234,12 @@
 	<typeinfo>
 	<cstdlib>
 
-1636555672 source:d:\workspace\.mipt\s3\agf\src\widgets\window.cpp
+1636619748 source:d:\workspace\.mipt\s3\agf\src\widgets\window.cpp
 	<AGF/llgui.h>
 	<AGF/widgets/window.h>
 	<AGF/application.h>
 
-1636540200 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
+1636619561 d:\workspace\.mipt\s3\agf\include\agf\widgets\window.h
 	<AGF/widget.h>
 	<AGF/widgets/group.h>
 	<AGF/widgets/static_group.h>

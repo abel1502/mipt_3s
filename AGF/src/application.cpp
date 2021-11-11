@@ -10,6 +10,43 @@ Application::app_ptr_t Application::instance = nullptr;
 
 Application::Application() {}
 
+void Application::enqueueAction(action_cb_t &&callback, ActionPriority priority) {
+    switch (priority) {
+    case P_NORMAL:
+        actionQueueMutex.lock();
+        actionQueue.push_back(std::move(callback));
+        actionQueueMutex.unlock();
+        break;
+
+    case P_HIGH:
+        actionQueueMutex.lock();
+        actionQueue.push_front(std::move(callback));
+        actionQueueMutex.unlock();
+        break;
+
+    case P_IMMEDIATE: {
+        actionExecMutex.lock();
+        callback(*this);
+        actionExecMutex.unlock();
+    } break;
+
+    NODEFAULT
+    }
+}
+
+void Application::executeQueuedAction() {
+    if (!hasQueuedActions())
+        return;
+
+    actionQueueMutex.lock();
+    action_cb_t action = std::move(actionQueue.front());
+    actionQueue.pop_front();
+    actionQueueMutex.unlock();
+
+    actionExecMutex.lock();
+    action(*this);
+    actionExecMutex.unlock();
+}
 
 void Application::setup() {
     if (instance)
@@ -22,14 +59,12 @@ void Application::setup() {
     }
 }
 
-
 void Application::teardown() {
     if (!instance)
         return;
 
     instance = nullptr;
 }
-
 
 void Application::init(int /*argc*/, const char **/*argv*/) {
     if (initialized)
@@ -41,15 +76,18 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
     wnd->setWndProc(&_wndproc);
 }
 
-
 void Application::run() {
     wnd->update();
 
     while (!finished) {
+        if (hasQueuedActions()) {
+            executeQueuedAction();
+        }
+
         asm volatile ("pause");
+        // YieldProcessor();
     }
 }
-
 
 void Application::deinit() {
     if (!initialized)
@@ -60,7 +98,6 @@ void Application::deinit() {
     mainWidget.reset();
     wnd.reset();
 }
-
 
 // TODO: Maybe something more sophisticated
 
@@ -133,12 +170,16 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         abel::gui::Texture texture{*wnd};
         texture.clear(Color::WHITE);  // TODO: Remove, or maybe move to WM_ERASEBKGND?
 
-        mainWidget->dispatchEvent(RenderEvent{texture.getScreenRect(), texture});
+        // Render event must be synchronous due to WINAPI's limitations
+        enqueueEvent(RenderEvent{texture.getScreenRect(), texture}, P_IMMEDIATE);
 
         wnd->render(texture);
 
         // Missing intentionally, to avoid recursive WM_PAINTs
         // wnd->update();
+
+        renderLock.unlock();
+        suspendActionQueue = false;
     } return 0;
 
     case WM_LBUTTONDOWN:
@@ -172,9 +213,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         goto mouseClickEvent;
 
     mouseClickEvent: {
-        Widget *target = isMouseCaptured() ? mouseCaptureHolder : mainWidget.get();
-
-        target->dispatchEvent(MouseClickEvent{
+        enqueueEvent(MouseClickEvent{
             Vector2d{GET_X_LPARAM(lParam),
                      GET_Y_LPARAM(lParam)},
             MouseAttrs{wParam},
@@ -186,9 +225,6 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         static bool lastPosSet = false;
         static Vector2d lastPos{0, 0};
 
-        Widget *target = isMouseCaptured() ? mouseCaptureHolder : mainWidget.get();
-        assert(target);
-
         Vector2d curPos{GET_X_LPARAM(lParam),
                         GET_Y_LPARAM(lParam)};
 
@@ -199,7 +235,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
             lastPosSet = true;
         }
 
-        target->dispatchEvent(MouseMoveEvent{lastPos, curPos, MouseAttrs{wParam}});
+        enqueueEvent(MouseMoveEvent{lastPos, curPos, MouseAttrs{wParam}});
         lastPos = curPos;
     } return 0;
 
