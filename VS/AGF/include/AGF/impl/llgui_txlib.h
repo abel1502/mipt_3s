@@ -31,11 +31,140 @@ static_assert(offsetof(RGBQUAD, rgbBlue)  == offsetof(PackedColor, B));
 
 #define IMPL_SPECIFIC_
 
+
 class Window;
 class Texture;
 
 
-class Window {
+namespace _impl {
+
+class TextureBase {
+public:
+    ~TextureBase() noexcept = default;
+
+    TextureBase(TextureBase &&other) noexcept = default;
+    TextureBase &operator=(TextureBase &&other) noexcept = default;
+
+    TextureBase(const TextureBase &other) = delete;
+    TextureBase &operator=(const TextureBase &other) = delete;
+
+    constexpr unsigned width()  const noexcept { return width_; }
+    constexpr unsigned height() const noexcept { return height_; }
+    constexpr Vector2d getSize()    const noexcept { return Vector2d{(double)width_, (double)height_}; }
+    constexpr Vector2i getSizeInt() const noexcept { return Vector2i{   (int)width_,    (int)height_}; }
+    constexpr Rect<double> getRect()    const noexcept { return Rect<double>::wh(Vector2d{}, getSize   ()); }
+    constexpr Rect<int>    getRectInt() const noexcept { return Rect<int>   ::wh(Vector2i{}, getSizeInt()); }
+
+
+    void setColor(const Color &color);
+    void setFont(const char *name, double sizeY);
+
+    #pragma region Color-setting draw functions
+    // TODO: Reset color to the previous one?
+
+    inline void clear(const Color &color = Color::WHITE) {
+        setColor(color);
+        clearRaw();
+    }
+
+    inline void drawLine(const Vector2d &from, const Vector2d &to, const Color &color = Color::BLACK) {
+        setColor(color);
+        drawLineRaw(from, to);
+    }
+
+    inline void drawLineAlong(const Vector2d &from, const Vector2d &along, const Color &color = Color::BLACK) {
+        drawLine(from, from + along, color);
+    }
+
+    inline void drawLineInf(const Vector2d &from, const Vector2d &to, const Color &color = Color::BLACK) {
+        setColor(color);
+        drawLineInfRaw(from, to);
+    }
+
+    inline void drawLineInfAlong(const Vector2d &from, const Vector2d &along, const Color &color = Color::BLACK) {
+        drawLineInf(from, from + along, color);
+    }
+
+    inline void drawCircle(const Vector2d &center, double radius, const Color &color = Color::RED) {
+        drawEllipse(center, Vector2d{radius, radius}, color);
+    }
+
+    inline void drawEllipse(const Vector2d &center, const Vector2d &dimensions, const Color &color = Color::RED) {
+        setColor(color);
+        drawEllipseRaw(center, dimensions);
+    }
+
+    inline void drawSquare(const Vector2d &center, double side, const Color &color = Color::BLUE) {
+        drawRect(Rect<double>::wh(center - Vector2d{side, side}, 2 * Vector2d{side, side}), color);
+    }
+
+    inline void drawRect(const Rect<double> &at, const Color &color = Color::BLUE) {
+        setColor(color);
+        drawRectRaw(at);
+    }
+
+    inline void drawFrame(const Rect<double> &at, const Color &color = Color::ORANGE) {
+        setColor(color);
+        drawFrameRaw(at);
+    }
+
+    static constexpr unsigned DEFAULT_TEXT_FORMAT = DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_WORD_ELLIPSIS;
+    inline void drawText(const Rect<double> &at, const char *text, unsigned format = DEFAULT_TEXT_FORMAT,
+                         const Color &color = Color::BLACK) {
+        setColor(color);
+        drawTextRaw(at, text, format);
+    }
+    #pragma endregion Color-setting draw functions
+
+    #pragma region Raw draw functions
+    void clearRaw();
+
+    void drawLineRaw(const Vector2d &from, const Vector2d &to);
+
+    inline void drawLineAlongRaw(const Vector2d &from, const Vector2d &along) {
+        drawLineRaw(from, from + along);
+    }
+
+    void drawLineInfRaw(Vector2d from, Vector2d to);
+    
+    inline void drawLineInfAlongRaw(const Vector2d &from, const Vector2d &along) {
+        drawLineInfRaw(from, from + along);
+    }
+
+    inline void drawCircleRaw(const Vector2d &center, double radius) {
+        drawEllipseRaw(center, Vector2d{radius, radius});
+    }
+
+    void drawEllipseRaw(const Vector2d &center, const Vector2d &dimensions);
+
+    inline void drawSquareRaw(const Vector2d &center, double side) {
+        drawRectRaw(Rect<double>::wh(center - Vector2d{side, side}, 2 * Vector2d{side, side}));
+    }
+
+    void drawRectRaw(const Rect<double> &at);
+
+    void drawFrameRaw(const Rect<double> &at);
+
+    void drawTextRaw(const Rect<double> &at, const char *text, unsigned format = DEFAULT_TEXT_FORMAT);
+    #pragma endregion Raw draw functions
+
+    // Only actual textures can be embedded, but into any TextureBase
+    void embed(const Rect<double> &at, const Texture &other);
+
+protected:
+    unsigned width_  = 0,
+             height_ = 0;
+    HDC handle = NULL;
+
+    constexpr TextureBase(unsigned width = 0, unsigned height = 0, HDC handle = NULL) :
+        width_{width}, height_{height}, handle{handle} {}
+
+};
+
+}
+
+
+class Window : public _impl::TextureBase {
 public:
     Window();
 
@@ -52,22 +181,16 @@ public:
     ~Window() noexcept;
 
     inline void render(const Texture &texture) {
-        return renderAt(Rect<int>::wh(0, 0, width(), height()), texture);
+        embed(Rect<double>::wh(0, 0, width(), height()), texture);
     }
 
-    void renderAt(const Vector2i &at, const Texture &texture);
+    void renderAt(const Vector2d &at, const Texture &texture);
 
-    void renderAt(const Rect<int> &at, const Texture &texture);
-
-    void clear(const Color &color = Color::WHITE);
+    inline void renderAt(const Rect<double> &at, const Texture &texture) {
+        embed(at, texture);
+    }
 
     void update();
-
-    constexpr unsigned width() const noexcept { return width_; }
-
-    constexpr unsigned height() const noexcept { return height_; }
-
-    constexpr Vector2d getSize() const noexcept { return Vector2d{(double)width_, (double)height_}; }
 
     void setWndProc(WNDPROC wndProc);
 
@@ -84,14 +207,13 @@ public:
 protected:
     static unsigned exists;
 
-    unsigned width_, height_;
-    HWND window;
+    HWND window = NULL;
 
     void destroy() noexcept;
 
 };
 
-class Texture {
+class Texture : public _impl::TextureBase {
 public:
     Texture();
 
@@ -118,56 +240,10 @@ public:
 
     void update();
 
-    void clear(const Color &color = Color::WHITE);
-
-    void embed(const Rect<double> &at, const Texture &other);
-
-    void drawLine(const Vector2d &from, const Vector2d &to, const Color &color = Color::BLACK);
-
-    inline void drawLineAlong(const Vector2d &from, const Vector2d &along, const Color &color = Color::BLACK) {
-        drawLine(from, from + along, color);
-    }
-
-    void drawLineInf(Vector2d from, Vector2d to, const Color &color = Color::BLACK);
-
-    inline void drawLineInfAlong(const Vector2d &from, const Vector2d &along, const Color &color = Color::BLACK) {
-        drawLineInf(from, from + along, color);
-    }
-
-    inline void drawCircle(const Vector2d &center, double radius, const Color &color = Color::RED) {
-        drawEllipse(center, Vector2d{radius, radius}, color);
-    }
-
-    void drawEllipse(const Vector2d &center, const Vector2d &dimensions, const Color &color = Color::RED);
-
-    inline void drawSquare(const Vector2d &center, double side, const Color &color = Color::BLUE) {
-        drawRect(Rect<double>::wh(center - Vector2d{side, side}, 2 * Vector2d{side, side}), color);
-    }
-
-    void drawRect(const Rect<double> &at, const Color &color = Color::BLUE);
-
-    void drawBounds(const Rect<double> &at, const Color &color = Color::ORANGE);
-
-    void drawText(const Rect<double> &at, const char *text,
-                  unsigned format = DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_WORD_ELLIPSIS,
-                  const Color &color = Color::BLACK);
-
-    void setFont(const char *name, double sizeY);
-
-    constexpr unsigned width()  const noexcept { return width_;  }
-    constexpr unsigned height() const noexcept { return height_; }
-
-    constexpr Rect<double> getScreenRect() const noexcept { return Rect<double>::wh(0, 0, (double)width(), (double)height()); }
-    constexpr Rect<int> getScreenRectInt() const noexcept { return Rect<int>   ::wh(0, 0,    (int)width(),    (int)height()); }
-
 protected:
-    unsigned width_, height_;
-    HDC handle;
     RGBQUAD *buf;
 
     void destroy() noexcept;
-
-    void setColor(const Color &color);
 
 };
 

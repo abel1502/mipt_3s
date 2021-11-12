@@ -12,6 +12,110 @@
 namespace abel::gui {
 
 
+#pragma region TextureBase
+namespace _impl {
+
+// TODO: Split into several, and allow to set thickness alone
+// It currently sets line and text color (as well as line width) in txSetColor,
+// and also the fill color.
+void TextureBase::setColor(const Color &color) {
+    PackedColor packedColor = color.pack();
+    COLORREF internalColor = RGB(packedColor.R, packedColor.G, packedColor.B);
+
+    if (!txSetFillColor(internalColor, handle) ||
+        !txSetColor(internalColor, 1., handle)) {
+        throw llgui_error("TXLib set color failed");
+    }
+}
+
+// TODO: More options
+void TextureBase::setFont(const char *name, double sizeY) {
+    if (!txFontExist(name)) {
+        throw llgui_error("TXLib font not found");
+    }
+
+    txSelectFont(name, sizeY, sizeY * 0.4, FW_DONTCARE, false, false, false, 0, handle);
+}
+
+void TextureBase::embed(const Rect<double> &at, const Texture &other) {
+    // TODO: Perhaps use BitBlt where applicable
+    if (!txGDI(Win32::StretchBlt(handle, (int)at.x(), (int)at.y(), (int)at.w(), (int)at.h(),
+                                 other.handle, 0, 0, other.width(), other.height(),
+                                 SRCCOPY), handle)) {
+        throw llgui_error("TXLib StretchBlt failed");
+    }
+}
+
+void TextureBase::clearRaw() {
+    if (!txClear(handle)) {
+        throw llgui_error("TXLib clear failed");
+    }
+}
+
+void TextureBase::drawLineRaw(const Vector2d &from, const Vector2d &to) {
+    if (!txLine(from.x(), from.y(), to.x(), to.y(), handle)) {
+        throw llgui_error("TXLib draw line failed");
+    }
+}
+
+void TextureBase::drawLineInfRaw(Vector2d from, Vector2d to) {
+    if (to == from) {
+        throw llgui_error("Can't draw a line through just one point");
+    }
+
+    Vector2d delta{to - from};
+    delta.normalize();
+
+    from -= delta * (width() + height());
+    to   += delta * (width() + height());
+
+    drawLine(from, to);
+}
+
+void TextureBase::drawEllipseRaw(const Vector2d &center, const Vector2d &dimensions) {
+    if (!txEllipse(center.x() - dimensions.x(), center.y() - dimensions.y(),
+                   center.x() + dimensions.x(), center.y() + dimensions.y(), handle)) {
+        throw llgui_error("TXLib draw ellipse failed");
+    }
+}
+
+void TextureBase::drawRectRaw(const Rect<double> &at) {
+    if (!txRectangle(at.x0(), at.y0(), at.x1(), at.y1(), handle)) {
+        throw llgui_error("TXLib draw rectangle failed");
+    }
+}
+
+void TextureBase::drawFrameRaw(const Rect<double> &at) {
+    RECT rect{(LONG)at.x0(), (LONG)at.y0(),
+              (LONG)at.x1(), (LONG)at.y1()};
+
+    HBRUSH brush = (HBRUSH)txGDI(Win32::GetCurrentObject(handle, OBJ_BRUSH), handle);
+
+    if (!brush) {
+        throw llgui_error("GetCurrentObject (brush) failed");
+    }
+
+    if (!txGDI(FrameRect(handle, &rect, brush), handle)) {
+        throw llgui_error("FrameRect failed");
+    }
+
+    // drawLine(at.getVertex(0, 0), at.getVertex(0, 1), color);
+    // drawLine(at.getVertex(0, 1), at.getVertex(1, 1), color);
+    // drawLine(at.getVertex(1, 1), at.getVertex(1, 0), color);
+    // drawLine(at.getVertex(1, 0), at.getVertex(0, 0), color);
+}
+
+void TextureBase::drawTextRaw(const Rect<double> &at, const char *text, unsigned format) {
+    if (!txDrawText(at.x0(), at.y0(), at.x1(), at.y1(), text, format, handle)) {
+        throw llgui_error("TXLib draw text failed");
+    }
+}
+
+}  // namespace _impl
+#pragma endregion TextureBase
+
+
+#pragma region Window
 unsigned Window::exists = 0;
 
 
@@ -22,7 +126,7 @@ Window::Window(unsigned width, unsigned height) :
     Window(Rect<unsigned>::wh(100, 100, width, height)) {}
 
 Window::Window(const Rect<unsigned> &pos) :
-    width_{pos.w()}, height_{pos.h()} {
+    TextureBase(pos.w(), pos.h()) {
 
     if (exists) {
         throw llgui_error("Multiple windows creation attempted");
@@ -38,11 +142,16 @@ Window::Window(const Rect<unsigned> &pos) :
     if (!window) {
         throw llgui_error("TXLib window creation failed");
     }
+
+    handle = txDC();
+    if (!handle) {
+        throw llgui_error("TXLib window handle missing");
+    }
 }
 
-Window::Window(Window &&other) noexcept {
-    std::swap(width_, other.width_);
-    std::swap(height_, other.height_);
+Window::Window(Window &&other) noexcept :
+    TextureBase(std::move(other)) {
+
     std::swap(window, other.window);
 }
 
@@ -50,34 +159,9 @@ Window::~Window() noexcept {
     destroy();
 }
 
-void Window::renderAt(const Vector2i &at, const Texture &texture) {
+void Window::renderAt(const Vector2d &at, const Texture &texture) {
     if (!txBitBlt(at.x(), at.y(), texture.getHDC())) {
         throw llgui_error("TXLib BitBlt failed");
-    }
-}
-
-void Window::renderAt(const Rect<int> &at, const Texture &texture) {
-    HDC dest = txDC();
-
-    if (!txGDI(Win32::StretchBlt(dest, at.x(), at.y(), at.w(), at.h(),
-                                 texture.getHDC(), 0, 0, texture.width(), texture.height(),
-                                 SRCCOPY), dest)) {
-        throw llgui_error("TXLib StretchBlt failed");
-    }
-}
-
-void Window::clear(const Color &color) {
-    // TODO: Encapsulate?
-    PackedColor packedColor = color.pack();
-    COLORREF internalColor = RGB(packedColor.R, packedColor.G, packedColor.B);
-
-    if (!txSetFillColor(internalColor) ||
-        !txSetColor(internalColor, 1.)) {
-        throw llgui_error("TXLib set color failed");
-    }
-
-    if (!txClear()) {
-        throw llgui_error("TXLib clear failed");
     }
 }
 
@@ -92,7 +176,11 @@ void Window::destroy() noexcept {
 
     SetWindowText(txWindow(), "[Closed]");  // We ignore the result, because this is a destructor anyway
 
-    exists--;
+    width_ = 0;
+    height_ = 0;
+    handle = NULL;
+    window = NULL;
+    exists--;  // TODO: Maybe not
 }
 
 void Window::setWndProc(WNDPROC wndProc) {
@@ -134,15 +222,15 @@ void Window::releaseMouse() {
     if (!ReleaseCapture())
         throw llgui_error("ReleaseCapture failed");
 }
+#pragma endregion Window
 
 
-//================================================================================
-
+#pragma region Texture
 Texture::Texture() :
-    width_{0}, height_{0}, handle{NULL}, buf{nullptr} {}
+    TextureBase(), buf{nullptr} {}
 
 Texture::Texture(unsigned width, unsigned height) :
-    width_{width}, height_{height} {
+    TextureBase(width, height) {
 
     REQUIRE(width > 0 && height > 0);
     handle = txCreateDIBSection(width, height, &buf);
@@ -156,16 +244,15 @@ Texture::Texture(const Window &wnd) :
     Texture(wnd.width(), wnd.height()) {}
 
 Texture::Texture(Texture &&other) noexcept :
-    width_{other.width_}, height_{other.height_}, handle{other.handle}, buf{other.buf} {
+    TextureBase(std::move(other)), buf{other.buf} {
 
     other.handle = NULL;
     other.buf = nullptr;
 }
 
 Texture &Texture::operator=(Texture &&other) noexcept {
-    std::swap(width_, other.width_);
-    std::swap(height_, other.height_);
-    std::swap(handle, other.handle);
+    TextureBase::operator=(std::move(other));
+
     std::swap(buf, other.buf);
 
     return *this;
@@ -178,103 +265,13 @@ Texture::~Texture() noexcept {
 void Texture::resize(const Vector2d &newSize) {
     Texture result{(unsigned)newSize.x(), (unsigned)newSize.y()};
 
-    result.embed(result.getScreenRect(), *this);
+    result.embed(result.getRect(), *this);
 
     *this = std::move(result);
 }
 
-/// Same reasons as Window::update
+/// Has to be present in case buffer implementation demands manual flushing after modification
 void Texture::update() {}
-
-void Texture::clear(const Color &color) {
-    setColor(color);
-
-    if (!txClear(handle)) {
-        throw llgui_error("TXLib failed to clear");
-    }
-}
-
-void Texture::setColor(const Color &color) {
-    PackedColor packedColor = color.pack();
-    COLORREF internalColor = RGB(packedColor.R, packedColor.G, packedColor.B);
-
-    if (!txSetFillColor(internalColor, handle) ||
-        !txSetColor(internalColor, 1., handle)) {
-        throw llgui_error("TXLib set color failed");
-    }
-}
-
-void Texture::embed(const Rect<double> &at, const Texture &other) {
-    if (!txGDI(Win32::StretchBlt(handle, (int)at.x(), (int)at.y(), (int)at.w(), (int)at.h(),
-                                 other.getHDC(), 0, 0, other.width(), other.height(),
-                                 SRCCOPY), handle)) {
-        throw llgui_error("TXLib StretchBlt failed");
-    }
-}
-
-void Texture::drawLine(const Vector2d &from, const Vector2d &to, const Color &color) {
-    setColor(color);
-
-    if (!txLine(from.x(), from.y(), to.x(), to.y(), handle)) {
-        throw llgui_error("TXLib draw line failed");
-    }
-}
-
-void Texture::drawLineInf(Vector2d from, Vector2d to, const Color &color) {
-    setColor(color);
-
-    if (to == from) {
-        throw llgui_error("Can't draw a line through just one point");
-    }
-
-    Vector2d delta{to - from};
-    delta.normalize();
-
-    from -= delta * (width() + height());
-    to   += delta * (width() + height());
-
-    drawLine(from, to);
-}
-
-void Texture::drawEllipse(const Vector2d &center, const Vector2d &dimensions, const Color &color) {
-    setColor(color);
-
-    if (!txEllipse(center.x() - dimensions.x(), center.y() - dimensions.y(),
-                   center.x() + dimensions.x(), center.y() + dimensions.y(), handle)) {
-        throw llgui_error("TXLib draw ellipse failed");
-    }
-}
-
-void Texture::drawRect(const Rect<double> &at, const Color &color) {
-    setColor(color);
-
-    if (!txRectangle(at.x0(), at.y0(), at.x1(), at.y1(), handle)) {
-        throw llgui_error("TXLib draw rectangle failed");
-    }
-}
-
-void Texture::drawBounds(const Rect<double> &at, const Color &color) {
-    drawLine(at.getVertex(0, 0), at.getVertex(0, 1), color);
-    drawLine(at.getVertex(0, 1), at.getVertex(1, 1), color);
-    drawLine(at.getVertex(1, 1), at.getVertex(1, 0), color);
-    drawLine(at.getVertex(1, 0), at.getVertex(0, 0), color);
-}
-
-void Texture::drawText(const Rect<double> &at, const char *text, unsigned format, const Color &color) {
-    setColor(color);
-
-    if (!txDrawText(at.x0(), at.y0(), at.x1(), at.y1(), text, format, handle)) {
-        throw llgui_error("TXLib draw text failed");
-    }
-}
-
-void Texture::setFont(const char *name, double sizeY) {
-    if (!txFontExist(name)) {
-        throw llgui_error("TXLib font not found");
-    }
-
-    txSelectFont(name, sizeY, sizeY * 0.4, FW_DONTCARE, false, false, false, 0, handle);
-}
 
 void Texture::destroy() noexcept {
     if (handle)
@@ -285,6 +282,7 @@ void Texture::destroy() noexcept {
     handle = NULL;
     buf = nullptr;
 }
+#pragma endregion Texture
 
 
 }

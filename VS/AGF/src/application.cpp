@@ -127,8 +127,10 @@ void Application::captureMouse(Widget *widget) {
 }
 
 void Application::demandRedraw() {
-    if (wnd)
+    if (wnd) {
+        // wnd->update();
         wnd->demandRedraw();
+    }
 }
 
 
@@ -172,7 +174,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         texture.clear(Color::WHITE);  // TODO: Remove, or maybe move to WM_ERASEBKGND?
 
         // Render event must be synchronous due to WINAPI's limitations
-        enqueueEvent(RenderEvent{texture.getScreenRect(), texture}, P_IMMEDIATE);
+        enqueueEvent(RenderEvent{texture.getRect(), texture}, P_IMMEDIATE);
 
         wnd->render(texture);
 

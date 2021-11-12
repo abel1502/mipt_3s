@@ -16,9 +16,9 @@ EVENT_HANDLER_IMPL(Widget, Render) {
         return EventStatus::done();
 
     if constexpr (DEBUG_RENDER_BOXES == DRB_OBJECT) {
-        event.target.drawBounds(region, Color::ORANGE);
+        event.target.drawFrame(region, Color::ORANGE);
     } else if constexpr (DEBUG_RENDER_BOXES == DRB_EVENT) {
-        event.target.drawBounds(event.region, Color::GREEN);
+        event.target.drawFrame(event.region, Color::GREEN);
     }
 
     return EventStatus::skip();
