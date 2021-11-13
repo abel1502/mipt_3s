@@ -4,12 +4,49 @@
 #if AGF_BASE_FRAMEWORK == AGF_BASE_FRAMEWORK_TXLIB
 
 
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
+
 #include <utility>
 #include <cassert>
 #include <ACL/unique_ptr.h>
+#include <Uxtheme.h>
 
 
 namespace abel::gui {
+
+
+#pragma region WinTheme
+WinTheme::WinTheme(const wchar_t *name) :
+    name{name}, handle{OpenThemeData(NULL, name)} {
+
+    if (!handle) {
+        throw llgui_error("OpenThemeData failed");
+    }
+}
+
+WinTheme::~WinTheme() {
+    DBG("WinTheme closing %ls", name);
+    CloseThemeData(handle);
+
+    name = nullptr;
+    handle = NULL;
+}
+
+WinTheme::WinTheme(WinTheme &&other) noexcept :
+    handle{other.handle}, name{other.name} {
+    
+    other.handle = NULL;
+    other.name = nullptr;
+}
+
+WinTheme &WinTheme::operator=(WinTheme &&other) noexcept {
+    std::swap(handle, other.handle);
+    std::swap(name,   other.name);
+
+    return *this;
+}
+#pragma endregion WinTheme
 
 
 #pragma region TextureBase
@@ -111,12 +148,30 @@ void TextureBase::drawTextRaw(const Rect<double> &at, const char *text, unsigned
     }
 }
 
+void TextureBase::drawFrameControl(const Rect<double> &at, unsigned type, unsigned state) {
+    RECT rect{(LONG)at.x0(), (LONG)at.y0(),
+              (LONG)at.x1(), (LONG)at.y1()};
+
+    if (!txGDI(DrawFrameControl(handle, &rect, type, state), handle)) {
+        throw llgui_error("DrawFrameControl failed");
+    }
+}
+
+void TextureBase::drawThemedControl(const Rect<double> &at, const WinTheme &theme, unsigned type, unsigned state) {
+    RECT rect{(LONG)at.x0(), (LONG)at.y0(),
+              (LONG)at.x1(), (LONG)at.y1()};
+
+    if (txGDI(DrawThemeBackground(theme.getHandle(), handle, type, state, &rect, nullptr), handle) != S_OK) {\
+        throw llgui_error("DrawThemeBackground failed");
+    }
+}
+
 }  // namespace _impl
 #pragma endregion TextureBase
 
 
 #pragma region Window
-unsigned Window::exists = 0;
+Window *Window::instance = nullptr;
 
 
 Window::Window() :
@@ -128,10 +183,10 @@ Window::Window(unsigned width, unsigned height) :
 Window::Window(const Rect<unsigned> &pos) :
     TextureBase(pos.w(), pos.h()) {
 
-    if (exists) {
+    if (instance) {
         throw llgui_error("Multiple windows creation attempted");
     }
-    exists++;
+    instance = this;
 
     _txConsole = -1;  // To disable echoing
     txDisableAutoPause();
@@ -147,6 +202,19 @@ Window::Window(const Rect<unsigned> &pos) :
     if (!handle) {
         throw llgui_error("TXLib window handle missing");
     }
+
+    INITCOMMONCONTROLSEX ccPrefs{};
+    ccPrefs.dwSize = sizeof(ccPrefs);
+    ccPrefs.dwICC = ICC_STANDARD_CLASSES | ICC_COOL_CLASSES | ICC_WIN95_CLASSES;
+    if (!InitCommonControlsEx(&ccPrefs)) {
+        throw llgui_error("InitCommonControlsEx failed");
+    }
+
+    themes[WT_WINDOW]    = WinTheme{L"Window"};
+    themes[WT_BUTTON]    = WinTheme{L"Button"};
+    themes[WT_TEXTSTYLE] = WinTheme{L"TextStyle"};
+    themes[WT_REBAR]     = WinTheme{L"Rebar"};
+    themes[WT_SCROLLBAR] = WinTheme{L"Scrollbar"};
 }
 
 Window::Window(Window &&other) noexcept :
@@ -180,7 +248,7 @@ void Window::destroy() noexcept {
     height_ = 0;
     handle = NULL;
     window = NULL;
-    exists--;  // TODO: Maybe not
+    instance = nullptr;
 }
 
 void Window::setWndProc(WNDPROC wndProc) {

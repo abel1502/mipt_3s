@@ -11,10 +11,8 @@
 #define _WIN32_WINNT _WIN32_WINNT_WIN8
 #include <TXLib.h>
 
-#include <ACL/general.h>
-#include <ACL/math/vector.h>
-#include <ACL/gui/color.h>
-#include <ACL/gui/rect.h>
+#include <AGF/llgui_pre.h>
+#include <AGF/impl/llgui_wintheme.h>
 
 
 namespace abel::gui {
@@ -30,10 +28,6 @@ static_assert(offsetof(RGBQUAD, rgbGreen) == offsetof(PackedColor, G));
 static_assert(offsetof(RGBQUAD, rgbBlue)  == offsetof(PackedColor, B));
 
 #define IMPL_SPECIFIC_
-
-
-class Window;
-class Texture;
 
 
 namespace _impl {
@@ -148,6 +142,12 @@ public:
     void drawTextRaw(const Rect<double> &at, const char *text, unsigned format = DEFAULT_TEXT_FORMAT);
     #pragma endregion Raw draw functions
 
+    void drawFrameControl(const Rect<double> &at, unsigned type, unsigned state);
+
+    void drawThemedControl(const Rect<double> &at, const WinTheme &theme, unsigned type, unsigned state);
+
+    // void drawThemedText;  // TODO!!
+
     // Only actual textures can be embedded, but into any TextureBase
     void embed(const Rect<double> &at, const Texture &other);
 
@@ -166,6 +166,16 @@ protected:
 
 class Window : public _impl::TextureBase {
 public:
+    enum WinThemeType {
+        WT_WINDOW,
+        WT_BUTTON,
+        WT_TEXTSTYLE,
+        WT_REBAR,
+        WT_SCROLLBAR,
+
+        WT_COUNT,  ///< Not a valid enum value!
+    };
+
     Window();
 
     Window(unsigned width, unsigned height);
@@ -204,10 +214,29 @@ public:
     void captureMouse();
     void releaseMouse();
 
+    static inline Window &getInstance() {
+        if (!instance) {
+            throw llgui_error("Window absent");
+        }
+
+        return *instance;
+    }
+
+    template <WinThemeType I>
+    constexpr WinTheme &getTheme() noexcept {
+        static_assert(I < WT_COUNT);
+
+        return themes[I];
+    }
+
 protected:
-    static unsigned exists;
+    friend class Texture;
+
+    static Window *instance;
 
     HWND window = NULL;
+
+    WinTheme themes[WT_COUNT] = {};
 
     void destroy() noexcept;
 
