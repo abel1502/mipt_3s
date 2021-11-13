@@ -502,14 +502,6 @@ protected:
         firstFree = idx;
     }
 
-    inline idx_t refToIdx(const Node &node) const {
-        return buf.refToIdx(node);
-    }
-
-    inline idx_t ptrToIdx(const Node *node) const {
-        return buf.ptrToIdx(node);
-    }
-
     inline void demandValidIter(const const_iterator &iter) {
         if (!validateIter(iter))
             throw error("Corrupt iterator");
