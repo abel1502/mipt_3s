@@ -269,6 +269,7 @@ public:
         if (new_capacity == 0)
             new_capacity = DEFAULT_CAPACITY;
 
+        assert(size <= capacity);
         if (new_capacity <= capacity)
             return false;
 
