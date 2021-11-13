@@ -281,7 +281,7 @@ public:
 
         if (buf) {
             for (unsigned i = 0; i < size; ++i) {
-                newBuf[i] = std::move(buf[i]);
+                new (&newBuf[i]) T(std::move(buf[i]));
                 buf[i].~T();
             }
 
