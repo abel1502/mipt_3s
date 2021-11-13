@@ -102,7 +102,7 @@ protected:
         DRB_NONE,
         DRB_OBJECT,
         DRB_EVENT,
-    } DEBUG_RENDER_BOXES = DRB_OBJECT;
+    } DEBUG_RENDER_BOXES = DRB_NONE;
 
 
     Widget *parent;

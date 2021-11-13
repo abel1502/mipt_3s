@@ -25,6 +25,7 @@ public:
     Button(Widget *parent_, const Rect<double> &region_, const char *text_);
 
     EVENT_HANDLER_OVERRIDE(MouseClick)
+    EVENT_HANDLER_OVERRIDE(Render)
 
 protected:
     bool isDown = false;

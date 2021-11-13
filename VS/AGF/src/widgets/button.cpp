@@ -72,4 +72,32 @@ void Button::onMouseUp(const MouseClickEvent &, bool hit) {
 }
 
 
+// TODO: Remove
+EVENT_HANDLER_IMPL(Button, Render) {
+    // Skipping StaticGroup level, because we want to handle stuff manually
+    EventStatus status = Widget::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE)) {
+        return status;
+    }
+
+    unsigned state = 0;
+
+    if (isDown) {
+        state = PBS_PRESSED;
+    } else if (region.contains(Window::getInstance().getMousePos())) {
+        state = PBS_HOT;
+    } else {
+        state = PBS_NORMAL;
+    }
+
+    // event.target.drawThemedControl(region, Window::getInstance().getTheme<Window::WT_WINDOW>(), WP_CLOSEBUTTON, state);
+    event.target.drawThemedControl(region, Window::getInstance().getTheme<Window::WT_BUTTON>(), BP_PUSHBUTTON, state);
+
+    status = label().dispatchEvent(event);
+    status.update();
+    return status;
+}
+
+
 }
