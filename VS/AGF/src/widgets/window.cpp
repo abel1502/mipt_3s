@@ -127,8 +127,8 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
     };
 }
 
-Window::EmptyBody::EmptyBody(Window * parent_) :
-    Widget(parent_, Rect<double>(0, 0, 0, 0)) {}
+Window::EmptyBody::EmptyBody(Window *parent_) :
+    Widget(parent_, Rect<double>::wh(0, 0, 0, 0)) {}
 
 }
 
