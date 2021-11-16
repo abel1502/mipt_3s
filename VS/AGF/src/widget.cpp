@@ -12,8 +12,8 @@ namespace abel::gui {
 #pragma warning(disable : 4100)
 
 EVENT_HANDLER_IMPL(Widget, Render) {
-    if (!visible)
-        return EventStatus::done();
+    if (hidden)
+        return EventStatus::stop(EventStatus::NODE);
 
     if constexpr (DEBUG_RENDER_BOXES == DRB_OBJECT) {
         event.target.drawFrame(region, Color::ORANGE);
@@ -51,10 +51,16 @@ EVENT_HANDLER_IMPL(Widget, Exit) {
 }
 
 EVENT_HANDLER_IMPL(Widget, MouseClick) {
+    if (hidden)
+        return EventStatus::stop(EventStatus::NODE);
+
     return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, MouseMove) {
+    if (hidden)
+        return EventStatus::stop(EventStatus::NODE);
+
     return EventStatus::skip();
 }
 
@@ -73,17 +79,27 @@ EVENT_HANDLER_IMPL(Widget, User) {
 Widget::Widget(Widget *parent_, const Rect<double> &region_) :
     parent{parent_}, region{region_} {}
 
-void Widget::updateParent(Widget *parent_) {
+bool Widget::updateParent(Widget *parent_) {
+    if (parent == parent_)
+        return true;
+
     Vector2d oldPos = parent  ?  parent->region.getPos() : Vector2d{};
     Vector2d newPos = parent_ ? parent_->region.getPos() : Vector2d{};
     
     parent = parent_;
 
     staticShift(newPos - oldPos);
+
+    return false;
 }
 
-void Widget::staticShift(const Vector2d &by) {
+bool Widget::staticShift(const Vector2d &by) {
+    if (by.isZero())
+        return true;
+
     region += by;
+
+    return false;
 }
 
 

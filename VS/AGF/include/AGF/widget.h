@@ -93,9 +93,9 @@ public:
     constexpr const Rect<double> &getRegion() const { return region; }
     constexpr       Rect<double> &getRegion()       { return region; }
 
-    virtual void updateParent(Widget *parent_);
+    virtual bool updateParent(Widget *parent_);
 
-    virtual void staticShift(const Vector2d &by);
+    virtual bool staticShift(const Vector2d &by);
 
 protected:
     static constexpr enum {
@@ -107,7 +107,7 @@ protected:
 
     Widget *parent;
     Rect<double> region;
-    bool visible = true;
+    bool hidden = false;
 
 
     Widget(Widget *parent_, const Rect<double> &region_);
@@ -123,7 +123,6 @@ protected:
         return event;
     }
 
-    // TODO: Maybe create an optimized version to modify only once per function somehow...?
     template <typename T>
     EventStatus dispatchToChild(Widget &child, const T &event) {
         if constexpr (!T::demands_modification) {
