@@ -5,11 +5,24 @@
 #error "This file should not be included manually"
 #endif
 
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#pragma comment(lib, "Comctl32.lib")
+#pragma comment(lib, "UXTheme.lib")
+#pragma comment(lib, "Gdiplus.lib")
+
 // Has to be included before everything else
 #define TX_CONSOLE_MODE SW_SHOW
 // #define WIN32_LEAN_AND_MEAN
 #define _WIN32_WINNT _WIN32_WINNT_WIN8
+
+#if defined(UNICODE) || defined(_UNICODE)
+#error "This project requires unicode to be disabled"
+#endif
+
+#include <Windows.h>
+#include <gdiplus.h>
 #include <TXLib.h>
+#include <Uxtheme.h>
 
 #include <AGF/llgui_pre.h>
 #include <AGF/impl/llgui_wintheme.h>
@@ -149,7 +162,9 @@ public:
     // void drawThemedText;  // TODO!!
 
     // Only actual textures can be embedded, but into any TextureBase
-    void embed(const Rect<double> &at, const Texture &other);
+    inline void embed(const Rect<double> &at, const Texture &other);
+
+    void embedPart(const Rect<double> &at, const Texture &other, const Rect<double> &part);
 
 protected:
     unsigned width_  = 0,
@@ -235,10 +250,8 @@ protected:
     static Window *instance;
 
     HWND window = NULL;
-
+    ULONG_PTR gdiToken = NULL;
     WinTheme themes[WT_COUNT] = {};
-
-    void destroy() noexcept;
 
 };
 
@@ -249,6 +262,8 @@ public:
     Texture(unsigned width, unsigned height);
 
     Texture(const Window &wnd);
+
+    Texture(const char *srcFileName);
 
     Texture(Texture &&other) noexcept;
     Texture &operator=(Texture &&other) noexcept;
@@ -272,9 +287,13 @@ public:
 protected:
     RGBQUAD *buf;
 
-    void destroy() noexcept;
-
 };
+
+
+inline void _impl::TextureBase::embed(const Rect<double> &at, const Texture &other) {
+    return embedPart(at, other, other.getRect());
+}
+
 
 #undef IMPL_SPECIFIC_
 

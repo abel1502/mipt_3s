@@ -3,14 +3,9 @@
 
 #if AGF_BASE_FRAMEWORK == AGF_BASE_FRAMEWORK_TXLIB
 
-
-#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-
-
 #include <utility>
 #include <cassert>
-#include <ACL/unique_ptr.h>
-#include <Uxtheme.h>
+#include <cstdio>
 
 
 namespace abel::gui {
@@ -26,7 +21,6 @@ WinTheme::WinTheme(const wchar_t *name) :
 }
 
 WinTheme::~WinTheme() {
-    DBG("WinTheme closing %ls", name);
     CloseThemeData(handle);
 
     name = nullptr;
@@ -74,10 +68,10 @@ void TextureBase::setFont(const char *name, double sizeY) {
     txSelectFont(name, sizeY, sizeY * 0.4, FW_DONTCARE, false, false, false, 0, handle);
 }
 
-void TextureBase::embed(const Rect<double> &at, const Texture &other) {
+void TextureBase::embedPart(const Rect<double> &at, const Texture &other, const Rect<double> &part) {
     // TODO: Perhaps use BitBlt where applicable
     if (!txGDI(Win32::StretchBlt(handle, (int)at.x(), (int)at.y(), (int)at.w(), (int)at.h(),
-                                 other.handle, 0, 0, other.width(), other.height(),
+                                 other.handle, (int)part.x(), (int)part.y(), (int)part.w(), (int)part.h(),
                                  SRCCOPY), handle)) {
         throw llgui_error("TXLib StretchBlt failed");
     }
@@ -215,6 +209,9 @@ Window::Window(const Rect<unsigned> &pos) :
     themes[WT_TEXTSTYLE] = WinTheme{L"TextStyle"};
     themes[WT_REBAR]     = WinTheme{L"Rebar"};
     themes[WT_SCROLLBAR] = WinTheme{L"Scrollbar"};
+
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput{};
+    Gdiplus::GdiplusStartup(&gdiToken, &gdiplusStartupInput, NULL);
 }
 
 Window::Window(Window &&other) noexcept :
@@ -224,7 +221,20 @@ Window::Window(Window &&other) noexcept :
 }
 
 Window::~Window() noexcept {
-    destroy();
+    // txDestroyWindow(window);  // Will happen automatically, shouldn't be done manually
+
+    txEnd();
+
+    SetWindowText(txWindow(), "[Closed]");  // We ignore the result, because this is a destructor anyway
+
+    Gdiplus::GdiplusShutdown(gdiToken);
+
+    width_ = 0;
+    height_ = 0;
+    handle = NULL;
+    window = NULL;
+    gdiToken = NULL;
+    instance = nullptr;
 }
 
 void Window::renderAt(const Vector2d &at, const Texture &texture) {
@@ -235,20 +245,6 @@ void Window::renderAt(const Vector2d &at, const Texture &texture) {
 
 void Window::update() {
     txRedrawWindow();
-}
-
-void Window::destroy() noexcept {
-    // txDestroyWindow(window);  // Will happen automatically, shouldn't be done manually
-
-    txEnd();
-
-    SetWindowText(txWindow(), "[Closed]");  // We ignore the result, because this is a destructor anyway
-
-    width_ = 0;
-    height_ = 0;
-    handle = NULL;
-    window = NULL;
-    instance = nullptr;
 }
 
 void Window::setWndProc(WNDPROC wndProc) {
@@ -311,6 +307,44 @@ Texture::Texture(unsigned width, unsigned height) :
 Texture::Texture(const Window &wnd) :
     Texture(wnd.width(), wnd.height()) {}
 
+Texture::Texture(const char *srcFileName) {
+    errno_t res = 0;
+
+    size_t requiredLength = 0;
+    res = mbstowcs_s(&requiredLength, nullptr, 0, srcFileName, 0);
+    if (res) {
+        throw llgui_error("mbstowcs_s failed");
+    }
+
+    wchar_t *wSrcFileName = new wchar_t[requiredLength + 1];
+    res = mbstowcs_s(nullptr, wSrcFileName, requiredLength + 1, srcFileName, requiredLength);
+    if (res) {
+        throw llgui_error("mbstowcs_s failed");
+    }
+
+    try {
+
+        Gdiplus::Bitmap bitmap{wSrcFileName};
+
+        HBITMAP bitmapHandle = NULL;
+        if (bitmap.GetHBITMAP(Gdiplus::Color{0, 0, 0, 0}, &bitmapHandle) != Gdiplus::Ok) {
+            throw llgui_error("Gdiplus::Bitmap::GetHBITMAP() failed");
+        }
+
+        width_ = bitmap.GetWidth();
+        height_ = bitmap.GetHeight();
+
+        handle = txCreateCompatibleDC(width_, height_, bitmapHandle, &buf);
+    } catch (...) {
+        delete[] wSrcFileName;
+        throw;
+    }
+    delete[] wSrcFileName;
+
+    assert(handle);
+    assert(buf);
+}
+
 Texture::Texture(Texture &&other) noexcept :
     TextureBase(std::move(other)), buf{other.buf} {
 
@@ -327,7 +361,13 @@ Texture &Texture::operator=(Texture &&other) noexcept {
 }
 
 Texture::~Texture() noexcept {
-    destroy();
+    if (handle)
+        txDeleteDC(handle);  // We don't care about success
+
+    width_ = 0;
+    height_ = 0;
+    handle = NULL;
+    buf = nullptr;
 }
 
 void Texture::resize(const Vector2d &newSize) {
@@ -341,15 +381,6 @@ void Texture::resize(const Vector2d &newSize) {
 /// Has to be present in case buffer implementation demands manual flushing after modification
 void Texture::update() {}
 
-void Texture::destroy() noexcept {
-    if (handle)
-        txDeleteDC(handle);  // We don't care about success
-
-    width_ = 0;
-    height_ = 0;
-    handle = NULL;
-    buf = nullptr;
-}
 #pragma endregion Texture
 
 
