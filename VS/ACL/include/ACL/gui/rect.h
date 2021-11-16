@@ -13,7 +13,9 @@ template <typename T>
 class Rect {
     //static_assert(std::is_arithmetic_v<T>);
 public:
-    using Vector2T = typename abel::math::Vector2<typename abel::make_signed_t<T>>;
+    using type = T;
+    using signed_type = typename abel::make_signed_t<T>;
+    using Vector2T = typename abel::math::Vector2<signed_type>;
 
 
     constexpr Rect() noexcept :
@@ -70,15 +72,15 @@ public:
     // Pos refers to x and y of wh, whereas Start refers to x0 and y0 of se
     // Thus, setting them maintains either Diag or End, respectively
 
-    constexpr Vector2T getStart() const { return Vector2T(x0(), y0()); }
-    constexpr Vector2T getEnd  () const { return Vector2T(x1(), y1()); }
-    constexpr Vector2T getPos  () const { return Vector2T(x (), y ()); }
-    constexpr Vector2T getDiag () const { return Vector2T(w (), h ()); }
+    constexpr Vector2T getStart() const noexcept { return Vector2T(x0(), y0()); }
+    constexpr Vector2T getEnd  () const noexcept { return Vector2T(x1(), y1()); }
+    constexpr Vector2T getPos  () const noexcept { return Vector2T(x (), y ()); }
+    constexpr Vector2T getDiag () const noexcept { return Vector2T(w (), h ()); }
 
-    constexpr void setStart(const Vector2T &value) { x0(value.x()); y0(value.y()); }
-    constexpr void setEnd  (const Vector2T &value) { x1(value.x()); y1(value.y()); }
-    constexpr void setPos  (const Vector2T &value) { x (value.x()); y (value.y()); }
-    constexpr void setDiag (const Vector2T &value) { w (value.x()); h (value.y()); }
+    constexpr void setStart(const Vector2T &value) noexcept { x0(value.x()); y0(value.y()); }
+    constexpr void setEnd  (const Vector2T &value) noexcept { x1(value.x()); y1(value.y()); }
+    constexpr void setPos  (const Vector2T &value) noexcept { x (value.x()); y (value.y()); }
+    constexpr void setDiag (const Vector2T &value) noexcept { w (value.x()); h (value.y()); }
 
     constexpr Vector2T getVertex(bool xCoord, bool yCoord) const {
         return Vector2T(x() + (!!xCoord) * w(),
@@ -102,12 +104,16 @@ public:
     Rect clamped(const Rect &bounds) const noexcept {
         Rect result{*this};
 
-        return result.intersect(bounds);
+        return result.clamp(bounds);
     }
 
     constexpr bool contains(const Vector2T &point) const noexcept {
         return x0() <= point.x() && point.x() <= x1() &&
                y0() <= point.y() && point.y() <= y1();
+    }
+
+    constexpr bool contains(const Rect &other) const noexcept {
+        return contains(other.getStart()) && contains(other.getEnd());
     }
 
     constexpr Rect relRect(const Rect &relative, bool allowOverflow = false) const noexcept {
@@ -130,7 +136,7 @@ public:
         return result;
     }
 
-    constexpr Rect &pad(int left, int right, int top, int bottom) noexcept {
+    constexpr Rect &pad(signed_type left, signed_type right, signed_type top, signed_type bottom) noexcept {
         x0(x0() + left);
         x1(x1() - right);
         y0(y0() + top);
@@ -139,74 +145,93 @@ public:
         return *this;
     }
 
-    constexpr Rect &pad(int horizontal, int vertical) noexcept {
+    constexpr Rect &pad(signed_type horizontal, signed_type vertical) noexcept {
         return pad(horizontal, horizontal, vertical, vertical);
     }
 
-    constexpr Rect &pad(int amount) noexcept {
+    constexpr Rect &pad(signed_type amount) noexcept {
         return pad(amount, amount);
     }
 
-    constexpr Rect &padH(int amount) noexcept {
+    constexpr Rect &padH(signed_type amount) noexcept {
         return pad(amount, 0);
     }
 
-    constexpr Rect &padV(int amount) noexcept {
+    constexpr Rect &padV(signed_type amount) noexcept {
         return pad(0, amount);
     }
 
-    constexpr Rect padded(int left, int right, int top, int bottom) const noexcept {
+    constexpr Rect padded(signed_type left, signed_type right, signed_type top, signed_type bottom) const noexcept {
         Rect result{*this};
 
         return result.pad(left, right, top, bottom);
     }
 
-    constexpr Rect padded(int horizontal, int vertiacal) noexcept {
+    constexpr Rect padded(signed_type horizontal, signed_type vertiacal) const noexcept {
         Rect result{*this};
 
         return result.pad(horizontal, vertiacal);
     }
 
-    constexpr Rect padded(int amount) noexcept {
+    constexpr Rect padded(signed_type amount) const noexcept {
         Rect result{*this};
 
         return result.pad(amount);
     }
 
-    constexpr Rect paddedH(int amount) noexcept {
+    constexpr Rect paddedH(signed_type amount) const noexcept {
         Rect result{*this};
 
         return result.padH(amount);
     }
 
-    constexpr Rect paddedV(int amount) noexcept {
+    constexpr Rect paddedV(signed_type amount) const noexcept {
         Rect result{*this};
 
         return result.padV(amount);
     }
 
-    constexpr Rect &operator+=(const Vector2T &delta) {
+    constexpr Rect &operator+=(const Vector2T &delta) noexcept {
         setPos(getPos() + delta);
 
         return *this;
     }
 
-    constexpr Rect &operator-=(const Vector2T &delta) {
+    constexpr Rect &operator-=(const Vector2T &delta) noexcept {
         setPos(getPos() - delta);
 
         return *this;
     }
 
-    constexpr Rect operator+(const Vector2T &delta) {
+    constexpr Rect operator+(const Vector2T &delta) const noexcept {
         Rect result{*this};
 
         return result += delta;
     }
 
-    constexpr Rect operator-(const Vector2T &delta) {
+    constexpr Rect operator-(const Vector2T &delta) const noexcept {
         Rect result{*this};
 
         return result -= delta;
+    }
+
+    constexpr bool isEmpty() const noexcept {
+        return x0() >= x1() || y0() >= y1();
+    }
+
+    constexpr Rect &normalizeEmpty() noexcept {
+        if (x0() > x1())
+            x1(x0());
+        if (y0() > y1())
+            y1(y0());
+
+        return *this;
+    }
+
+    constexpr Rect normalizedEmpty() const noexcept {
+        Rect result{*this};
+
+        return result.normalizeEmpty();
     }
 
 protected:
