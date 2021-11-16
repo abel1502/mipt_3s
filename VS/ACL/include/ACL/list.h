@@ -407,11 +407,61 @@ public:
                idx_t from = fromIter.idx;,
                const iterator &toIter, const iterator &fromIter);
 
-    // TODO: Finish
-
     #undef DMB_BIDIR_
     #undef DMB_
     //--------------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------------
+    // Finds
+    // (Warning: linear time complexity!)
+    iterator findByValue(const T &value) {
+        iterator end_ = end();
+        iterator result = begin();
+        for (; result != end_; ++result) {
+            if (*result == value)
+                break;
+        }
+
+        return result;
+    }
+
+    inline const_iterator findByValue(const T &value) const {
+        return const_cast<list *>(this)->findByValue(value);
+    }
+
+    /// Pos is handled the same way it would have been in a vector
+    iterator findByPos(int pos) {
+        iterator result = end();
+
+        if (pos >= 0)
+            pos++;
+
+        assert(pos != 0);
+
+        if (pos < -getSize() || pos > getSize()) {
+            throw error("List index out of range!");
+        }
+
+        if (pos > 0) {
+            while (pos) {
+                result++;
+                pos--;
+            }
+        } else {
+            while (pos) {
+                result--;
+                pos++;
+            }
+        }
+
+        return result;
+    }
+
+    inline const_iterator findByPos(int pos) const {
+        return const_cast<list *>(this)->findByPos(pos);
+    }
+    //--------------------------------------------------------------------------------
+
 
     constexpr bool isEmpty() const noexcept {
         return size == 0;
