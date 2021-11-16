@@ -18,7 +18,6 @@
 
 
 namespace abel::gui {
-// TODO: Implement all of these
 
 
 EVENT_CLS_DECL_(Render) {
@@ -86,7 +85,8 @@ EVENT_CLS_DECL_(MouseClick) {
     MouseClickType type;
 
 
-    constexpr MouseClickEvent(const Vector2d &pos_, const MouseAttrs &attrs_, MouseBtn button_, MouseClickType type_) noexcept :
+    constexpr MouseClickEvent(const Vector2d &pos_, const MouseAttrs &attrs_,
+                              MouseBtn button_, MouseClickType type_) noexcept :
         pos{pos_}, attrs{attrs_}, button{button_}, type{type_} {}
 };
 
@@ -96,7 +96,8 @@ EVENT_CLS_DECL_(MouseMove) {
     MouseAttrs attrs;
 
 
-    constexpr MouseMoveEvent(const Vector2d &pos0_, const Vector2d &pos1_, const MouseAttrs &attrs_) noexcept :
+    constexpr MouseMoveEvent(const Vector2d &pos0_, const Vector2d &pos1_,
+                             const MouseAttrs &attrs_) noexcept :
         pos0{pos0_}, pos1{pos1_}, attrs{attrs_} {}
 
     constexpr Vector2d getDelta() const noexcept {
