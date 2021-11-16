@@ -22,7 +22,6 @@ namespace _impl {
     template <typename T, typename ... Ts>
     struct TypeArrayItem<0, T, Ts...> {
         using type = T;
-        static constexpr unsigned size = 0;
     };
 
     template <unsigned I, typename T, typename ... Ts>
@@ -31,7 +30,6 @@ namespace _impl {
         using Next = TypeArrayItem<I - 1, Ts...>;
 
         using type = typename Next::type;
-        static constexpr unsigned size = Next::size + 1;
     };
 
 
