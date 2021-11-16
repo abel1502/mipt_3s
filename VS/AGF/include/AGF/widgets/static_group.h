@@ -13,7 +13,8 @@
     inline const auto &NAME()      const { return child   <IDX>(); }    \
     inline       auto &NAME()            { return child   <IDX>(); }    \
     inline const auto &NAME##Ptr() const { return childPtr<IDX>(); }    \
-    inline       auto &NAME##Ptr()       { return childPtr<IDX>(); }
+    inline       auto &NAME##Ptr()       { return childPtr<IDX>(); }    \
+    inline void NAME(typename Types::type<IDX> *ptr) { setChild<IDX>(ptr);  }
 
 #define SGRP_DECLARE_BINDING_T(NAME, TYPE) \
     SGRP_DECLARE_BINDING_I(NAME, Types::idx<TYPE>)
@@ -70,6 +71,12 @@ protected:
     }
 
     template <unsigned I>
+    void setChild(typename Types::template type<I> *newChild) {
+        childPtr<I>() = newChild;
+        child<I>().updateParent(this);
+    }
+
+    template <unsigned I>
     constexpr const auto &childPtr() const noexcept {
         // unique_ptr<typename Types::item<I>> &
         return std::get<I>(children);
@@ -96,7 +103,8 @@ protected:
     template <unsigned I = 0>
     void _staticShiftChildren(const Vector2d &by) {
         if constexpr (I < Types::size) {
-            child<I>().staticShift(by);
+            if (childPtr<I>())
+                child<I>().staticShift(by);
 
             _staticShiftChildren<I + 1>(by);
         }
@@ -107,7 +115,8 @@ protected:
         // TODO: Decide whether I want to update parents, or, on the contrary, validate that they are nullptr's
 
         if constexpr (I < Types::size) {
-            child<I>().updateParent(this);
+            if (childPtr<I>())
+                child<I>().updateParent(this);
 
             _updateParents<I + 1>();
         }
@@ -167,7 +176,10 @@ protected:
         if (!status.shouldHandle(status.NODE))
             return status;
 
-        REQUIRE(areChildrenSet());
+        // REQUIRE(areChildrenSet());
+        if (!areChildrenSet()) {
+            REQUIRE(false);
+        }
 
         return _dispatchToChildren(event);
     }
