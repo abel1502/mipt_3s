@@ -77,7 +77,7 @@ EVENT_HANDLER_IMPL(Widget, User) {
 
 
 Widget::Widget(Widget *parent_, const Rect<double> &region_) :
-    parent{parent_}, region{region_} {}
+    parent{parent_}, region{region_} {}  // We cannot copy parent's style here yet, because it wan't yet set
 
 bool Widget::updateParent(Widget *parent_) {
     if (parent == parent_)
@@ -90,6 +90,8 @@ bool Widget::updateParent(Widget *parent_) {
 
     staticShift(newPos - oldPos);
 
+    setStyle(parent ? parent->styleHandle : StyleManager::ROOT_STYLE_HANDLE);
+
     return false;
 }
 
@@ -100,6 +102,16 @@ bool Widget::staticShift(const Vector2d &by) {
     region += by;
 
     return false;
+}
+
+bool Widget::setStyle(StyleManager::StyleHandle newHandle) {
+    styleHandle = newHandle;
+
+    return false;
+}
+
+Style &Widget::getStyle() {
+    return Application::getInstance().getStyleManager().getStyle(styleHandle);
 }
 
 

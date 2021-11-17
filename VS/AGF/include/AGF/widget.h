@@ -7,6 +7,7 @@
 #include <AGF/events.h>
 #include <AGF/widget_pos.h>
 #include <AGF/llgui_pre.h>
+#include <AGF/style.h>
 #include <ACL/unique_ptr.h>
 
 /*
@@ -93,9 +94,15 @@ public:
     constexpr const Rect<double> &getRegion() const { return region; }
     constexpr       Rect<double> &getRegion()       { return region; }
 
+    inline const Style &getStyle() const {
+        return const_cast<Widget *>(this)->getStyle();
+    }
+
     virtual bool updateParent(Widget *parent_);
 
     virtual bool staticShift(const Vector2d &by);
+
+    virtual bool setStyle(StyleManager::StyleHandle newHandle);
 
 protected:
     static constexpr enum {
@@ -107,6 +114,7 @@ protected:
 
     Widget *parent;
     Rect<double> region;
+    StyleManager::StyleHandle styleHandle = StyleManager::ROOT_STYLE_HANDLE;
     bool hidden = false;
 
 
@@ -133,6 +141,9 @@ protected:
     }
 
     // TODO: Maybe some sort of dispatchToBase, but it doesn't seem to work
+
+    // TODO: Perhaps inline somehow, but I can't see an easy way
+    Style &getStyle();
 
 };
 
