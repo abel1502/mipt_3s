@@ -73,6 +73,16 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
 
     initialized = true;
 
+    static constexpr char DEFAULT_STYLE_PATH[] = "resources/default.style";
+    try {
+        styleMgr.loadDefaultStyle(DEFAULT_STYLE_PATH);
+    } catch (abel::error &e) {
+        ERR("Failed to load default style from \"%s\" - error \"%s\".\n"
+            "Defaulting to system-backed style", DEFAULT_STYLE_PATH, e.what());
+
+        styleMgr.getStyle(styleMgr.ROOT_STYLE_HANDLE).markAllSysDrawn();
+    }
+
     wnd.emplace();  // Default size
     wnd->setWndProc(&_wndproc);
 }

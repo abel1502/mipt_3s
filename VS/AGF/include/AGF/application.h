@@ -11,6 +11,7 @@
 #include <AGF/widget.h>
 #include <AGF/widget_event.h>
 #include <AGF/events.h>
+#include <AGF/style.h>
 #include <deque>
 #include <functional>
 #include <mutex>
@@ -129,6 +130,9 @@ public:
 
     void demandRedraw();
 
+    inline const StyleManager &getStyleManager() const noexcept { return styleMgr; }
+    inline       StyleManager &getStyleManager()       noexcept { return styleMgr; }
+
 protected:
     static app_ptr_t instance;
 
@@ -143,6 +147,9 @@ protected:
     std::mutex actionQueueMutex{};
     std::mutex actionExecMutex{};
     std::deque<action_cb_t> actionQueue{};
+
+    // TODO: Adapt more generally...?
+    StyleManager styleMgr{};
 
 
     static LRESULT CALLBACK _wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
