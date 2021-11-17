@@ -182,7 +182,7 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
     contents().staticShift(Vector2d(borderWidth, headerHeight));
 
     header().closeBtn().sigClick += [this]() {
-        getParent().close(this);
+        getParent().close(this);  // Already enqueues stuff
 
         /*Application::getInstance().enqueueAction([&manager = getParent(), this](Application &app) {
             manager.close(this);
@@ -215,7 +215,18 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
 }
 
 EVENT_HANDLER_IMPL(Window, Render) {
-    if (cacheOnDrag && dragged && cachedTexture) {
+    if (cacheOnDrag && dragged) {
+        if (!cachedTexture) {
+            cachedTexture = new Texture{region};
+
+            Base::dispatchEvent(RenderEvent{cachedTexture->getRect(), *cachedTexture});
+
+            // abel::gui::Window::getInstance().getRect()
+            // cachedTexture->clear(Color{0.8f});
+            // cachedTexture->embedPart(getParent().getRegion().clamped(cachedTexture->getRect()),
+            //                          event.target, region);
+        }
+
         EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE)) {
@@ -228,17 +239,6 @@ EVENT_HANDLER_IMPL(Window, Render) {
     }
 
     EventStatus status = Base::dispatchEvent(event);
-
-    if (cacheOnDrag && dragged && !cachedTexture) {
-        cachedTexture = new Texture((unsigned)region.w(), (unsigned)region.h());
-
-        cachedTexture->embedPart(cachedTexture->getRect(), event.target, region);
-
-        // abel::gui::Window::getInstance().getRect()
-        // cachedTexture->clear(Color{0.8f});
-        // cachedTexture->embedPart(getParent().getRegion().clamped(cachedTexture->getRect()),
-        //                          event.target, region);
-    }
 
     return status;
 }

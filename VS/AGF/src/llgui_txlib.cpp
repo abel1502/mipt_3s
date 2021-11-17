@@ -68,7 +68,10 @@ void TextureBase::setFont(const char *name, double sizeY) {
     txSelectFont(name, sizeY, sizeY * 0.4, FW_DONTCARE, false, false, false, 0, handle);
 }
 
-void TextureBase::embedPart(const Rect<double> &at, const Texture &other, const Rect<double> &part) {
+void TextureBase::embedPart(Rect<double> at, const Texture &other, Rect<double> part) {
+    at -= offset();
+    part -= other.offset();
+
     // TODO: Perhaps use BitBlt where applicable
     if (!txGDI(Win32::StretchBlt(handle, (int)at.x(), (int)at.y(), (int)at.w(), (int)at.h(),
                                  other.handle, (int)part.x(), (int)part.y(), (int)part.w(), (int)part.h(),
@@ -83,13 +86,19 @@ void TextureBase::clearRaw() {
     }
 }
 
-void TextureBase::drawLineRaw(const Vector2d &from, const Vector2d &to) {
+void TextureBase::drawLineRaw(Vector2d from, Vector2d to) {
+    from -= offset();
+    to   -= offset();
+
     if (!txLine(from.x(), from.y(), to.x(), to.y(), handle)) {
         throw llgui_error("TXLib draw line failed");
     }
 }
 
 void TextureBase::drawLineInfRaw(Vector2d from, Vector2d to) {
+    from -= offset();
+    to   -= offset();
+
     if (to == from) {
         throw llgui_error("Can't draw a line through just one point");
     }
@@ -103,20 +112,26 @@ void TextureBase::drawLineInfRaw(Vector2d from, Vector2d to) {
     drawLine(from, to);
 }
 
-void TextureBase::drawEllipseRaw(const Vector2d &center, const Vector2d &dimensions) {
+void TextureBase::drawEllipseRaw(Vector2d center, const Vector2d &dimensions) {
+    center -= offset();
+
     if (!txEllipse(center.x() - dimensions.x(), center.y() - dimensions.y(),
                    center.x() + dimensions.x(), center.y() + dimensions.y(), handle)) {
         throw llgui_error("TXLib draw ellipse failed");
     }
 }
 
-void TextureBase::drawRectRaw(const Rect<double> &at) {
+void TextureBase::drawRectRaw(Rect<double> at) {
+    at -= offset();
+
     if (!txRectangle(at.x0(), at.y0(), at.x1(), at.y1(), handle)) {
         throw llgui_error("TXLib draw rectangle failed");
     }
 }
 
-void TextureBase::drawFrameRaw(const Rect<double> &at) {
+void TextureBase::drawFrameRaw(Rect<double> at) {
+    at -= offset();
+
     RECT rect{(LONG)at.x0(), (LONG)at.y0(),
               (LONG)at.x1(), (LONG)at.y1()};
 
@@ -136,13 +151,17 @@ void TextureBase::drawFrameRaw(const Rect<double> &at) {
     // drawLine(at.getVertex(1, 0), at.getVertex(0, 0), color);
 }
 
-void TextureBase::drawTextRaw(const Rect<double> &at, const char *text, unsigned format) {
+void TextureBase::drawTextRaw(Rect<double> at, const char *text, unsigned format) {
+    at -= offset();
+
     if (!txDrawText(at.x0(), at.y0(), at.x1(), at.y1(), text, format, handle)) {
         throw llgui_error("TXLib draw text failed");
     }
 }
 
-void TextureBase::drawFrameControl(const Rect<double> &at, unsigned type, unsigned state) {
+void TextureBase::drawFrameControl(Rect<double> at, unsigned type, unsigned state) {
+    at -= offset();
+
     RECT rect{(LONG)at.x0(), (LONG)at.y0(),
               (LONG)at.x1(), (LONG)at.y1()};
 
@@ -151,7 +170,9 @@ void TextureBase::drawFrameControl(const Rect<double> &at, unsigned type, unsign
     }
 }
 
-void TextureBase::drawThemedControl(const Rect<double> &at, const WinTheme &theme, unsigned type, unsigned state) {
+void TextureBase::drawThemedControl(Rect<double> at, const WinTheme &theme, unsigned type, unsigned state) {
+    at -= offset();
+
     RECT rect{(LONG)at.x0(), (LONG)at.y0(),
               (LONG)at.x1(), (LONG)at.y1()};
 
@@ -237,7 +258,9 @@ Window::~Window() noexcept {
     instance = nullptr;
 }
 
-void Window::renderAt(const Vector2d &at, const Texture &texture) {
+void Window::renderAt(Vector2d at, const Texture &texture) {
+    at -= offset();
+
     if (!txBitBlt(at.x(), at.y(), texture.getHDC())) {
         throw llgui_error("TXLib BitBlt failed");
     }
@@ -302,6 +325,12 @@ Texture::Texture(unsigned width, unsigned height) :
     if (!handle) {
         throw llgui_error("TXLib texture creation failed");
     }
+}
+
+Texture::Texture(const Rect<double> &at) :
+    Texture((unsigned)at.w(), (unsigned)at.h()) {
+
+    offset() = at.getPos();
 }
 
 Texture::Texture(const Window &wnd) :

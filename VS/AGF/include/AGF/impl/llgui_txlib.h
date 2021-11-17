@@ -59,8 +59,8 @@ public:
     constexpr unsigned height() const noexcept { return height_; }
     constexpr Vector2d getSize()    const noexcept { return Vector2d{(double)width_, (double)height_}; }
     constexpr Vector2i getSizeInt() const noexcept { return Vector2i{   (int)width_,    (int)height_}; }
-    constexpr Rect<double> getRect()    const noexcept { return Rect<double>::wh(Vector2d{}, getSize   ()); }
-    constexpr Rect<int>    getRectInt() const noexcept { return Rect<int>   ::wh(Vector2i{}, getSizeInt()); }
+    constexpr Rect<double> getRect()    const noexcept { return Rect<double>::wh(         offset() , getSize   ()); }
+    constexpr Rect<int>    getRectInt() const noexcept { return Rect<int>   ::wh(Vector2i{offset()}, getSizeInt()); }
 
 
     void setColor(const Color &color);
@@ -126,7 +126,7 @@ public:
     #pragma region Raw draw functions
     void clearRaw();
 
-    void drawLineRaw(const Vector2d &from, const Vector2d &to);
+    void drawLineRaw(Vector2d from, Vector2d to);
 
     inline void drawLineAlongRaw(const Vector2d &from, const Vector2d &along) {
         drawLineRaw(from, from + along);
@@ -142,37 +142,42 @@ public:
         drawEllipseRaw(center, Vector2d{radius, radius});
     }
 
-    void drawEllipseRaw(const Vector2d &center, const Vector2d &dimensions);
+    void drawEllipseRaw(Vector2d center, const Vector2d &dimensions);
 
     inline void drawSquareRaw(const Vector2d &center, double side) {
         drawRectRaw(Rect<double>::wh(center - Vector2d{side, side}, 2 * Vector2d{side, side}));
     }
 
-    void drawRectRaw(const Rect<double> &at);
+    void drawRectRaw(Rect<double> at);
 
-    void drawFrameRaw(const Rect<double> &at);
+    void drawFrameRaw(Rect<double> at);
 
-    void drawTextRaw(const Rect<double> &at, const char *text, unsigned format = DEFAULT_TEXT_FORMAT);
+    void drawTextRaw(Rect<double> at, const char *text, unsigned format = DEFAULT_TEXT_FORMAT);
     #pragma endregion Raw draw functions
 
-    void drawFrameControl(const Rect<double> &at, unsigned type, unsigned state);
+    void drawFrameControl(Rect<double> at, unsigned type, unsigned state);
 
-    void drawThemedControl(const Rect<double> &at, const WinTheme &theme, unsigned type, unsigned state);
+    void drawThemedControl(Rect<double> at, const WinTheme &theme, unsigned type, unsigned state);
 
     // void drawThemedText;  // TODO!!
 
     // Only actual textures can be embedded, but into any TextureBase
     inline void embed(const Rect<double> &at, const Texture &other);
 
-    void embedPart(const Rect<double> &at, const Texture &other, const Rect<double> &part);
+    void embedPart(Rect<double> at, const Texture &other, Rect<double> part);
+
+    constexpr const Vector2d &offset() const { return offset_; }
+    constexpr       Vector2d &offset()       { return offset_; }
 
 protected:
     unsigned width_  = 0,
              height_ = 0;
     HDC handle = NULL;
+    Vector2d offset_{};
 
-    constexpr TextureBase(unsigned width = 0, unsigned height = 0, HDC handle = NULL) :
-        width_{width}, height_{height}, handle{handle} {}
+    constexpr TextureBase(unsigned width = 0, unsigned height = 0,
+                          HDC handle = NULL, const Vector2d &offset = {}) :
+        width_{width}, height_{height}, handle{handle}, offset_{offset} {}
 
 };
 
@@ -209,7 +214,7 @@ public:
         embed(Rect<double>::wh(0, 0, width(), height()), texture);
     }
 
-    void renderAt(const Vector2d &at, const Texture &texture);
+    void renderAt(Vector2d at, const Texture &texture);
 
     inline void renderAt(const Rect<double> &at, const Texture &texture) {
         embed(at, texture);
@@ -260,6 +265,8 @@ public:
     Texture();
 
     Texture(unsigned width, unsigned height);
+
+    Texture(const Rect<double> &at);
 
     Texture(const Window &wnd);
 
