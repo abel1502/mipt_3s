@@ -25,24 +25,40 @@ namespace abel::gui::widgets {
 
 namespace _impl {
 
-class Header : public StaticGroup<Label, Button, Button> {
+class CloseBtn : public Button {
 public:
-    using Base = StaticGroup<Label, Button, Button>;
+    inline CloseBtn(Widget *parent_, const Rect<double> &region_) :
+        Button(parent_, region_, "") {}
+
+    EVENT_HANDLER_OVERRIDE(Render);
+
+};
+
+class MinimizeBtn : public Button {
+public:
+    inline MinimizeBtn(Widget *parent_, const Rect<double> &region_) :
+        Button(parent_, region_, "") {}
+
+    EVENT_HANDLER_OVERRIDE(Render);
+
+};
+
+class Header : public StaticGroup<Label, CloseBtn, MinimizeBtn> {
+public:
+    using Base = StaticGroup<Label, CloseBtn, MinimizeBtn>;
     EVENT_HANDLER_USING(Base)
 
     friend class abel::gui::widgets::Window;
 
-    static constexpr unsigned
-        HEADER_HEIGHT = 30,
-
+    static constexpr double
         LABEL_TPAD = 0,
         LABEL_BPAD = 0,
         LABEL_LPAD = 10,
-        BTN_TPAD = 0,
-        BTN_BPAD = 0,
-        BTN_WIDTH = 50,
-        BTN_CLOSE_RPAD = LABEL_LPAD,
-        BTN_MINIMIZE_RPAD = 0,
+        BTN_TPAD = 5,
+        BTN_BPAD = 5,
+        BTN_WIDTH = 40,
+        BTN_CLOSE_RPAD = 5,
+        BTN_MINIMIZE_RPAD = 5,
 
         BTN_CLOSE_RDX = BTN_CLOSE_RPAD,
         BTN_CLOSE_LDX = BTN_CLOSE_RDX + BTN_WIDTH,
@@ -54,6 +70,7 @@ public:
 
 
     Signal<void (const Vector2d &delta)> sigDrag{};
+    Signal<void (bool state)> sigDragStateChange{};
 
 
     Header(Window *parent_, const Rect<double> &region_, const char *title_);
@@ -62,26 +79,27 @@ public:
 
     EVENT_HANDLER_OVERRIDE(MouseClick)
 
+    EVENT_HANDLER_OVERRIDE(Render)
+
+    virtual bool setStyle(StyleManager::StyleHandle newHandle) override;
+
 protected:
     bool grabbed = false;
 
 
-    SGRP_DECLARE_BINDING_I(title, 0)
-    SGRP_DECLARE_BINDING_I(closeBtn, 1)
-    SGRP_DECLARE_BINDING_I(minimizeBtn, 2)
+    SGRP_DECLARE_BINDING_T(title, Label)
+    SGRP_DECLARE_BINDING_T(closeBtn, CloseBtn)
+    SGRP_DECLARE_BINDING_T(minimizeBtn, MinimizeBtn)
 
     void onMouseDown(const MouseClickEvent &event);
     void onMouseUp  (const MouseClickEvent &event);
 
 };
 
-class Borders : public StaticGroup<Rectangle> {
+class Borders : public Widget {
 public:
-    using Base = StaticGroup<Rectangle>;
-    EVENT_HANDLER_USING(Base)
-
-    static constexpr unsigned
-        BORDER_WIDTH = 5;
+    using Base = Widget;
+    EVENT_HANDLER_USING(Widget)
 
     friend class abel::gui::widgets::Window;
 
@@ -90,8 +108,10 @@ public:
 
     EVENT_HANDLER_OVERRIDE(MouseClick)
 
+    EVENT_HANDLER_OVERRIDE(Render)
+
 protected:
-    SGRP_DECLARE_BINDING_I(body, 0)
+    //
 
 };
 
@@ -113,22 +133,32 @@ public:
     createWindow(Rect<double> relRegion, As &&... args) {
         // relRegion passed by value, since we have to pad it anyway
 
-        static constexpr unsigned BORDER_WIDTH = -_impl::Borders::BORDER_WIDTH;
-        static constexpr unsigned HEADER_HEIGHT = -_impl::Header::HEADER_HEIGHT;
+        double borderWidth  = -getStyle().wndBorderWidth;
+        double headerHeight = -getStyle().wndHeaderHeight;
 
         return dynamic_cast<C &>(addChild(
-            new C(nullptr, relRegion.pad(HEADER_HEIGHT,
-                                         HEADER_HEIGHT,
-                                         BORDER_WIDTH,
-                                         HEADER_HEIGHT),
-            std::forward<As>(args)...)
+            new C(nullptr, relRegion.pad(headerHeight,
+                                         headerHeight,
+                                         borderWidth,
+                                         headerHeight),
+                  std::forward<As>(args)...)
         ));
     }
+
+    inline void minimize(Window *window) {
+        return toggleVisibility(window);
+    }
+
+    inline void maximize(Window *window) {
+        return toggleVisibility(window);
+    }
+
+    void close(Window *window);
 
 protected:
     using Base::createChild;
 
-    //
+    void toggleVisibility(Window *window);
 
 };
 
@@ -150,6 +180,12 @@ public:
     };
 
 
+    Window(const Window &other) = delete;
+    Window &operator=(const Window &other) = delete;
+
+    Window(Window &&other) = default;
+    Window &operator=(Window &&other) = default;
+
     inline const WindowManager *getParentPtr() const { return dynamic_cast<WindowManager *>(parent); }
     inline       WindowManager *getParentPtr()       { return dynamic_cast<WindowManager *>(parent); }
     inline const WindowManager &getParent   () const { return *getParentPtr(); }
@@ -157,7 +193,14 @@ public:
 
     SGRP_DECLARE_BINDING_I(contents, 0)
 
+    EVENT_HANDLER_OVERRIDE(Render)
+
 protected:
+    bool dragged = false;
+    bool cacheOnDrag = false;
+    unique_ptr<Texture> cachedTexture = nullptr;
+
+
     SGRP_DECLARE_BINDING_I(header, 1)
     SGRP_DECLARE_BINDING_I(borders, 2)
 
