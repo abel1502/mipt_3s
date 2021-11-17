@@ -1,12 +1,14 @@
 #ifndef ACL_TYPE_TRAITS
 #define ACL_TYPE_TRAITS
 
+#include <ACL/general.h>
 #include <type_traits>
 
 
 namespace abel {
 
 
+#pragma region make_(un)signed
 #define CHANGE_SIGNEDNESS_(FROM, TO)                                \
     template <typename T, typename = void>                          \
     struct make_##TO {                                              \
@@ -26,8 +28,10 @@ CHANGE_SIGNEDNESS_(unsigned, signed)
 CHANGE_SIGNEDNESS_(signed, unsigned)
 
 #undef CHANGE_SIGNEDNESS_
+#pragma endregion make_(un)signed
 
 
+#pragma region arg_type
 template <typename T, typename = void>
 struct arg_type {
     using type = T &;
@@ -42,6 +46,7 @@ struct arg_type<T, std::enable_if_t<std::is_fundamental_v<T> ||
 
 template <typename T>
 using arg_type_t = typename arg_type<T>::type;
+#pragma endregion arg_type
 
 
 }
