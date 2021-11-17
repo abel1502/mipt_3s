@@ -80,6 +80,28 @@ void TextureBase::embedPart(Rect<double> at, const Texture &other, Rect<double> 
     }
 }
 
+void TextureBase::embedAlphaPart(Rect<double> at, const Texture &other, Rect<double> part) {
+    at -= offset();
+    part -= other.offset();
+
+    // txUseAlpha(other.handle);  // TODO: ?
+    BLENDFUNCTION ftn{AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+
+    if (!txGDI(Win32::AlphaBlend(handle, (int)at.x(), (int)at.y(), (int)at.w(), (int)at.h(),
+                                 other.handle, (int)part.x(), (int)part.y(), (int)part.w(), (int)part.h(),
+                                 ftn), handle)) {
+        throw llgui_error("TXLib AlphaBlend failed");
+    }
+}
+
+void TextureBase::clearTransparent() {
+    clear(Color::WHITE);
+
+    if (!txUseAlpha(handle)) {
+        throw llgui_error("TXLib txUseAlpha failed");
+    }
+}
+
 void TextureBase::clearRaw() {
     if (!txClear(handle)) {
         throw llgui_error("TXLib clear failed");

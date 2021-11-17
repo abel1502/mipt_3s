@@ -197,7 +197,7 @@ public:
 
 protected:
     bool dragged = false;
-    bool cacheOnDrag = false;
+    bool cacheOnDrag = true;
     unique_ptr<Texture> cachedTexture = nullptr;
 
 

@@ -166,6 +166,12 @@ public:
 
     void embedPart(Rect<double> at, const Texture &other, Rect<double> part);
 
+    inline void embedAlpha(const Rect<double> &at, const Texture &other);
+
+    void embedAlphaPart(Rect<double> at, const Texture &other, Rect<double> part);
+
+    void clearTransparent();
+
     constexpr const Vector2d &offset() const { return offset_; }
     constexpr       Vector2d &offset()       { return offset_; }
 
@@ -299,6 +305,10 @@ protected:
 
 inline void _impl::TextureBase::embed(const Rect<double> &at, const Texture &other) {
     return embedPart(at, other, other.getRect());
+}
+
+inline void _impl::TextureBase::embedAlpha(const Rect<double> &at, const Texture &other) {
+    return embedAlphaPart(at, other, other.getRect());
 }
 
 

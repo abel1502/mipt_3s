@@ -219,6 +219,8 @@ EVENT_HANDLER_IMPL(Window, Render) {
         if (!cachedTexture) {
             cachedTexture = new Texture{region};
 
+            cachedTexture->clearTransparent();
+
             Base::dispatchEvent(RenderEvent{cachedTexture->getRect(), *cachedTexture});
 
             // abel::gui::Window::getInstance().getRect()
@@ -233,7 +235,7 @@ EVENT_HANDLER_IMPL(Window, Render) {
             return status;
         }
 
-        event.target.embed(region, *cachedTexture);
+        event.target.embedAlpha(region, *cachedTexture);
 
         return EventStatus::done();
     }
