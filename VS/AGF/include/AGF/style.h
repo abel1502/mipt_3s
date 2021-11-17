@@ -229,6 +229,7 @@ protected:
 
 
     constexpr TileMap &getTileMap(Element elem, ElementState state) {
+        assert(elem >= 0 && state >= 0);
         assert(elem  <  EL_COUNT);
         assert(state < ELS_COUNT);
 
