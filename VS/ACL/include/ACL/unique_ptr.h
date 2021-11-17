@@ -23,10 +23,10 @@ public:
     constexpr unique_ptr() noexcept :
         ptr{nullptr} {}
 
-    constexpr unique_ptr(std::nullptr_t) noexcept :
+    explicit constexpr unique_ptr(std::nullptr_t) noexcept :
         ptr{nullptr} {}
 
-    constexpr unique_ptr(pointer ptr_) noexcept :
+    explicit constexpr unique_ptr(pointer ptr_) noexcept :
         ptr{ptr_} {}
 
     unique_ptr(const unique_ptr &other) = delete;
