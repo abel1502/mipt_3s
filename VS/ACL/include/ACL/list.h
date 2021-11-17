@@ -45,14 +45,14 @@ public:
         constexpr bool isUsed() const noexcept { return value.has_value(); }
 
         constexpr const T &getVal() const {
+            return const_cast<Node *>(this)->getVal();
+        }
+
+        constexpr T &getVal() {
             if (!isUsed())
                 throw error("Can't retrieve value of unused item");
 
             return value.value();
-        }
-
-        constexpr T &getVal() {
-            return const_cast<T &>(const_cast<const Node *>(this)->getVal());
         }
 
         template <typename ... As>
@@ -414,7 +414,10 @@ public:
     //--------------------------------------------------------------------------------
     // Finds
     // (Warning: linear time complexity!)
-    iterator findByValue(const T &value) {
+
+    // So that stuff can be compared fith other types as well
+    template <typename U>
+    iterator findByValue(const U &value) {
         iterator end_ = end();
         iterator result = begin();
         for (; result != end_; ++result) {
@@ -425,7 +428,8 @@ public:
         return result;
     }
 
-    inline const_iterator findByValue(const T &value) const {
+    template <typename U>
+    inline const_iterator findByValue(const U &value) const {
         return const_cast<list *>(this)->findByValue(value);
     }
 
