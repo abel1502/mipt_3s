@@ -63,6 +63,15 @@ public:
         return false;
     }
 
+    virtual bool setStyle(StyleManager::StyleHandle newHandle) override {
+        if (Widget::setStyle(newHandle))
+            return true;
+
+        _setChildrenStyle(newHandle);
+
+        return false;
+    }
+
 protected:
     std::tuple<unique_ptr<Ts>...> children{};
 
@@ -110,6 +119,16 @@ protected:
                 child<I>().staticShift(by);
 
             _staticShiftChildren<I + 1>(by);
+        }
+    }
+
+    template <unsigned I = 0>
+    void _setChildrenStyle(StyleManager::StyleHandle newHandle) {
+        if constexpr (I < Types::size) {
+            if (childPtr<I>())
+                child<I>().setStyle(newHandle);
+
+            _setChildrenStyle<I + 1>(newHandle);
         }
     }
 
