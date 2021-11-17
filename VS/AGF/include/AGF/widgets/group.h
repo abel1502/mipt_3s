@@ -30,14 +30,14 @@ public:
         static_assert(std::is_base_of_v<ITEM, T>);
 
         // TODO: Maybe disallow overflow?
-        ITEM &child = *children.insertBack(new T(this, region.relRect(relRegion, true), std::forward<As>(args)...));
+        ITEM &child = *children.insertBackEmplace(new T(this, region.relRect(relRegion, true), std::forward<As>(args)...));
 
         return dynamic_cast<T &>(child);
     }
 
     ITEM &addChild(ITEM *child) {
         assert(child);
-        children.insertBack(child);
+        children.insertBackEmplace(child);
         child->updateParent(this);
 
         return *child;
