@@ -2,9 +2,13 @@
 #define ACL_TEMPLATE_TRINKETS_H
 
 
+#include <ACL/type_traits.h>
+
+
 namespace abel {
 
 
+#pragma region TypeArray
 namespace _impl {
     template <typename ... Ts>
     struct TypeArrayEmpty;
@@ -117,6 +121,38 @@ public:
     static constexpr unsigned idx = first_idx<T>;
 
 };
+#pragma endregion TypeArray
+
+
+#pragma region is_valid_tpl
+// https://nyorain.github.io/cpp-valid-expression.html
+namespace _impl {
+    template <template <typename ... > typename Tpl, typename T, typename ... As>
+    struct IsValidTplHelper : public std::false_type {};
+
+    template <template <typename ... > typename Tpl, typename ... As>
+    struct IsValidTplHelper<Tpl, std::void_t<Tpl<As...>>, As...> : public std::true_type {};
+
+}
+
+
+template <template <typename ... > typename Tpl, typename ... As>
+using is_valid_tpl = _impl::IsValidTplHelper<Tpl, void, As...>;
+
+template <template <typename ... > typename Tpl, typename ... As>
+constexpr bool is_valid_tpl_v = is_valid_tpl<Tpl, As...>::value;
+
+#pragma endregion is_valid_tpl
+
+
+#pragma region delay_tpl
+// https://nyorain.github.io/cpp-valid-expression.html
+
+template <typename T, typename R>
+constexpr decltype(auto) delay_tpl(R &&result) {
+    return std::forward<R>(result);
+}
+#pragma endregion delay_tpl
 
 
 }

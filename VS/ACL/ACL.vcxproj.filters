@@ -86,5 +86,8 @@
     <ClInclude Include="include\ACL\signal.tpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\ACL\cmp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
