@@ -2,6 +2,8 @@
 #define ACL_UNIQUE_PTR_H
 
 #include <ACL/general.h>
+#include <ACL/type_traits.h>
+#include <ACL/cmp.h>  // TODO: Maybe should just implement the operators manually
 #include <memory>  // For default_delete
 
 
@@ -91,13 +93,15 @@ public:
 
     constexpr pointer release() noexcept {
         pointer result = ptr;
-        ptr = 0;
+        ptr = nullptr;
         return result;
     }
 
     void reset(pointer newPtr = nullptr) {
         pointer oldPtr = ptr;
         ptr = newPtr;
+
+        assert(oldPtr != newPtr || !oldPtr);
 
         if (oldPtr)
             get_deleter()(oldPtr);
@@ -121,13 +125,32 @@ public:
         return unique_ptr(new T(std::forward<As>(args)...));
     }
 
-    // TODO: Other comparisons as well?
+    // Other comparisons are generated automatically by general.h. (More precisely, <utility>, which is included there)
     inline bool operator==(std::nullptr_t) const noexcept {
         return ptr == nullptr;
     }
 
-    inline bool operator!=(std::nullptr_t) const noexcept {
-        return ptr != nullptr;
+    inline bool operator==(T *other) const noexcept {
+        return ptr == other;
+    }
+
+    inline bool operator<(T *other) const noexcept {
+        return ptr < other;
+    }
+
+    template <typename U, typename E>
+    inline bool operator==(const unique_ptr<U, E> &other) const noexcept {
+        if constexpr (!std::is_convertible_v<U *, T *> &&
+                      !std::is_convertible_v<T *, U *>) {
+            return false;
+        }
+
+        return ptr == other.ptr;
+    }
+
+    template <typename U, typename E>
+    inline bool operator<(const unique_ptr<U, E> &other) const noexcept {
+        return ptr < other.ptr;
     }
 
 protected:
