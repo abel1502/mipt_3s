@@ -58,6 +58,17 @@ public:
         return false;
     }
 
+    virtual bool setStyle(StyleManager::StyleHandle newHandle) override {
+        if (Widget::setStyle(newHandle))
+            return true;
+
+        for (auto &child: children) {
+            child->setStyle(newHandle);
+        }
+
+        return false;
+    }
+
 protected:
     list<unique_ptr<ITEM>> children{};
 
