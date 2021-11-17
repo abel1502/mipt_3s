@@ -9,8 +9,7 @@ namespace abel::gui::widgets {
 
 Button::Button(Widget *parent_, const Rect<double> &region_, const char *text_) :
     Base(parent_, region_,
-         new Label    (this, region_, text_, /*region_.h() * 0.3*/ 16),
-         new Rectangle(this, region_, COL_DEFAULT)) {}
+         new Label    (this, region_, text_, /*region_.h() * 0.3*/ 16)) {}
 
 
 EVENT_HANDLER_IMPL(Button, MouseClick) {
@@ -53,7 +52,6 @@ void Button::onMouseDown(const MouseClickEvent &, bool hit) {
 
     isDown = true;
 
-    body().recolor(COL_PRESSED);
     Application::getInstance().captureMouse(this);
 }
 
@@ -63,7 +61,6 @@ void Button::onMouseUp(const MouseClickEvent &, bool hit) {
 
     isDown = false;
 
-    body().recolor(COL_DEFAULT);
     Application::getInstance().releaseMouse(this);
 
     if (hit) {
@@ -72,8 +69,30 @@ void Button::onMouseUp(const MouseClickEvent &, bool hit) {
 }
 
 
-// TODO: Remove
+EVENT_HANDLER_IMPL(Button, MouseMove) {
+    EventStatus status = StaticGroup::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE)) {
+        return status;
+    }
+    
+    // TODO: Maybe employ a static hit-test?
+    isHovered = region.contains(event.pos1);  // TODO: Add a timer to this state
+
+    // TODO: Encapsulate into a widget method?
+    // And finish the MouseMove screening logic in general (add this handler to window borders)
+    if (region.contains(event.pos0) && region.contains(event.pos1))
+        return EventStatus::stop(EventStatus::TREE);
+
+    return status;
+}
+
+
 EVENT_HANDLER_IMPL(Button, Render) {
+    return renderCustomized(event, Style::EL_BUTTON, false);
+}
+
+Widget::EventStatus Button::renderCustomized(const RenderEvent &event, Style::Element elem, bool ignoreLabel) {
     // Skipping StaticGroup level, because we want to handle stuff manually
     EventStatus status = Widget::dispatchEvent(event);
 
@@ -81,20 +100,23 @@ EVENT_HANDLER_IMPL(Button, Render) {
         return status;
     }
 
-    unsigned state = 0;
+    Style::ElementState state = Style::ELS_NORMAL;
+
+    isHovered = isHovered && region.contains(Window::getInstance().getMousePos());
 
     if (isDown) {
-        state = PBS_PRESSED;
-    } else if (region.contains(Window::getInstance().getMousePos())) {
-        state = PBS_HOT;
-    } else {
-        state = PBS_NORMAL;
+        state = Style::ELS_PRESSED;
+    } else if (isHovered) {
+        state = Style::ELS_HOVERED;
     }
 
-    // event.target.drawThemedControl(region, Window::getInstance().getTheme<Window::WT_WINDOW>(), WP_CLOSEBUTTON, state);
-    event.target.drawThemedControl(region, Window::getInstance().getTheme<Window::WT_BUTTON>(), BP_PUSHBUTTON, state);
+    getStyle().drawElement(event.target, region, elem, state);
 
-    status = label().dispatchEvent(event);
+    if (ignoreLabel) {
+        return EventStatus::done();
+    }
+
+    status = dispatchToChild(label(), event);
     status.update();
     return status;
 }
