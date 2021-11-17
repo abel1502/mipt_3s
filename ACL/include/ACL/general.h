@@ -1,10 +1,16 @@
 #ifndef ACL_GENERAL_H
 #define ACL_GENERAL_H
 
+// These includes are here 'by standard', and will not be removed under any circumstances.
+// You may rely on them being present here, and not include them manually
+#include <cstdlib>
+#include <utility>
+
+// These includes are 'implementation-defined', and may get removed in the future.
+// If you need them, include them manually in your code
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
-#include <cstdlib>
 
 
 // I couldn't figure out a way to disable those in code::blocks settings
