@@ -195,7 +195,6 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
         // getParent().minimize(this);
 
         Application::getInstance().enqueueAction([&manager = getParent(), this](Application &app) {
-            DBG("Was %p %p", &manager, this);
             manager.minimize(this);
         });
 
