@@ -38,7 +38,7 @@ public:
     };
 
 
-    Signal<void (double deltaT)> sigTick{};
+    Signal<bool (double deltaT)> sigTick{};
 
 
     /// =========== [ These should be implemented in some way in user code ] ===========
@@ -94,7 +94,7 @@ public:
     inline void enqueueEvent(T &&event, ActionPriority priority = P_NORMAL) {
         static_assert(std::is_base_of_v<WidgetEvent, T>);
 
-        enqueueAction([event = std::forward<T>(event)](Application &app){
+        enqueueAction([event = std::forward<T>(event)](Application &app) {
             app.dispatchEvent(event);
         }, priority);
     }
@@ -105,7 +105,7 @@ public:
     // Destroys the instance pointer
     static void teardown();
 
-    double getTime();
+    double getTime();  // TODO: Implement
 
     static inline Application &getInstance() {
         assert(instance);
@@ -141,6 +141,7 @@ protected:
     unique_ptr<Widget> mainWidget = nullptr;
     bool initialized = false;
     std::atomic<bool> finished = false;
+    std::atomic<bool> wantSysMouseCapture = false;
 
     Widget *mouseCaptureHolder = nullptr;
 
@@ -153,6 +154,8 @@ protected:
 
 
     static LRESULT CALLBACK _wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+    void _updateSysMouseCapture();
 
     Application();
 

@@ -114,9 +114,7 @@ void Application::deinit() {
 
 void Application::releaseMouse() {
     mouseCaptureHolder = nullptr;
-
-    REQUIRE(wnd);
-    wnd->captureMouse();
+    wantSysMouseCapture = false;
 }
 
 void Application::releaseMouse(Widget *widget) {
@@ -131,9 +129,7 @@ void Application::captureMouse(Widget *widget) {
     REQUIRE(!mouseCaptureHolder);
 
     mouseCaptureHolder = widget;
-
-    REQUIRE(wnd);
-    wnd->captureMouse();
+    wantSysMouseCapture = true;
 }
 
 void Application::demandRedraw() {
@@ -143,6 +139,14 @@ void Application::demandRedraw() {
     }
 }
 
+
+void Application::_updateSysMouseCapture() {
+    if (wantSysMouseCapture && !wnd->isMouseCaptured()) {
+        wnd->captureMouse();
+    } else if (!wantSysMouseCapture && wnd->isMouseCaptured()) {
+        wnd->releaseMouse();
+    }
+}
 
 LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     if (finished) {
@@ -223,15 +227,18 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         goto mouseClickEvent;
 
     mouseClickEvent: {
-        enqueueEvent(MouseClickEvent{
-            Vector2d{(double)GET_X_LPARAM(lParam),
-                     (double)GET_Y_LPARAM(lParam)},
-            MouseAttrs{wParam},
-            mouseBtn,
-            mouseClickType});
+        _updateSysMouseCapture();
+
+        Vector2d pos{(double)GET_X_LPARAM(lParam),
+                     (double)GET_Y_LPARAM(lParam)};
+
+        enqueueEvent(MouseClickEvent{pos, MouseAttrs{wParam},
+                                     mouseBtn, mouseClickType});
     } return 0;
 
     case WM_MOUSEMOVE: {
+        _updateSysMouseCapture();
+
         static bool lastPosSet = false;
         static Vector2d lastPos{0, 0};
 
