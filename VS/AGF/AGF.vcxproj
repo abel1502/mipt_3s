@@ -23,6 +23,7 @@
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\llgui_txlib.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\style.cpp" />
     <ClCompile Include="src\widget.cpp" />
     <ClCompile Include="src\widgets\button.cpp" />
     <ClCompile Include="src\widgets\group.cpp" />
@@ -39,6 +40,7 @@
     <ClInclude Include="include\AGF\llgui.h" />
     <ClInclude Include="include\AGF\llgui_pre.h" />
     <ClInclude Include="include\AGF\mouse.h" />
+    <ClInclude Include="include\AGF\style.dsl.h" />
     <ClInclude Include="include\AGF\widget.h" />
     <ClInclude Include="include\AGF\widgets\all.h" />
     <ClInclude Include="include\AGF\widgets\button.h" />
@@ -49,6 +51,7 @@
     <ClInclude Include="include\AGF\widgets\window.h" />
     <ClInclude Include="include\AGF\widget_event.h" />
     <ClInclude Include="include\AGF\widget_pos.h" />
+    <ClInclude Include="include\AGF\style.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
