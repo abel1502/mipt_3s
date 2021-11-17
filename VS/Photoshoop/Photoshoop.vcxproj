@@ -107,6 +107,12 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>ACL.lib;AGF.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(ProjectDir)\resources $(OutDir)\resources</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying resources to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -130,6 +136,12 @@
       <AdditionalDependencies>ACL.lib;AGF.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(ProjectDir)\resources $(OutDir)\resources</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying resources to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -148,6 +160,12 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>ACL.lib;AGF.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(ProjectDir)\resources $(OutDir)\resources</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying resources to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -171,6 +189,12 @@
       <AdditionalDependencies>ACL.lib;AGF.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(ProjectDir)\resources $(OutDir)\resources</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying resources to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
