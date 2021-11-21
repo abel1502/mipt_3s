@@ -137,16 +137,6 @@ EVENT_HANDLER_IMPL(Borders, Render) {
 WindowManager::WindowManager(Widget *parent_, const Rect<double> &region_) :
     Base(parent_, region_) {}
 
-void WindowManager::toggleVisibility(Window *window) {
-    // TODO: Perhaps remove the check?
-    if (children.findByValue(window) == children.end()) {
-        throw error("Specified window doesn't belong to this manager");
-    }
-
-    window->hidden ^= 1;
-    Application::getInstance().demandRedraw();
-}
-
 void WindowManager::close(Window *window) {
     // TODO: Perhaps remove the check?
     if (children.findByValue(window) == children.end()) {
@@ -184,18 +174,13 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
     header().closeBtn().sigClick += [this]() {
         getParent().close(this);  // Already enqueues stuff
 
-        /*Application::getInstance().enqueueAction([&manager = getParent(), this](Application &app) {
-            manager.close(this);
-        });*/
-
         return true;
     };
 
     header().minimizeBtn().sigClick += [this]() {
-        // getParent().minimize(this);
-
         Application::getInstance().enqueueAction([&manager = getParent(), this](Application &app) {
-            manager.minimize(this);
+            // hidden = true;  // TODO: ?
+            hidden = !hidden;
         });
 
         return false;

@@ -145,20 +145,10 @@ public:
         ));
     }
 
-    inline void minimize(Window *window) {
-        return toggleVisibility(window);
-    }
-
-    inline void maximize(Window *window) {
-        return toggleVisibility(window);
-    }
-
     void close(Window *window);
 
 protected:
     using Base::createChild;
-
-    void toggleVisibility(Window *window);
 
 };
 
