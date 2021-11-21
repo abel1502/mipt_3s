@@ -13,8 +13,8 @@ struct PackedColor {
     constexpr PackedColor() :
         PackedColor(0, 0, 0) {}
 
-    constexpr PackedColor(unsigned char r, unsigned char g, unsigned char b) :
-        B{b}, G{g}, R{r}, A{0} {}
+    constexpr PackedColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0) :
+        B{b}, G{g}, R{r}, A{a} {}
 
     union {
         struct {
@@ -100,12 +100,13 @@ public:
         return result.clamp();
     }
 
-    constexpr PackedColor pack() const noexcept {
+    constexpr PackedColor pack(const_arg_type alpha = 1) const noexcept {
         Color tmp = clamped() * 255;
 
         return PackedColor{(unsigned char)tmp.r(),
                            (unsigned char)tmp.g(),
-                           (unsigned char)tmp.b()};
+                           (unsigned char)tmp.b(),
+                           (unsigned char)(alpha * 255)};
     }
 
     constexpr Color &reflect(const Color &other) noexcept {
