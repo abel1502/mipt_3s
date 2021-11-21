@@ -5,6 +5,7 @@
 // You may rely on them being present here, and not include them manually
 #include <cstdlib>
 #include <utility>
+#include <cassert>
 
 // These includes are 'implementation-defined', and may get removed in the future.
 // If you need them, include them manually in your code

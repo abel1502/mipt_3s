@@ -12,8 +12,9 @@ class NAME_ {
     //static_assert(std::is_signed_v<T>);  // May theoretically be removed, because constexpr would still work
 
 public:
-    using TYPE = T;
-    using ARG_TYPE = abel::arg_type_t<T>;
+    using type = T;
+    using arg_type = abel::arg_type_t<T>;
+    using const_arg_type = abel::arg_type_t<const T>;
     static constexpr unsigned DIM = N_;
 
     T values[DIM];
@@ -31,7 +32,7 @@ public:
 
     // Because for N == 1 this is equivalent to the complete constructor
     #if N_ > 1
-    constexpr NAME_(ARG_TYPE val) noexcept :
+    constexpr NAME_(const_arg_type val) noexcept :
         values{} {
 
         for (unsigned i = 0; i < DIM; ++i) {
@@ -86,7 +87,7 @@ public:
         return *this;
     }
 
-    constexpr NAME_ &operator*=(ARG_TYPE other) noexcept {
+    constexpr NAME_ &operator*=(const_arg_type other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] *= other;
         }
@@ -95,7 +96,7 @@ public:
     }
 
 
-    constexpr NAME_ &operator/=(ARG_TYPE other) noexcept {
+    constexpr NAME_ &operator/=(const_arg_type other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] /= other;
         }
@@ -204,15 +205,15 @@ public:
         return self -= other;
     }
 
-    constexpr friend NAME_ operator*(NAME_ self, ARG_TYPE other) noexcept {
+    constexpr friend NAME_ operator*(NAME_ self, const_arg_type other) noexcept {
         return self *= other;
     }
 
-    constexpr friend NAME_ operator/(NAME_ self, ARG_TYPE other) noexcept {
+    constexpr friend NAME_ operator/(NAME_ self, const_arg_type other) noexcept {
         return self /= other;
     }
 
-    constexpr friend NAME_ operator*(ARG_TYPE other, NAME_ self) noexcept {
+    constexpr friend NAME_ operator*(const_arg_type other, NAME_ self) noexcept {
         return self *= other;
     }
 
