@@ -33,15 +33,10 @@ public:
         ELS_COUNT,  ///< Not a valid enum value!
     };
 
-    // Expands to Texture::DEFAULT_TEXT_FORMAT.
-    // Use the former where possible, since it
-    // is constexpr, unlike the definition given here
-    static const unsigned DEFAULT_TEXT_FORMAT;
-
 
     Color textColor{};
     double textSize = 14;
-    unsigned textFormat = DEFAULT_TEXT_FORMAT;
+    // TODO: Some text formatting attributes
     double wndHeaderHeight = 30;
     double wndBorderWidth = 5;
 
@@ -75,10 +70,7 @@ public:
     void animElement(Texture &target, const Rect<double> &dest, Element element,
                      ElementState state0, ElementState state1, double stage);
 
-    inline void drawText(Texture &target, const Rect<double> &dest, const char *text) {
-        drawText(target, dest, text, textFormat);
-    }
-
+    // TODO: Take all the necessary params
     void drawText(Texture &target, const Rect<double> &dest, const char *text, unsigned format);
 
 protected:
@@ -128,7 +120,7 @@ protected:
             assert(idx < 4);
             return getTargetCorner(at, idx & 0b01, idx & 0b10);
         }
-        
+
         constexpr Rect<double> getSide(Side idx) const noexcept {
             switch (idx) {
             case S_TOP:

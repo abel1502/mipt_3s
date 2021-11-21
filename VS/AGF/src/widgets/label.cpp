@@ -53,6 +53,7 @@ EVENT_HANDLER_IMPL(Label, Render) {
     if (!status.shouldHandle(status.NODE))
         return status;
 
+    event.target.setFillColor(Color::BLACK);
     event.target.setFont("SEGOEUI", deducedFontSize);
     event.target.drawText(region, text);
     return EventStatus::done();

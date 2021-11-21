@@ -185,7 +185,8 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         }
 
         abel::gui::Texture texture{*wnd};
-        texture.clear(Color::WHITE);  // TODO: Remove, or maybe move to WM_ERASEBKGND?
+        texture.setFillColor(Color::WHITE);
+        texture.clear();  // TODO: Remove, or maybe move to WM_ERASEBKGND?
 
         // Render event must be synchronous due to WINAPI's limitations
         enqueueEvent(RenderEvent{texture.getRect(), texture}, P_IMMEDIATE);

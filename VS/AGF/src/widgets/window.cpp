@@ -219,7 +219,8 @@ EVENT_HANDLER_IMPL(Window, Render) {
         if (!cachedTexture) {
             cachedTexture = new Texture{region};
 
-            cachedTexture->clearTransparent();
+            cachedTexture->setFillColor(Color::WHITE, 0.f);
+            cachedTexture->clear();
 
             Base::dispatchEvent(RenderEvent{cachedTexture->getRect(), *cachedTexture});
 
@@ -235,7 +236,7 @@ EVENT_HANDLER_IMPL(Window, Render) {
             return status;
         }
 
-        event.target.embedAlpha(region, *cachedTexture);
+        event.target.embed(region, *cachedTexture);
 
         return EventStatus::done();
     }

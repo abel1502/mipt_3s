@@ -16,9 +16,11 @@ EVENT_HANDLER_IMPL(Widget, Render) {
         return EventStatus::stop(EventStatus::NODE);
 
     if constexpr (DEBUG_RENDER_BOXES == DRB_OBJECT) {
-        event.target.drawFrame(region, Color::ORANGE);
+        event.target.setLineColor(Color::ORANGE);
+        event.target.drawFrame(region);
     } else if constexpr (DEBUG_RENDER_BOXES == DRB_EVENT) {
-        event.target.drawFrame(event.region, Color::GREEN);
+        event.target.setLineColor(Color::GREEN);
+        event.target.drawFrame(event.region);
     }
 
     return EventStatus::skip();
@@ -51,13 +53,15 @@ EVENT_HANDLER_IMPL(Widget, Exit) {
 }
 
 EVENT_HANDLER_IMPL(Widget, MouseClick) {
-    if (hidden)
+    if (hidden || (!Application::getInstance().isMouseCaptured(this) &&
+                   !hitTest(event.pos)))
         return EventStatus::stop(EventStatus::NODE);
 
     return EventStatus::skip();
 }
 
 EVENT_HANDLER_IMPL(Widget, MouseMove) {
+    // TODO: Hit-test based cutoff
     if (hidden)
         return EventStatus::stop(EventStatus::NODE);
 
@@ -85,7 +89,7 @@ bool Widget::updateParent(Widget *parent_) {
 
     Vector2d oldPos = parent  ?  parent->region.getPos() : Vector2d{};
     Vector2d newPos = parent_ ? parent_->region.getPos() : Vector2d{};
-    
+
     parent = parent_;
 
     staticShift(newPos - oldPos);
@@ -112,6 +116,10 @@ bool Widget::setStyle(StyleManager::StyleHandle newHandle) {
 
 Style &Widget::getStyle() {
     return Application::getInstance().getStyleManager().getStyle(styleHandle);
+}
+
+bool Widget::hitTest(const Vector2d &pos) const {
+    return region.contains(pos);
 }
 
 

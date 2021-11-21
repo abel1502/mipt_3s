@@ -44,14 +44,12 @@ void Style::TileMap::assemble(Texture &target, const Rect<double> &at) {
 
 
 #pragma region Style
-const unsigned Style::DEFAULT_TEXT_FORMAT = Texture::DEFAULT_TEXT_FORMAT;
-
 #pragma region Parsing
 static bool skipSpace(std::istream &stream) {
     int lastChar = 0;
 
     while (stream.good() && isspace(lastChar = stream.get())) {}
-    
+
     if (!isspace(lastChar) && lastChar > 0)
         stream.unget();
 
@@ -75,14 +73,14 @@ static bool readToken(std::istream &stream, char *dest, unsigned limit) {
         return true;
 
     stream.getline(dest, limit, '"');
-    
+
     return !stream.good();
 }
 
 template <typename T>
 static bool readToken(std::istream &stream, std::enable_if_t<std::is_arithmetic_v<T>, T> &dest) {
     stream >> dest;
-    
+
     return !stream.good();
 }
 
@@ -101,7 +99,7 @@ static bool readToken(std::istream &stream, Rect<T> &dest) {
 
     if (readDelim(stream, ']'))
         return true;
-    
+
     dest = Rect<T>::wh(tmp[0], tmp[1], tmp[2], tmp[3]);
 
     return !stream.good();
@@ -117,10 +115,10 @@ void Style::loadTileMaps(const char *indexFileName) {
     char elemName [BUF_SIZE] = "",
          elemState[BUF_SIZE] = "",
          fileName [BUF_SIZE] = "";
-    
+
     Rect<double> outer{},
                  inner{};
-    
+
     #define ERROR_  MACROFUNC(                      \
         throw error("Corrupt tilemap index file");  \
     )
@@ -217,7 +215,8 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
                                  Window::getInstance().getTheme<Window::WT_WINDOW>(), WP_FRAMERIGHT, 0);
         target.drawThemedControl(Rect<double>::se(dest.x0(), dest.y1() - wndBorderWidth, dest.x1(), dest.y1()),
                                  Window::getInstance().getTheme<Window::WT_WINDOW>(), WP_FRAMEBOTTOM, 0);
-        target.drawRect(dest.padded(wndBorderWidth, wndBorderWidth, 0, wndBorderWidth), Color::WHITE);
+        target.setFillColor(Color::WHITE);
+        target.drawRect(dest.padded(wndBorderWidth, wndBorderWidth, 0, wndBorderWidth));
     } break;
 
     case EL_BUTTON: {

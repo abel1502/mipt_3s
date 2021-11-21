@@ -22,8 +22,8 @@ void Rectangle::recolor(const Color &color_) {
 void Rectangle::bakeTexture() {
     assert(texture);
 
-    texture->clear(color);
-    texture->update();
+    texture->setFillColor(color);
+    texture->clear();
 
     Application::getInstance().demandRedraw();
 }
