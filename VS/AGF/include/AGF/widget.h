@@ -104,6 +104,8 @@ public:
 
     virtual bool setStyle(StyleManager::StyleHandle newHandle);
 
+    virtual bool hitTest(const Vector2d &pos) const;
+
 protected:
     static constexpr enum {
         DRB_NONE,

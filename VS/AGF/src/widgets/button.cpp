@@ -29,7 +29,7 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
     if (!status.shouldHandle(status.NODE))
         return status;
 
-    bool hit = region.contains(event.pos);
+    bool hit = hitTest(event.pos);
 
     if (!hit && !Application::getInstance().isMouseCaptured(this))
         return status;
@@ -75,14 +75,15 @@ EVENT_HANDLER_IMPL(Button, MouseMove) {
     if (!status.shouldHandle(status.NODE)) {
         return status;
     }
-    
-    // TODO: Maybe employ a static hit-test?
-    isHovered = region.contains(event.pos1);  // TODO: Add a timer to this state
+
+    // TODO: Maybe validate that we aren't covered by another widget?
+    isHovered = hitTest(event.pos1);  // TODO: Add a timer to this state
 
     // TODO: Encapsulate into a widget method?
     // And finish the MouseMove screening logic in general (add this handler to window borders)
-    if (region.contains(event.pos0) && region.contains(event.pos1))
-        return EventStatus::stop(EventStatus::TREE);
+    // Removed for now, probably forever
+    // if (hitTest(event.pos0) && hitTest(event.pos1))
+    //     return EventStatus::stop(EventStatus::TREE);
 
     return status;
 }

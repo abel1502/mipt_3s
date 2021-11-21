@@ -47,7 +47,7 @@ EVENT_HANDLER_IMPL(Header, MouseClick) {
     if (!status.shouldHandle(status.NODE))
         return status;
 
-    if (!region.contains(event.pos) && !Application::getInstance().isMouseCaptured(this))
+    if (!hitTest(event.pos) && !Application::getInstance().isMouseCaptured(this))
         return status;
 
     if (event.button != decltype(event.button)::Left)
@@ -112,7 +112,7 @@ EVENT_HANDLER_IMPL(Borders, MouseClick) {
     if (!status.shouldHandle(status.NODE))
         return status;
 
-    if (region.contains(event.pos))
+    if (hitTest(event.pos))
         return EventStatus::stop(EventStatus::TREE);
 
     return EventStatus::skip();
