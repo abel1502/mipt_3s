@@ -1,5 +1,4 @@
-#ifndef APP_H
-#define APP_H
+#pragma once
 
 #include <AGF/llgui.h>
 #include <ACL/general.h>
@@ -22,6 +21,3 @@ protected:
     //
 
 };
-
-
-#endif // APP_H
