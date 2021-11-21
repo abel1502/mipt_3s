@@ -8,7 +8,7 @@
 
 
 #ifndef AGF_BASE_FRAMEWORK
-#define AGF_BASE_FRAMEWORK AGF_BASE_FRAMEWORK_TXLIB
+#define AGF_BASE_FRAMEWORK AGF_BASE_FRAMEWORK_GDIPLUS_TXLIB
 #endif
 
 
@@ -16,6 +16,8 @@
 
 #if AGF_BASE_FRAMEWORK == AGF_BASE_FRAMEWORK_TXLIB
 #include <AGF/impl/llgui_txlib.h>
+#elif AGF_BASE_FRAMEWORK == AGF_BASE_FRAMEWORK_GDIPLUS_TXLIB
+#include <AGF/impl/llgui_gdiplus_txlib.h>
 #else
 #error "Unknown base gui framework"
 #endif
