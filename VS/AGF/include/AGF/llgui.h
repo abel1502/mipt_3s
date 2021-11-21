@@ -2,7 +2,8 @@
 #define AGF_LLGUI_H
 
 
-#define AGF_BASE_FRAMEWORK_TXLIB 1
+#define AGF_BASE_FRAMEWORK_TXLIB          1
+#define AGF_BASE_FRAMEWORK_GDIPLUS_TXLIB  2
 // ... other options in the future ...
 
 

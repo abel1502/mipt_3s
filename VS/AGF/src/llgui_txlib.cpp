@@ -11,38 +11,6 @@
 namespace abel::gui {
 
 
-#pragma region WinTheme
-WinTheme::WinTheme(const wchar_t *name) :
-    name{name}, handle{OpenThemeData(NULL, name)} {
-
-    if (!handle) {
-        throw llgui_error("OpenThemeData failed");
-    }
-}
-
-WinTheme::~WinTheme() {
-    CloseThemeData(handle);
-
-    name = nullptr;
-    handle = NULL;
-}
-
-WinTheme::WinTheme(WinTheme &&other) noexcept :
-    handle{other.handle}, name{other.name} {
-    
-    other.handle = NULL;
-    other.name = nullptr;
-}
-
-WinTheme &WinTheme::operator=(WinTheme &&other) noexcept {
-    std::swap(handle, other.handle);
-    std::swap(name,   other.name);
-
-    return *this;
-}
-#pragma endregion WinTheme
-
-
 #pragma region TextureBase
 namespace _impl {
 
@@ -50,7 +18,7 @@ namespace _impl {
 // It currently sets line and text color (as well as line width) in txSetColor,
 // and also the fill color.
 void TextureBase::setColor(const Color &color) {
-    PackedColor packedColor = color.pack();
+    PackedColor packedColor = color.pack(0);
     COLORREF internalColor = RGB(packedColor.R, packedColor.G, packedColor.B);
 
     if (!txSetFillColor(internalColor, handle) ||

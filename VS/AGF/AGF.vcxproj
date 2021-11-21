@@ -22,6 +22,7 @@
     <ClCompile Include="src\application.cpp" />
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\llgui_txlib.cpp" />
+    <ClCompile Include="src\llgui_wintheme.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\style.cpp" />
     <ClCompile Include="src\widget.cpp" />
