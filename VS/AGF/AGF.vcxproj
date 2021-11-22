@@ -32,6 +32,7 @@
     <ClCompile Include="src\widgets\group.cpp" />
     <ClCompile Include="src\widgets\label.cpp" />
     <ClCompile Include="src\widgets\rectangle.cpp" />
+    <ClCompile Include="src\widgets\slider.cpp" />
     <ClCompile Include="src\widgets\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +53,7 @@
     <ClInclude Include="include\AGF\widgets\group.h" />
     <ClInclude Include="include\AGF\widgets\label.h" />
     <ClInclude Include="include\AGF\widgets\rectangle.h" />
+    <ClInclude Include="include\AGF\widgets\slider.h" />
     <ClInclude Include="include\AGF\widgets\static_group.h" />
     <ClInclude Include="include\AGF\widgets\window.h" />
     <ClInclude Include="include\AGF\widget_event.h" />

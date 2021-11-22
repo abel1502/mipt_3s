@@ -35,10 +35,11 @@ public:
 
 
     Color textColor{};
-    double textSize = 14;
+    double textSize = 12;
     // TODO: Some text formatting attributes
     double wndHeaderHeight = 30;
-    double wndBorderWidth = 5;
+    double wndBorderWidth  = 5;
+    double sliderThumbSize = 5;
 
 
     constexpr Style() noexcept = default;  // Warning: requires some tilemaps to be set manually
@@ -225,7 +226,7 @@ protected:
         assert(elem  <  EL_COUNT);
         assert(state < ELS_COUNT);
 
-        return tileMaps[elem][state];
+        return tileMaps[(unsigned)elem][(unsigned)state];
     }
 
     constexpr const TileMap &getTileMap(Element elem, ElementState state) const {

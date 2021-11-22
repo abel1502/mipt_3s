@@ -16,6 +16,8 @@ STYLE_DSL_ELEM_(WND_FRAME                     , "WND_FRAME"    )
 STYLE_DSL_ELEM_(BUTTON                        , "BUTTON"       )
 STYLE_DSL_ELEM_(CLOSE_BTN                     , "CLOSE_BTN"    )
 STYLE_DSL_ELEM_(MINIMIZE_BTN                  , "MINIMIZE_BTN" )
+STYLE_DSL_ELEM_(SLIDER_THUMB                  , "SLIDER_THUMB" )
+STYLE_DSL_ELEM_(SLIDER_BODY                   , "SLIDER_BODY"  )
 #if 0
 STYLE_DSL_ELEM_(SCROLLBAR_ARROW_UP            , "SB_ARR_UP"    )
 STYLE_DSL_ELEM_(SCROLLBAR_ARROW_DOWN          , "SB_ARR_DOWN"  )

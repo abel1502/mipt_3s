@@ -57,6 +57,9 @@
     <ClCompile Include="src\helpers\mouse_tracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\widgets\slider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AGF\application.h">
@@ -123,6 +126,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AGF\helpers\mouse_tracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AGF\widgets\slider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
