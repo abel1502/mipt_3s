@@ -24,6 +24,9 @@ public:
     void invoke(As ... args) {
         REQUIRE(!beingInvoked);
 
+        if (!callbacks && !funcCallbacks)
+            return;
+
         beingInvoked = true;
 
         for (callback_t *&cb : callbacks) {
@@ -65,6 +68,9 @@ public:
 
     void invoke(As ... args) {
         REQUIRE(!beingInvoked);
+
+        if (!callbacks && !funcCallbacks)
+            return;
 
         beingInvoked = true;
 
