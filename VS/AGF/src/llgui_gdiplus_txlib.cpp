@@ -241,7 +241,7 @@ void Texture::setup(bool shouldClear) {
 void Texture::setLineColor(const Color &color, float alpha) {
     PackedColor pc = color.pack(alpha);
 
-    if (pen.SetColor(Gdiplus::Color{pc.R, pc.G, pc.B, pc.A}) != Gdiplus::Ok) {
+    if (pen.SetColor(Gdiplus::Color{pc.A, pc.R, pc.G, pc.B}) != Gdiplus::Ok) {
         throw llgui_error("GDI+ SetColor failed");
     }
 }
@@ -249,7 +249,7 @@ void Texture::setLineColor(const Color &color, float alpha) {
 void Texture::setFillColor(const Color &color, float alpha) {
     PackedColor pc = color.pack(alpha);
 
-    if (brush.SetColor(Gdiplus::Color{pc.R, pc.G, pc.B, pc.A}) != Gdiplus::Ok) {
+    if (brush.SetColor(Gdiplus::Color{pc.A, pc.R, pc.G, pc.B}) != Gdiplus::Ok) {
         throw llgui_error("GDI+ SetColor failed");
     }
 }
