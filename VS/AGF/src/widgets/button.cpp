@@ -9,7 +9,7 @@ namespace abel::gui::widgets {
 
 Button::Button(Widget *parent_, const Rect<double> &region_, const char *text_) :
     Base(parent_, region_,
-         new Label(this, region_, text_, /*region_.h() * 0.3*/ 16)) {
+         new Label(this, region_, text_)) {
 
     mt.sigClick += [this](const MouseClickEvent &event) {
         if (event.button == MouseBtn::Left) {

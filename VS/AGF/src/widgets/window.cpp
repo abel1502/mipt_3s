@@ -19,7 +19,7 @@ EVENT_HANDLER_IMPL(MinimizeBtn, Render) {
 Header::Header(Window *parent_, const Rect<double> &region_, const char *title_) :
     Base(parent_, region_,
          new Label(this, region_.padded(LABEL_LPAD, LABEL_RPAD, LABEL_TPAD, LABEL_BPAD),
-                   title_, 16, DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS),
+                   title_),
          new CloseBtn(this, Rect<double>::se(region_.x1() - BTN_CLOSE_LDX, region_.y0() + BTN_TPAD,
                                            region_.x1() - BTN_CLOSE_RDX, region_.y1() - BTN_BPAD)),
          new MinimizeBtn(this, Rect<double>::se(region_.x1() - BTN_MINIMIZE_LDX, region_.y0() + BTN_TPAD,
