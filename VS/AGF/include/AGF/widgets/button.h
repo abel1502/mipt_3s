@@ -5,6 +5,7 @@
 #include <AGF/widgets/static_group.h>
 #include <AGF/widgets/rectangle.h>
 #include <AGF/widgets/label.h>
+#include <AGF/helpers/mouse_tracker.h>
 
 
 namespace abel::gui::widgets {
@@ -26,13 +27,9 @@ public:
     EVENT_HANDLER_OVERRIDE(Render)
 
 protected:
-    bool isDown = false;
-    bool isHovered = false;
+    MouseTracker mt{this};
 
     SGRP_DECLARE_BINDING_T(label, Label)
-
-    void onMouseDown(const MouseClickEvent &event, bool hit);
-    void onMouseUp  (const MouseClickEvent &event, bool hit);
 
     EventStatus renderCustomized(const RenderEvent &event, Style::Element elem, bool ignoreLabel);
 

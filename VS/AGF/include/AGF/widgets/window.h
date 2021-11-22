@@ -7,6 +7,7 @@
 #include <AGF/widgets/rectangle.h>
 #include <AGF/widgets/label.h>
 #include <AGF/widgets/button.h>
+#include <AGF/helpers/mouse_tracker.h>
 
 
 namespace abel::gui::widgets {
@@ -69,10 +70,6 @@ public:
         MIN_WIDTH = LABEL_RPAD + LABEL_LPAD;
 
 
-    Signal<void (const Vector2d &delta)> sigDrag{};
-    Signal<void (bool state)> sigDragStateChange{};
-
-
     Header(Window *parent_, const Rect<double> &region_, const char *title_);
 
     EVENT_HANDLER_OVERRIDE(MouseMove)
@@ -84,15 +81,12 @@ public:
     virtual bool setStyle(StyleManager::StyleHandle newHandle) override;
 
 protected:
-    bool grabbed = false;
+    MouseTracker mt{this};  // Exposed to the window
 
 
     SGRP_DECLARE_BINDING_T(title, Label)
     SGRP_DECLARE_BINDING_T(closeBtn, CloseBtn)
     SGRP_DECLARE_BINDING_T(minimizeBtn, MinimizeBtn)
-
-    void onMouseDown(const MouseClickEvent &event);
-    void onMouseUp  (const MouseClickEvent &event);
 
 };
 

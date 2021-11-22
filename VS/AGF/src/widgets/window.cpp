@@ -27,18 +27,14 @@ Header::Header(Window *parent_, const Rect<double> &region_, const char *title_)
          ) {}
 
 EVENT_HANDLER_IMPL(Header, MouseMove) {
-    if (grabbed) {
-        sigDrag(event.getDelta());
-        return EventStatus::stop(EventStatus::TREE);
+    if (!mt.isDragged(MouseBtn::Left)) {
+        return Base::dispatchEvent(event);
     }
 
-    EventStatus status = Base::dispatchEvent(event);
+    // Return value ignored, because we stop anyway
+    mt.processEvent(event);
 
-    if (!status.shouldHandle(status.NODE)) {
-        return status;
-    }
-
-    return status;
+    return EventStatus::stop(EventStatus::TREE);
 }
 
 EVENT_HANDLER_IMPL(Header, MouseClick) {
@@ -47,17 +43,8 @@ EVENT_HANDLER_IMPL(Header, MouseClick) {
     if (!status.shouldHandle(status.NODE))
         return status;
 
-    if (!hitTest(event.pos) && !Application::getInstance().isMouseCaptured(this))
+    if (!mt.processEvent(event))
         return status;
-
-    if (event.button != decltype(event.button)::Left)
-        return status;
-
-    if (event.type == decltype(event.type)::Down) {
-        onMouseDown(event);
-    } else {
-        onMouseUp(event);
-    }
 
     return EventStatus::stop(EventStatus::TREE);
 }
@@ -72,25 +59,6 @@ EVENT_HANDLER_IMPL(Header, Render) {
     }
 
     return EventStatus::done();
-}
-
-void Header::onMouseDown(const MouseClickEvent &) {
-    assert(!grabbed);  // The other way shouldn't be possible
-
-    grabbed = true;
-    sigDragStateChange(grabbed);
-
-    Application::getInstance().captureMouse(this);
-}
-
-void Header::onMouseUp(const MouseClickEvent &) {
-    if (!grabbed)
-        return;
-
-    grabbed = false;
-    sigDragStateChange(grabbed);
-
-    Application::getInstance().releaseMouse(this);
 }
 
 bool Header::setStyle(StyleManager::StyleHandle newHandle) {
@@ -186,16 +154,25 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
         return false;
     };
 
-    header().sigDrag += [this](const Vector2d &delta) {
-        dispatchEvent(MoveEvent(delta));
+    header().mt.sigDrag += [this](MouseBtn btn, const MouseMoveEvent &event) {
+        if (btn == MouseBtn::Left) {
+            dispatchEvent(MoveEvent(event.getDelta()));
+            Application::getInstance().demandRedraw();
+        }
+
+        return false;
     };
 
-    header().sigDragStateChange += [this](bool state) {
-        dragged = state;
+    header().mt.sigDragStateChange += [this](MouseBtn btn, MouseAttrs attrs, bool state) {
+        if (btn == MouseBtn::Left) {
+            dragged = state;
 
-        if (!state) {
-            cachedTexture = nullptr;
+            if (!state) {
+                cachedTexture = nullptr;
+            }
         }
+
+        return false;
     };
 }
 

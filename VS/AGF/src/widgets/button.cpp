@@ -9,7 +9,16 @@ namespace abel::gui::widgets {
 
 Button::Button(Widget *parent_, const Rect<double> &region_, const char *text_) :
     Base(parent_, region_,
-         new Label    (this, region_, text_, /*region_.h() * 0.3*/ 16)) {}
+         new Label(this, region_, text_, /*region_.h() * 0.3*/ 16)) {
+
+    mt.sigClick += [this](const MouseClickEvent &event) {
+        if (event.button == MouseBtn::Left) {
+            sigClick();
+        }
+
+        return false;
+    };
+}
 
 
 EVENT_HANDLER_IMPL(Button, MouseClick) {
@@ -26,46 +35,15 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
     // Intentionally skipping StaticGroup::dispatchEvent, not to pass this to our children
     EventStatus status = Widget::dispatchEvent(event);
 
-    if (!status.shouldHandle(status.NODE))
+    if (!status.shouldHandle(status.NODE)) {
         return status;
+    }
 
-    bool hit = hitTest(event.pos);
-
-    if (!hit && !Application::getInstance().isMouseCaptured(this))
+    if (!mt.processEvent(event)) {
         return status;
-
-    if (event.button != decltype(event.button)::Left)
-        return status;
-
-    if (event.type == decltype(event.type)::Down) {
-        onMouseDown(event, hit);
-    } else {
-        onMouseUp(event, hit);
     }
 
     return EventStatus::stop(EventStatus::TREE);
-}
-
-
-void Button::onMouseDown(const MouseClickEvent &, bool hit) {
-    assert(hit && !isDown);  // The other way shouldn't be possible
-
-    isDown = true;
-
-    Application::getInstance().captureMouse(this);
-}
-
-void Button::onMouseUp(const MouseClickEvent &, bool hit) {
-    if (!isDown)
-        return;
-
-    isDown = false;
-
-    Application::getInstance().releaseMouse(this);
-
-    if (hit) {
-        sigClick();
-    }
 }
 
 
@@ -76,8 +54,12 @@ EVENT_HANDLER_IMPL(Button, MouseMove) {
         return status;
     }
 
+    if (!mt.processEvent(event)) {
+        return status;
+    }
+
     // TODO: Maybe validate that we aren't covered by another widget?
-    isHovered = hitTest(event.pos1);  // TODO: Add a timer to this state
+    // TODO: Add a timer to the hovered state
 
     // TODO: Encapsulate into a widget method?
     // And finish the MouseMove screening logic in general (add this handler to window borders)
@@ -85,7 +67,7 @@ EVENT_HANDLER_IMPL(Button, MouseMove) {
     // if (hitTest(event.pos0) && hitTest(event.pos1))
     //     return EventStatus::stop(EventStatus::TREE);
 
-    return status;
+    return EventStatus::stop(EventStatus::TREE);
 }
 
 
@@ -103,11 +85,11 @@ Widget::EventStatus Button::renderCustomized(const RenderEvent &event, Style::El
 
     Style::ElementState state = Style::ELS_NORMAL;
 
-    isHovered = isHovered && region.contains(Window::getInstance().getMousePos());
+    mt.updateHovered();
 
-    if (isDown) {
+    if (mt.isDown(MouseBtn::Left)) {
         state = Style::ELS_PRESSED;
-    } else if (isHovered) {
+    } else if (mt.isHovered()) {
         state = Style::ELS_HOVERED;
     }
 
