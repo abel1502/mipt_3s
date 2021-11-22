@@ -216,6 +216,10 @@ public:
         return size == 0;
     }
 
+    constexpr operator bool() const noexcept {
+        return isEmpty();
+    }
+
     constexpr unsigned getSize() const noexcept {
         return size;
     }
