@@ -98,7 +98,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\ACL\include;$(SolutionDir)\AGF\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\ACL\include;$(SolutionDir)\AGF\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -151,7 +151,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\ACL\include;$(SolutionDir)\AGF\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -177,7 +177,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\ACL\include;$(SolutionDir)\AGF\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

@@ -139,7 +139,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>include;$(SolutionDir)\ACL\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -164,7 +164,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>include;$(SolutionDir)\ACL\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -189,7 +189,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>include;$(SolutionDir)\ACL\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -214,7 +214,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>include;$(SolutionDir)\ACL\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4201;4146;4100;4189;26812</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
