@@ -47,7 +47,7 @@ public:
 class Header : public StaticGroup<Label, CloseBtn, MinimizeBtn> {
 public:
     using Base = StaticGroup<Label, CloseBtn, MinimizeBtn>;
-    EVENT_HANDLER_USING(Base)
+    EVENT_HANDLER_USING(Base);
 
     friend class abel::gui::widgets::Window;
 
@@ -72,11 +72,11 @@ public:
 
     Header(Window *parent_, const Rect<double> &region_, const char *title_);
 
-    EVENT_HANDLER_OVERRIDE(MouseMove)
+    EVENT_HANDLER_OVERRIDE(MouseMove);
 
-    EVENT_HANDLER_OVERRIDE(MouseClick)
+    EVENT_HANDLER_OVERRIDE(MouseClick);
 
-    EVENT_HANDLER_OVERRIDE(Render)
+    EVENT_HANDLER_OVERRIDE(Render);
 
     virtual bool setStyle(StyleManager::StyleHandle newHandle) override;
 
@@ -93,16 +93,16 @@ protected:
 class Borders : public Widget {
 public:
     using Base = Widget;
-    EVENT_HANDLER_USING(Widget)
+    EVENT_HANDLER_USING(Widget);
 
     friend class abel::gui::widgets::Window;
 
 
     Borders(Window *parent_, const Rect<double> &region_);
 
-    EVENT_HANDLER_OVERRIDE(MouseClick)
+    EVENT_HANDLER_OVERRIDE(MouseClick);
 
-    EVENT_HANDLER_OVERRIDE(Render)
+    EVENT_HANDLER_OVERRIDE(Render);
 
 protected:
     //
@@ -115,7 +115,7 @@ protected:
 class WindowManager : public GroupOf<Window> {
 public:
     using Base = GroupOf<Window>;
-    EVENT_HANDLER_USING(Base)
+    EVENT_HANDLER_USING(Base);
 
     // friend class Window;
 
@@ -151,7 +151,7 @@ class Window : public StaticGroup<Widget, _impl::Header, _impl::Borders> {
 public:
     using Content = Widget;
     using Base = StaticGroup<Content, _impl::Header, _impl::Borders>;
-    EVENT_HANDLER_USING(Base)
+    EVENT_HANDLER_USING(Base);
 
     friend class WindowManager;
     // TODO: ?
@@ -177,7 +177,7 @@ public:
 
     SGRP_DECLARE_BINDING_I(contents, 0)
 
-    EVENT_HANDLER_OVERRIDE(Render)
+    EVENT_HANDLER_OVERRIDE(Render);
 
 protected:
     bool dragged = false;

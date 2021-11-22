@@ -9,7 +9,7 @@ namespace abel::gui::widgets {
 
 class Rectangle : public Widget {
 public:
-    EVENT_HANDLER_USING(Widget)
+    EVENT_HANDLER_USING(Widget);
 
     Rectangle(Widget *parent_, const Rect<double> &region_, const Color &color_);
 
@@ -18,7 +18,7 @@ public:
     Rectangle &operator=(const Rectangle &other) = delete;
 
 
-    EVENT_HANDLER_OVERRIDE(Render)
+    EVENT_HANDLER_OVERRIDE(Render);
 
     void recolor(const Color &color_);
 

@@ -25,10 +25,10 @@
     Widget::EventStatus CLS::dispatchEvent(const EVENT_CLS_NAME(EVENT_NAME) &event)
 
 #define EVENT_HANDLER_DECL(EVENT_NAME) \
-    virtual EVENT_HANDLER_METHOD(EVENT_NAME);
+    virtual EVENT_HANDLER_METHOD(EVENT_NAME)
 
 #define EVENT_HANDLER_OVERRIDE(EVENT_NAME) \
-    virtual EVENT_HANDLER_METHOD(EVENT_NAME) override;
+    virtual EVENT_HANDLER_METHOD(EVENT_NAME) override
 
 #define EVENT_HANDLER_IMPL(CLS, EVENT_NAME) \
     EVENT_HANDLER_METHOD_SCOPED(CLS, EVENT_NAME)
@@ -88,7 +88,7 @@ public:
 
     virtual ~Widget() = default;
 
-    #define EVENTS_DSL_ITEM_(NAME) EVENT_HANDLER_DECL(NAME)
+    #define EVENTS_DSL_ITEM_(NAME) EVENT_HANDLER_DECL(NAME);
     #include <AGF/events.dsl.h>
 
     constexpr const Rect<double> &getRegion() const { return region; }

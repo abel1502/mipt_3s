@@ -14,7 +14,7 @@ namespace abel::gui::widgets {
 class Button : public StaticGroup<Label> {
 public:
     using Base = StaticGroup<Label>;
-    EVENT_HANDLER_USING(Base)
+    EVENT_HANDLER_USING(Base);
 
 
     Signal<bool ()> sigClick{};
@@ -22,14 +22,14 @@ public:
 
     Button(Widget *parent_, const Rect<double> &region_, const char *text_);
 
-    EVENT_HANDLER_OVERRIDE(MouseClick)
-    EVENT_HANDLER_OVERRIDE(MouseMove)
-    EVENT_HANDLER_OVERRIDE(Render)
+    EVENT_HANDLER_OVERRIDE(MouseClick);
+    EVENT_HANDLER_OVERRIDE(MouseMove);
+    EVENT_HANDLER_OVERRIDE(Render);
 
 protected:
     MouseTracker mt{this};
 
-    SGRP_DECLARE_BINDING_T(label, Label)
+    SGRP_DECLARE_BINDING_T(label, Label);
 
     EventStatus renderCustomized(const RenderEvent &event, Style::Element elem, bool ignoreLabel);
 

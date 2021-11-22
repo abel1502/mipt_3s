@@ -48,10 +48,10 @@ public:
     static_assert(_impl::are_all_widgets_v<Ts...>);
     using Types = typename TypeArray<Ts...>;
 
-    EVENT_HANDLER_USING(Widget)
+    EVENT_HANDLER_USING(Widget);
 
     #define EVENTS_DSL_ITEM_(NAME) \
-        EVENT_HANDLER_OVERRIDE(NAME)
+        EVENT_HANDLER_OVERRIDE(NAME);
     #include <AGF/events.dsl.h>
 
     virtual bool staticShift(const Vector2d &by) override {

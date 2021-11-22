@@ -20,7 +20,7 @@ constexpr bool eventCapturesFocus<MouseClickEvent> = true;
 template <typename ITEM>
 class GroupOf : public /*virtual*/ Widget {
 public:
-    EVENT_HANDLER_USING(Widget)
+    EVENT_HANDLER_USING(Widget);
 
     GroupOf(Widget *parent_, const Rect<double> &region_) :
         Widget(parent_, region_) {}
@@ -44,7 +44,7 @@ public:
     }
 
     #define EVENTS_DSL_ITEM_(NAME) \
-        EVENT_HANDLER_OVERRIDE(NAME)
+        EVENT_HANDLER_OVERRIDE(NAME);
     #include <AGF/events.dsl.h>
 
     virtual bool staticShift(const Vector2d &by) override {

@@ -9,7 +9,7 @@ namespace abel::gui::widgets {
 
 class Label : public Widget {
 public:
-    EVENT_HANDLER_USING(Widget)
+    EVENT_HANDLER_USING(Widget);
 
     Label(Widget *parent_, const Rect<double> &region_, const char *text_ = "", double fontSize_ = 0, unsigned format_ = -1u);
 
@@ -25,7 +25,7 @@ public:
     void setFormat(unsigned format_);
 
 
-    EVENT_HANDLER_OVERRIDE(Render)
+    EVENT_HANDLER_OVERRIDE(Render);
 
 protected:
     double fontSize;
