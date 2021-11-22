@@ -1,6 +1,7 @@
 #include <AGF/llgui.h>
 #include "app.h"
 #include <AGF/widgets/all.h>
+#include "canvas.h"
 
 
 abel::gui::Application::app_ptr_t abel::gui::Application::create() {
@@ -21,6 +22,8 @@ void MyApp::init(int argc, const char **argv) {
 
     abel::verbosity = 2;
 
+    Application::init(argc, argv);
+
     using namespace abel::gui::widgets;
     using abel::gui::Rect;
 
@@ -40,15 +43,15 @@ void MyApp::init(int argc, const char **argv) {
 
     // mainWidget = grp;
 
+    Canvas *canvas = new Canvas(nullptr, Rect<double>::se(0, 0, 300, 200).pad(10));
+
     WindowManager *mgr = new WindowManager(nullptr, Rect<double>::wh(0, 0, 800, 600));
-    mgr->createWindow(Rect<double>::wh(140, 50, 250, 200), "Sample window", grp);
-    mgr->createWindow(Rect<double>::wh(240, 70, 250, 200), "Sample window 2", new Window::EmptyBody());
-    mgr->createWindow(Rect<double>::wh(80, 90, 250, 200),  "Sample window 3", new Window::EmptyBody());
+    mgr->createWindow(Rect<double>::wh(140, 50, 300, 200), "Sample window", grp);
+    mgr->createWindow(Rect<double>::wh(240, 70, 300, 200), "Sample window 2", canvas);
+    mgr->createWindow(Rect<double>::wh(80, 90, 300, 200),  "Sample window 3", new Window::EmptyBody());
 
 
     mainWidget = mgr;
-
-    Application::init(argc, argv);
 }
 
 
