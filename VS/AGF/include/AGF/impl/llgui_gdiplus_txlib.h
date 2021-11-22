@@ -284,6 +284,8 @@ protected:
 
     static unsigned convertTextFmt(TextAlign hAlign, TextAlign vAlign, TextTrimming trimming, unsigned format);
 
+    void setup(bool shouldClear = true);
+
 };
 
 

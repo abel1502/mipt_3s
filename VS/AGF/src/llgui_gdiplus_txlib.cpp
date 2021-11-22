@@ -187,15 +187,17 @@ void Window::releaseMouse() {
 Texture::Texture(unsigned width, unsigned height) :
     TextureBase(width, height),
     bitmap{width, height},
-    graphics{&bitmap} {}
+    graphics{&bitmap} {
+
+    setup();
+}
 
 Texture::Texture(const Rect<double> &at) :
     TextureBase((unsigned)at.w(), (unsigned)at.h(), at.getPos()),
     bitmap{width(), height()},
     graphics{&bitmap} {
 
-    assert(width () == bitmap.GetWidth ());
-    assert(height() == bitmap.GetHeight());
+    setup();
 }
 
 Texture::Texture(const Window &wnd) :
@@ -208,6 +210,8 @@ Texture::Texture(const char *srcFileName) :
 
     width_  = bitmap.GetWidth ();
     height_ = bitmap.GetHeight();
+
+    setup(false);
 }
 
 Texture::~Texture() noexcept {
@@ -219,6 +223,19 @@ Texture::~Texture() noexcept {
     height_ = 0;
 
     // Everything else is deleted automatically
+}
+
+void Texture::setup(bool shouldClear) {
+    assert(width () == bitmap.GetWidth ());
+    assert(height() == bitmap.GetHeight());
+
+    // Should be synchronized with Window, otherwise fonts on textures and on the window will look differently
+    // graphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
+
+    if (shouldClear) {
+        setFillColor(Color::WHITE);
+        clear();
+    }
 }
 
 void Texture::setLineColor(const Color &color, float alpha) {
