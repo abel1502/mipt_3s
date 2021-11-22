@@ -13,4 +13,6 @@
 "CLOSE_BTN"       "+";
 "MINIMIZE_BTN"    "+";
 
-
+# TODO: Add variations, and probably replace the textures altogether
+"SLIDER_THUMB" "NORMAL" "resources/slider_thumb.png" [0, 0,  5,  5]  [0, 0,  5,  5];
+"SLIDER_BODY"  "NORMAL" "resources/slider_body.png"  [0, 0, 20, 20]  [5, 5, 10, 10];
