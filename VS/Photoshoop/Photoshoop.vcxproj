@@ -198,9 +198,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
+    <ClInclude Include="canvas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="canvas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\default.style" />
