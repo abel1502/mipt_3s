@@ -377,7 +377,7 @@ void Texture::drawText(Rect<double> at, const char *text, TextAlign hAlign, Text
                        TextTrimming trimming, unsigned format) {
     at -= offset();
 
-    Gdiplus::Font font{fontName.data(), (float)fontSize};
+    Gdiplus::Font font{fontName.data(), (float)fontSize, Gdiplus::FontStyleRegular};
 
     Gdiplus::RectF gdiAt{(float)at.x(), (float)at.y(),
                          (float)at.w(), (float)at.h()};
