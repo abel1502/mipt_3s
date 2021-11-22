@@ -56,6 +56,9 @@
     <ClInclude Include="include\AGF\widget_pos.h" />
     <ClInclude Include="include\AGF\style.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
