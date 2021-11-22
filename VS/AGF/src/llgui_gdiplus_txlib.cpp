@@ -22,7 +22,7 @@ static std::wstring strToWstr(const char *str) {
     }
 
     std::wstring result{};
-    result.reserve(requiredLength + 1);  // Just in case
+    result.resize(requiredLength + 1);  // Just in case
     size_t actualLength = 0;
     res = mbstowcs_s(&actualLength, result.data(), requiredLength + 1, str, requiredLength);
     if (res) {
