@@ -1,3 +1,12 @@
+# The format is :
+#   "ELEMENT" "STATE" "FILE" [OUTER RECT] [INNER RECT];
+# or :
+#   "ELEMENT" "+/-";
+#
+# File is relative to the executable's path;
+# Rects are specified as 4 comma-separated numbers in square brackets;
+# + and - enable and disable system-based rendering for supported elements
+
 "WND_HEADER"      "+";
 "WND_FRAME"       "+";
 "BUTTON"          "+";
