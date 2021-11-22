@@ -82,6 +82,10 @@ public:
     constexpr void setPos  (const Vector2T &value) noexcept { x (value.x()); y (value.y()); }
     constexpr void setDiag (const Vector2T &value) noexcept { w (value.x()); h (value.y()); }
 
+    constexpr Vector2T getCenter() const noexcept { return (getStart() + getEnd()) / 2; }
+    constexpr void setCenter(const Vector2T &value) noexcept { setPos(value - getDiag() / 2); }
+
+
     constexpr Vector2T getVertex(bool xCoord, bool yCoord) const {
         return Vector2T(x() + (!!xCoord) * w(),
                         y() + (!!yCoord) * h());
