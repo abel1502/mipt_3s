@@ -131,10 +131,10 @@ public:
         double headerHeight = -getStyle().wndHeaderHeight;
 
         return dynamic_cast<C &>(addChild(
-            new C(nullptr, relRegion.pad(headerHeight,
-                                         headerHeight,
+            new C(nullptr, relRegion.pad(borderWidth,
                                          borderWidth,
-                                         headerHeight),
+                                         headerHeight,
+                                         borderWidth),
                   std::forward<As>(args)...)
         ));
     }
