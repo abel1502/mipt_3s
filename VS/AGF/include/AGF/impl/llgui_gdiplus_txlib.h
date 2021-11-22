@@ -228,7 +228,7 @@ public:
         return drawEllipse(center, Vector2d{radius, radius}, fill);
     }
 
-    void drawEllipse(Vector2d center, const Vector2d &dimensions, bool fill = true);
+    void drawEllipse(Vector2d center, Vector2d dimensions, bool fill = true);
 
     inline void drawSquare(const Vector2d &center, double side, bool fill = true) {
         drawRect(Rect<double>::wh(center - Vector2d{side, side}, 2 * Vector2d{side, side}));

@@ -338,8 +338,10 @@ if (fill) {
 }
 #endif
 
-void Texture::drawEllipse(Vector2d center, const Vector2d &dimensions, bool fill) {
+void Texture::drawEllipse(Vector2d center, Vector2d dimensions, bool fill) {
     center -= offset();
+    center -= dimensions;
+    dimensions *= 2;
 
     if (fill) {
         if (graphics.FillEllipse(&brush, (float)center    .x(), (float)center    .y(),
@@ -561,7 +563,6 @@ void Texture::flushBuf() {
     bitmapData = {};
 }
 #pragma endregion Texture
-
 
 
 }
