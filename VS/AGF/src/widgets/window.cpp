@@ -21,9 +21,9 @@ Header::Header(Window *parent_, const Rect<double> &region_, const char *title_)
          new Label(this, region_.padded(LABEL_LPAD, LABEL_RPAD, LABEL_TPAD, LABEL_BPAD),
                    title_),
          new CloseBtn(this, Rect<double>::se(region_.x1() - BTN_CLOSE_LDX, region_.y0() + BTN_TPAD,
-                                           region_.x1() - BTN_CLOSE_RDX, region_.y1() - BTN_BPAD)),
+                                             region_.x1() - BTN_CLOSE_RDX, region_.y1() - BTN_BPAD)),
          new MinimizeBtn(this, Rect<double>::se(region_.x1() - BTN_MINIMIZE_LDX, region_.y0() + BTN_TPAD,
-                                           region_.x1() - BTN_MINIMIZE_RDX, region_.y1() - BTN_BPAD))
+                                                region_.x1() - BTN_MINIMIZE_RDX, region_.y1() - BTN_BPAD))
          ) {}
 
 EVENT_HANDLER_IMPL(Header, MouseMove) {
@@ -134,7 +134,7 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
     REQUIRE(region.h() >= headerHeight     + borderWidth);
     REQUIRE(region.w() >= headerHeight * 2 + borderWidth);
 
-    header(new _impl::Header(this, Rect<double>::wh(region.x(), region.y(), region.w(), headerHeight), title_));
+    header (new _impl::Header (this, Rect<double>::wh(region.x(), region.y(), region.w(), headerHeight), title_));
     borders(new _impl::Borders(this, Rect<double>::se(region.x0(), region.y0() + headerHeight, region.x1(), region.y1())));
 
     contents().staticShift(Vector2d(borderWidth, headerHeight));
