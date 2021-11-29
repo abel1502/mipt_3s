@@ -8,5 +8,6 @@
 #include <AGF/widgets/label.h>
 #include <AGF/widgets/rectangle.h>
 #include <AGF/widgets/window.h>
+#include <AGF/widgets/slider.h>
 
 #endif // AGF_WIDGETS_ALL_H
