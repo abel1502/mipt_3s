@@ -73,6 +73,9 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
 
     initialized = true;
 
+    wnd.emplace();  // Default size
+    wnd->setWndProc(&_wndproc);
+
     static constexpr char DEFAULT_STYLE_PATH[] = "resources/default.style";
     try {
         styleMgr.loadDefaultStyle(DEFAULT_STYLE_PATH);
@@ -82,9 +85,6 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
 
         styleMgr.getStyle(styleMgr.ROOT_STYLE_HANDLE).markAllSysDrawn();
     }
-
-    wnd.emplace();  // Default size
-    wnd->setWndProc(&_wndproc);
 }
 
 void Application::run() {
@@ -107,6 +107,9 @@ void Application::deinit() {
     initialized = false;
 
     mainWidget.reset();
+    styleMgr.clear();
+
+    // Has to be done last, because this shuts down GDI+
     wnd.reset();
 }
 

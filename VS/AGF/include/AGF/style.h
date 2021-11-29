@@ -294,6 +294,9 @@ public:
         return handle < styles.getSize();
     }
 
+    inline void clear() {
+        return styles.clear();
+    }
 protected:
     vector<Style> styles{};
 
