@@ -83,25 +83,13 @@ Widget::EventStatus Button::renderCustomized(const RenderEvent &event, Style::El
         return status;
     }
 
-    Style::ElementState state = Style::ELS_NORMAL;
-
-    mt.updateHovered();
-
-    if (mt.isDown(MouseBtn::Left)) {
-        state = Style::ELS_PRESSED;
-    } else if (mt.isHovered()) {
-        state = Style::ELS_HOVERED;
-    }
-
-    getStyle().drawElement(event.target, region, elem, state);
+    getStyle().drawElement(event.target, region, elem, mt.getElemState());
 
     if (ignoreLabel) {
         return EventStatus::done();
     }
 
-    status = dispatchToChild(label(), event);
-    status.update();
-    return status;
+    return _dispatchToChildren(event);
 }
 
 
