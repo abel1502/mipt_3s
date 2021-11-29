@@ -50,8 +50,10 @@ public:
 
     EVENT_HANDLER_USING(Widget);
 
-    #define EVENTS_DSL_ITEM_(NAME) \
-        EVENT_HANDLER_OVERRIDE(NAME);
+    #define EVENTS_DSL_ITEM_(NAME)          \
+        EVENT_HANDLER_OVERRIDE(NAME) {      \
+            return _processEvent(event);    \
+        }
     #include <AGF/events.dsl.h>
 
     virtual bool staticShift(const Vector2d &by) override {
@@ -207,15 +209,6 @@ protected:
     }
 
 };
-
-
-#define EVENTS_DSL_ITEM_(NAME)                      \
-    template <typename ... Ts>                      \
-    EVENT_HANDLER_IMPL(StaticGroup<Ts...>, NAME) {  \
-        return _processEvent(event);                \
-    }
-
-#include <AGF/events.dsl.h>
 
 
 }
