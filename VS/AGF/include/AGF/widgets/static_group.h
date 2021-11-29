@@ -181,7 +181,13 @@ protected:
             }
         }
 
-        return dispatchToChild(child<I>(), event);
+        EventStatus status = dispatchToChild(child<I>(), event);
+
+        if constexpr (I == 0) {
+            status.update();
+        }
+
+        return status;
     }
 
     // TODO: Inline?
@@ -200,10 +206,7 @@ protected:
         if (!status.shouldHandle(status.NODE))
             return status;
 
-        // REQUIRE(areChildrenSet());
-        if (!areChildrenSet()) {
-            REQUIRE(false);
-        }
+        REQUIRE(areChildrenSet());
 
         return _dispatchToChildren(event);
     }
