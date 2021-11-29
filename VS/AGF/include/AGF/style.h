@@ -39,7 +39,7 @@ public:
     // TODO: Some text formatting attributes
     double wndHeaderHeight = 30;
     double wndBorderWidth  = 5;
-    double sliderThumbSize = 5;
+    double sliderThumbSize = 15;
 
 
     constexpr Style() noexcept = default;  // Warning: requires some tilemaps to be set manually
@@ -66,13 +66,13 @@ public:
     void loadTileMaps(const char *indexFileName);
 
     void drawElement(Texture &target, const Rect<double> &dest,
-                     Element element, ElementState state);
+                     Element element, ElementState state) const;
 
     void animElement(Texture &target, const Rect<double> &dest, Element element,
-                     ElementState state0, ElementState state1, double stage);
+                     ElementState state0, ElementState state1, double stage) const;
 
     // TODO: Take all the necessary params
-    void drawText(Texture &target, const Rect<double> &dest, const char *text, unsigned format);
+    void drawText(Texture &target, const Rect<double> &dest, const char *text, unsigned format) const;
 
 protected:
     struct TileMap {
@@ -102,7 +102,7 @@ protected:
         TileMap(const char *srcFileName, const Rect<double> &outer_, const Rect<double> &inner_,
                 bool shouldFillInner_ = true);
 
-        void assemble(Texture &target, const Rect<double> &at);
+        void assemble(Texture &target, const Rect<double> &at) const;
 
         constexpr Rect<double> getCorner(bool x, bool y) const noexcept {
             return Rect<double>::se(outer.getVertex(x, y), inner.getVertex(x, y));
@@ -226,7 +226,13 @@ protected:
         assert(elem  <  EL_COUNT);
         assert(state < ELS_COUNT);
 
-        return tileMaps[(unsigned)elem][(unsigned)state];
+        TileMap &result = tileMaps[(unsigned)elem][(unsigned)state];
+
+        if (result.isPresent())
+            return result;
+
+        // If a particular state isn't defined, fall back to ELS_NORMAL
+        return tileMaps[(unsigned)elem][(unsigned)ELS_NORMAL];
     }
 
     constexpr const TileMap &getTileMap(Element elem, ElementState state) const {
@@ -254,7 +260,7 @@ protected:
     }
 
     void sysDrawElement(Texture &target, const Rect<double> &dest,
-                        Element element, ElementState state);
+                        Element element, ElementState state) const;
 
 };
 
@@ -297,6 +303,7 @@ public:
     inline void clear() {
         return styles.clear();
     }
+
 protected:
     vector<Style> styles{};
 

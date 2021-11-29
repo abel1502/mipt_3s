@@ -19,7 +19,7 @@ Style::TileMap::TileMap(const char *srcFileName, const Rect<double> &outer_,
     REQUIRE(outer.contains(inner));
 }
 
-void Style::TileMap::assemble(Texture &target, const Rect<double> &at) {
+void Style::TileMap::assemble(Texture &target, const Rect<double> &at) const {
     // The corners are transferred as-is
     for (unsigned i = 0; i < 4; ++i) {
         Corner corner = (Corner)i;
@@ -51,6 +51,17 @@ static bool skipSpace(std::istream &stream) {
     while (stream.good() && isspace(lastChar = stream.get())) {}
 
     if (!isspace(lastChar) && lastChar > 0)
+        stream.unget();
+
+    return !stream.good();
+}
+
+static bool skipLine(std::istream &stream) {
+    int lastChar = 0;
+
+    while (stream.good() && (lastChar = stream.get()) != '\n') {}
+
+    if (lastChar != '\n' && lastChar > 0)
         stream.unget();
 
     return !stream.good();
@@ -93,7 +104,7 @@ static bool readToken(std::istream &stream, Rect<T> &dest) {
 
     for (unsigned i = 0; i < 4; ++i) {
         if (readToken<T>(stream, tmp[i]) ||
-            readDelim(stream, ','))
+            (i + 1 < 4 && readDelim(stream, ',')))
             return true;
     }
 
@@ -132,7 +143,7 @@ void Style::loadTileMaps(const char *indexFileName) {
         }
 
         if (indexFile.peek() == '#') {
-            indexFile.get();
+            skipLine(indexFile);
             continue;
         }
 
@@ -141,11 +152,11 @@ void Style::loadTileMaps(const char *indexFileName) {
             ERROR_;
         }
 
-        if (std::string_view("+") == elemState) {
+        if (std::string_view("*") == elemState) {
             markElemSysDrawn(elemByName(elemName));
-        } else if (std::string_view("-") == elemState) {
-            markElemSysDrawn(elemByName(elemName), false);
         } else {
+            markElemSysDrawn(elemByName(elemName), false);
+
             if (readToken(indexFile, fileName,  BUF_LIMIT) ||
                 readToken(indexFile, outer)                ||
                 readToken(indexFile, inner)) {
@@ -169,12 +180,12 @@ void Style::loadTileMaps(const char *indexFileName) {
 }
 
 void Style::drawElement(Texture &target, const Rect<double> &dest,
-                        Element element, ElementState state) {
+                        Element element, ElementState state) const {
     if (isElemSysDrawn(element)) {
         return sysDrawElement(target, dest, element, state);
     }
 
-    TileMap &generator = getTileMap(element, state);
+    const TileMap &generator = getTileMap(element, state);
 
     if (!generator.isPresent()) {
         ERR("No tilemap defined for %u %u", element, state);  // TODO: String names!
@@ -186,9 +197,9 @@ void Style::drawElement(Texture &target, const Rect<double> &dest,
 }
 
 void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
-                           Element element, ElementState state) {
+                           Element element, ElementState state) const {
     unsigned sysState = 0;
-    unsigned wndHeaderButton = 0;
+    unsigned sysElem  = 0;
 
     switch (element) {
     case EL_WND_HEADER: {
@@ -241,12 +252,12 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
     } break;
 
     case EL_CLOSE_BTN: {
-        wndHeaderButton = WP_CLOSEBUTTON;
+        sysElem = WP_CLOSEBUTTON;
         goto caseHeaderButton;
     } break;
 
     case EL_MINIMIZE_BTN: {
-        wndHeaderButton = WP_MINBUTTON;
+        sysElem = WP_MINBUTTON;
         goto caseHeaderButton;
     } break;
 
@@ -268,7 +279,67 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
         }
 
         target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_WINDOW>(),
-                                 wndHeaderButton, sysState);
+                                 sysElem, sysState);
+    } break;
+
+    case EL_SLIDER_THUMB: {
+        sysElem = TKP_THUMB;
+        goto caseThumb;
+    } break;
+
+    case EL_SLIDER_VTHUMB: {
+        sysElem = TKP_THUMBRIGHT;
+        goto caseThumb;
+    } break;
+
+    case EL_SLIDER_HTHUMB: {
+        sysElem = TKP_THUMBTOP;
+        goto caseThumb;
+    } break;
+
+    caseThumb: {
+        switch (state) {
+        case ELS_NORMAL:
+            static_assert(TUS_NORMAL ==   TUS_NORMAL &&
+                          TUS_NORMAL ==  TUTS_NORMAL &&
+                          TUS_NORMAL == TUVRS_NORMAL);
+            sysState = TUS_NORMAL;
+            break;
+
+        case ELS_HOVERED:
+            static_assert(TUS_HOT ==   TUS_HOT &&
+                          TUS_HOT ==  TUTS_HOT &&
+                          TUS_HOT == TUVRS_HOT);
+            sysState = TUS_HOT;
+            break;
+
+        case ELS_PRESSED:
+            static_assert(TUS_PRESSED ==   TUS_PRESSED &&
+                          TUS_PRESSED ==  TUTS_PRESSED &&
+                          TUS_PRESSED == TUVRS_PRESSED);
+            sysState = TUS_PRESSED;
+            break;
+
+        NODEFAULT
+        }
+
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_TRACKBAR>(),
+                                 sysElem, sysState);
+    } break;
+
+    case EL_SLIDER_HBODY: {
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_TRACKBAR>(),
+                                 TKP_TRACK, TRS_NORMAL);
+    } break;
+
+    case EL_SLIDER_VBODY: {
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_TRACKBAR>(),
+                                 TKP_TRACKVERT, TRS_NORMAL);
+    } break;
+
+    case EL_SLIDER_BODY_2D: {
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_TRACKBAR>(),
+                                 TKP_TRACK, TRS_NORMAL);
     } break;
 
     NODEFAULT
@@ -278,9 +349,8 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
 
 
 #pragma region StyleManager
-StyleManager::StyleManager() {
-    styles.appendEmplace();
-}
+StyleManager::StyleManager() :
+    styles(1) {}
 
 StyleManager::StyleManager(const char *defaultStyleFileName) :
     StyleManager() {
