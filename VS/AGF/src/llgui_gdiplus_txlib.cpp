@@ -79,6 +79,7 @@ Window::Window(const Rect<unsigned> &pos) :
     themes[WT_TEXTSTYLE] = WinTheme{L"TextStyle"};
     themes[WT_REBAR]     = WinTheme{L"Rebar"};
     themes[WT_SCROLLBAR] = WinTheme{L"Scrollbar"};
+    themes[WT_TRACKBAR]  = WinTheme{L"Trackbar"};
 
     Gdiplus::GdiplusStartupInput gdiplusStartupInput{};
     Gdiplus::GdiplusStartup(&gdiToken, &gdiplusStartupInput, NULL);
@@ -211,6 +212,9 @@ Texture::Texture(const char *srcFileName) :
     width_  = bitmap.GetWidth ();
     height_ = bitmap.GetHeight();
 
+    // wprintf(L"%s\n", strToWstr(srcFileName).data());
+    // system((std::string("wsl -- file ") + srcFileName).data());
+
     setup(false);
 }
 
@@ -228,6 +232,13 @@ Texture::~Texture() noexcept {
 void Texture::setup(bool shouldClear) {
     assert(width () == bitmap.GetWidth ());
     assert(height() == bitmap.GetHeight());
+
+    if (!Window::instance) {
+        throw llgui_error("Window uninitialized yet");
+    }
+
+    REQUIRE(bitmap  .GetLastStatus() == Gdiplus::Ok);
+    REQUIRE(graphics.GetLastStatus() == Gdiplus::Ok);
 
     // Should be synchronized with Window, otherwise fonts on textures and on the window will look differently
     // graphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);

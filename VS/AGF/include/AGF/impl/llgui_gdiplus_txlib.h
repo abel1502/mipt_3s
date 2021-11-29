@@ -78,6 +78,7 @@ public:
         WT_TEXTSTYLE,
         WT_REBAR,
         WT_SCROLLBAR,
+        WT_TRACKBAR,
 
         WT_COUNT,  ///< Not a valid enum value!
     };
@@ -347,7 +348,7 @@ public:
     void embedPart(Rect<double> at, const Texture &other, Rect<double> part);
 
     /// Remember to call applyBuf to have the changes take effect
-    PackedColor *getBuf(bool read = true, bool write = true);
+    [[nodiscard]] PackedColor *getBuf(bool read = true, bool write = true);
 
     void flushBuf();
 
