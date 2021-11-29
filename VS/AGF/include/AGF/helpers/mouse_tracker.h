@@ -33,6 +33,16 @@ public:
         return isDown_[(unsigned)btn];
     }
 
+    inline Style::ElementState getElemState() const {
+        Style::ElementState state = Style::ELS_NORMAL;
+
+        if (isDown(MouseBtn::Left)) {
+            state = Style::ELS_PRESSED;
+        }
+
+        return state;
+    }
+
 protected:
     static constexpr unsigned MOUSE_BTN_CNT = 3;
     static_assert((unsigned)MouseBtn::Left   < MOUSE_BTN_CNT &&
@@ -77,6 +87,21 @@ public:
 
     // TODO: Perhaps remove after everything is fixed
     void updateHovered();
+
+    inline Style::ElementState getElemState() const {
+        Style::ElementState state = Style::ELS_NORMAL;
+
+        // Appropriate, because this is a workaround against dumb MouseMove behaviour
+        const_cast<MouseTracker *>(this)->updateHovered();
+
+        if (isDown(MouseBtn::Left)) {
+            state = Style::ELS_PRESSED;
+        } else if (isHovered()) {
+            state = Style::ELS_HOVERED;
+        }
+
+        return state;
+    }
 
 protected:
     bool isHovered_ = false;
