@@ -124,7 +124,7 @@ public:
 
     constexpr bool isMouseCaptured()               const noexcept { return mouseCaptureHolder; }
     constexpr bool isMouseCaptured(Widget *widget) const noexcept { return mouseCaptureHolder == widget; }
-    void releaseMouse();
+    void releaseMouse();  // TODO: Perhaps private?
     void releaseMouse(Widget *widget);
     void captureMouse(Widget *widget);
 
@@ -141,9 +141,10 @@ protected:
     unique_ptr<Widget> mainWidget = nullptr;
     bool initialized = false;
     std::atomic<bool> finished = false;
-    std::atomic<bool> wantSysMouseCapture = false;
 
+    std::atomic<bool> wantSysMouseCapture = false;
     Widget *mouseCaptureHolder = nullptr;
+    unsigned mouseCaptureDeg = 0;
 
     std::mutex actionQueueMutex{};
     std::mutex actionExecMutex{};

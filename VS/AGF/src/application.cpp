@@ -110,26 +110,30 @@ void Application::deinit() {
     wnd.reset();
 }
 
-// TODO: Maybe something more sophisticated
-
+// TODO: Maybe remove
 void Application::releaseMouse() {
     mouseCaptureHolder = nullptr;
     wantSysMouseCapture = false;
+    mouseCaptureDeg = 0;
 }
 
 void Application::releaseMouse(Widget *widget) {
     // DBG("Releasing by %p over %p", widget, mouseCaptureHolder);
     REQUIRE(widget == mouseCaptureHolder);  // TODO: || !mouseCaptureHolder ?
+    REQUIRE(mouseCaptureDeg > 0);
 
-    releaseMouse();
+    if (!--mouseCaptureDeg) {
+        releaseMouse();
+    }
 }
 
 void Application::captureMouse(Widget *widget) {
     // DBG("Capturing by %p over %p", widget, mouseCaptureHolder);
-    REQUIRE(!mouseCaptureHolder);
+    REQUIRE(!mouseCaptureHolder || mouseCaptureHolder == widget);
 
     mouseCaptureHolder = widget;
     wantSysMouseCapture = true;
+    ++mouseCaptureDeg;
 }
 
 void Application::demandRedraw() {
