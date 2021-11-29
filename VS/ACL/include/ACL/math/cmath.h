@@ -4,10 +4,13 @@
 #include <ACL/general.h>
 #include <ACL/type_traits.h>
 
-#ifndef _USE_MATH_DEFINES 
+#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES 1
 #endif
 #include <cmath>
+// std has better equivalents
+#undef min
+#undef max
 
 
 namespace abel::math {
