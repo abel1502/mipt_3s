@@ -55,7 +55,7 @@ public:
     }
 
     static constexpr Color fromRGB(unsigned char r, unsigned char g, unsigned char b) {
-        return abel::math::Vector3f(r, g, b) / 255.f;
+        return abel::math::Vector3f((float)r, (float)g, (float)b) / 255.f;
     }
 
     constexpr float &r() noexcept {
