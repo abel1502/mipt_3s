@@ -105,7 +105,9 @@ EVENT_CLS_DECL_(MouseMove) {
     }
 };
 
-EVENT_CLS_DECL_(Keyboard) {};
+EVENT_CLS_DECL_(KeyPress) {};
+
+EVENT_CLS_DECL_(KeyboardInput) {};
 
 // TODO: Use type erasure here to allow the users to customize this
 EVENT_CLS_DECL_(User) {};

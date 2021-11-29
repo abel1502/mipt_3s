@@ -68,7 +68,11 @@ EVENT_HANDLER_IMPL(Widget, MouseMove) {
     return EventStatus::skip();
 }
 
-EVENT_HANDLER_IMPL(Widget, Keyboard) {
+EVENT_HANDLER_IMPL(Widget, KeyPress) {
+    return EventStatus::skip();
+}
+
+EVENT_HANDLER_IMPL(Widget, KeyboardInput) {
     return EventStatus::skip();
 }
 
