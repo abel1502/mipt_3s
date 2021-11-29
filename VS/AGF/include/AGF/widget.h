@@ -91,6 +91,9 @@ public:
     #define EVENTS_DSL_ITEM_(NAME) EVENT_HANDLER_DECL(NAME);
     #include <AGF/events.dsl.h>
 
+    constexpr const Widget *getParent() const { return parent; }
+    constexpr       Widget *getParent()       { return parent; }
+
     constexpr const Rect<double> &getRegion() const { return region; }
     constexpr       Rect<double> &getRegion()       { return region; }
 
