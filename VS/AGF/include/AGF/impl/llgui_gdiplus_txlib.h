@@ -25,6 +25,7 @@
 #include <gdiplus.h>
 #include <TXLib.h>
 #include <Uxtheme.h>
+#include <algorithm>
 
 #include <AGF/llgui_pre.h>
 #include <AGF/impl/llgui_wintheme.h>
@@ -130,6 +131,95 @@ public:
         static_assert(I < WT_COUNT);
 
         return themes[I];
+    }
+
+    static inline Color HSL2RGB(const abel::math::Vector3d &hsl) {
+        COLORREF sysHSL = RGB((unsigned)(hsl.x() * 255.),
+                              (unsigned)(hsl.y() * 255.),
+                              (unsigned)(hsl.z() * 255.));
+
+        COLORREF sysRGB = txHSL2RGB(sysHSL);
+
+        return Color(((float)GetRValue(sysRGB)) / 255.f,
+                     ((float)GetGValue(sysRGB)) / 255.f,
+                     ((float)GetBValue(sysRGB)) / 255.f);
+    }
+
+    static inline abel::math::Vector3d RGB2HSL(const Color &rgb) {
+        COLORREF sysRGB = RGB((unsigned)(rgb.x() * 255.f),
+                              (unsigned)(rgb.y() * 255.f),
+                              (unsigned)(rgb.z() * 255.f));
+
+        COLORREF sysHSL = txRGB2HSL(sysRGB);
+
+        return abel::math::Vector3d(((double)GetRValue(sysHSL)) / 255.,
+                                    ((double)GetGValue(sysHSL)) / 255.,
+                                    ((double)GetBValue(sysHSL)) / 255.);
+    }
+
+    static inline Color HSV2RGB(const abel::math::Vector3d &hsv) {
+        unsigned h_idx = (unsigned)(hsv.x() * 6);
+        assert(h_idx <= 6);
+
+        float v     = (float)hsv.z();
+        float vMin  = (1.f - (float)hsv.y()) * v;
+        float adj   = (float)((v - vMin) * (hsv.x() * 6 - h_idx));
+        float vInc  = vMin + adj;
+        float vDec  = v - adj;
+
+        switch (h_idx) {
+        case 6:
+        case 0:
+            return Color(v, vInc, vMin);
+
+        case 1:
+            return Color(vDec, v, vMin);
+
+        case 2:
+            return Color(vMin, v, vInc);
+
+        case 3:
+            return Color(vMin, vDec, v);
+
+        case 4:
+            return Color(vInc, vMin, v);
+
+        case 5:
+            return Color(v, vMin, vDec);
+
+        NODEFAULT
+        }
+    }
+
+    static inline abel::math::Vector3d RGB2HSV(const Color &rgb) {
+        double max = std::max({rgb.r(), rgb.g(), rgb.b()});
+        double min = std::min({rgb.r(), rgb.g(), rgb.b()});
+
+        double v = max;
+        double s = isZero(max) ?
+            0 :
+            1 - min / max;
+
+        double h = 0;
+        constexpr double PART = 1. / 6;
+
+        if (cmpDbl(max, min) == 0) {
+            // Undefined, so we may keep h == 0
+        } else if (cmpDbl(max, rgb.r()) == 0) {
+            h = PART * (rgb.g() - rgb.b()) / (max - min);
+
+            if (cmpDbl(rgb.g(), rgb.b()) >= 0) {
+                h += 1;
+            }
+        } else if (cmpDbl(max, rgb.g()) == 0) {
+            h = PART * (rgb.b() - rgb.r()) / (max - min) +
+                PART * 2;
+        } else {
+            h = PART * (rgb.r() - rgb.g()) / (max - min) +
+                PART * 4;
+        }
+
+        return abel::math::Vector3d{h, s, v};
     }
 
 protected:
