@@ -105,7 +105,7 @@ public:
     // Destroys the instance pointer
     static void teardown();
 
-    double getTime();  // TODO: Implement
+    double getTime() const;
 
     static inline Application &getInstance() {
         assert(instance);

@@ -1,5 +1,6 @@
 #include <AGF/llgui.h>
 #include <AGF/application.h>
+#include <chrono>
 
 
 namespace abel::gui {
@@ -67,6 +68,13 @@ void Application::teardown() {
     instance = nullptr;
 }
 
+double Application::getTime() const {
+    return std::chrono::duration<double>(
+        std::chrono::steady_clock::now()
+        .time_since_epoch()
+    ).count();
+}
+
 void Application::init(int /*argc*/, const char **/*argv*/) {
     if (initialized)
         return;
@@ -90,10 +98,16 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
 void Application::run() {
     wnd->update();
 
+    double lastTime = getTime();
+
     while (!finished) {
         if (hasQueuedActions()) {
             executeQueuedAction();
         }
+
+        double curTime = getTime();
+        sigTick(curTime - lastTime);
+        lastTime = curTime;
 
         // asm volatile ("pause");
         YieldProcessor();
