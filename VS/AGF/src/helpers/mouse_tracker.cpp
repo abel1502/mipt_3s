@@ -13,15 +13,29 @@ bool MouseClickTracker::processEvent(const MouseClickEvent &event) {
         return false;
 
     if (event.type == decltype(event.type)::Down) {
-        assert(hit && !isDown(event.button));
+        // DBG("Down %s", event.button == MouseBtn::Left ? "Left" : "Right");
 
-        Application::getInstance().captureMouse(widget);
+        // May not be a hit, if another button has already been pressed and captured the input
+        // assert(!isDown(event.button));
+        if (isDown(event.button)) {
+            DBG("Double down!");
+            return true;
+        }
+
+        // I guess I should only capture upon left click
+        if (event.button == MouseBtn::Left) {
+            Application::getInstance().captureMouse(widget);
+        }
 
         isDown(event.button, true);
 
         sigDown(event);
     } else if (isDown(event.button)) {
-        Application::getInstance().releaseMouse(widget);
+        // DBG("Up   %s", event.button == MouseBtn::Left ? "Left" : "Right");
+
+        if (event.button == MouseBtn::Left) {
+            Application::getInstance().releaseMouse(widget);
+        }
 
         isDown(event.button, false);
 
