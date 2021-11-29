@@ -22,13 +22,7 @@ public:
     constexpr NAME_() noexcept :
         values{} {}
 
-    constexpr NAME_(const NAME_ &other) noexcept :
-        values{} {
-
-        for (unsigned i = 0; i < DIM; ++i) {
-            values[i] = other.values[i];
-        }
-    }
+    constexpr NAME_(const NAME_ &other) noexcept = default;
 
     // Because for N == 1 this is equivalent to the complete constructor
     #if N_ > 1
@@ -41,13 +35,7 @@ public:
     }
     #endif
 
-    constexpr NAME_ &operator=(const NAME_ &other) noexcept {
-        for (unsigned i = 0; i < DIM; ++i) {
-            values[i] = other.values[i];
-        }
-
-        return *this;
-    }
+    constexpr NAME_ &operator=(const NAME_ &other) noexcept = default;
 
     constexpr NAME_ &operator+=(const NAME_ &other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
