@@ -14,32 +14,13 @@ using abel::math::Vector2d;
 
 class Coords {
 public:
-    template <bool NOVALIDATE = false>
     constexpr Coords(const Rect<double> &screenPlane_, const Rect<double> &virtualPlane_) :
-        screenPlane{screenPlane_}, virtualPlane{virtualPlane_} {
+        screenPlane{screenPlane_}, virtualPlane{virtualPlane_} {}
 
-        if constexpr (!NOVALIDATE) {
-            if (!screenPlane.getPos().isZero()) {
-                DBG("Weird coordinate system chosen. "
-                    "Are you sure you don't want the screen coordinates "
-                    "to start at the top left corner?");
-            }
-        }
-    }
-
-    template <bool NOVALIDATE = false>
     constexpr Coords(const Rect<double> &screenPlane_, double maxVirtX) :
         screenPlane{screenPlane_}, virtualPlane{} {
 
-        if constexpr (!NOVALIDATE) {
-            if (!screenPlane.getPos().isZero()) {
-                DBG("Weird coordinate system chosen. "
-                    "Are you sure you don't want the screen coordinates "
-                    "to start at the top left corner?");
-            }
-
-            REQUIRE(!abel::isZero(screenPlane.h()) && !abel::isZero(screenPlane.w()));
-        }
+        assert(!abel::isZero(screenPlane.h()) && !abel::isZero(screenPlane.w()));
 
         double maxVirtY = maxVirtX * screenPlane.h() / screenPlane.w();
 
