@@ -21,12 +21,18 @@
     <ClInclude Include="canvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="color_picker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="canvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="color_picker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

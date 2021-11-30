@@ -199,10 +199,12 @@
   <ItemGroup>
     <ClInclude Include="app.h" />
     <ClInclude Include="canvas.h" />
+    <ClInclude Include="color_picker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="canvas.cpp" />
+    <ClCompile Include="color_picker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\default.style" />
