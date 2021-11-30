@@ -50,15 +50,16 @@ EVENT_HANDLER_IMPL(Header, MouseClick) {
 }
 
 EVENT_HANDLER_IMPL(Header, Render) {
-    getStyle().drawElement(event.target, region, Style::EL_WND_HEADER, Style::ELS_NORMAL);
-
-    EventStatus status = Base::dispatchEvent(event);
+    EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE)) {
         return status;
     }
 
-    return EventStatus::done();
+    getStyle().drawElement(event.target, region, Style::EL_WND_HEADER, Style::ELS_NORMAL);
+
+    REQUIRE(areChildrenSet());
+    return _dispatchToChildren(event);
 }
 
 bool Header::setStyle(StyleManager::StyleHandle newHandle) {
@@ -87,13 +88,13 @@ EVENT_HANDLER_IMPL(Borders, MouseClick) {
 }
 
 EVENT_HANDLER_IMPL(Borders, Render) {
-    getStyle().drawElement(event.target, region, Style::EL_WND_FRAME, Style::ELS_NORMAL);
-
-    EventStatus status = Base::dispatchEvent(event);
+    EventStatus status = Widget::dispatchEvent(event);
 
     if (!status.shouldHandle(status.NODE)) {
         return status;
     }
+
+    getStyle().drawElement(event.target, region, Style::EL_WND_FRAME, Style::ELS_NORMAL);
 
     return EventStatus::done();
 }
