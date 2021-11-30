@@ -108,7 +108,7 @@
       <AdditionalDependencies>ACL.lib;AGF.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(ProjectDir)\resources $(OutDir)\resources</Command>
+      <Command>xcopy /E /I /Y $(ProjectDir)\resources $(OutDir)\resources\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying resources to output directory</Message>
@@ -137,7 +137,7 @@
       <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(ProjectDir)\resources $(OutDir)\resources</Command>
+      <Command>xcopy /E /I /Y $(ProjectDir)\resources $(OutDir)\resources\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying resources to output directory</Message>
@@ -161,7 +161,7 @@
       <AdditionalDependencies>ACL.lib;AGF.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(ProjectDir)\resources $(OutDir)\resources</Command>
+      <Command>xcopy /E /I /Y $(ProjectDir)\resources $(OutDir)\resources\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying resources to output directory</Message>
@@ -190,7 +190,7 @@
       <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(ProjectDir)\resources $(OutDir)\resources</Command>
+      <Command>xcopy /E /I /Y $(ProjectDir)\resources $(OutDir)\resources\</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying resources to output directory</Message>
