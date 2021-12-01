@@ -34,13 +34,17 @@ public:
     }
 
     inline Style::ElementState getElemState() const {
-        Style::ElementState state = Style::ELS_NORMAL;
+        lastState = Style::ELS_NORMAL;
 
         if (isDown(MouseBtn::Left)) {
-            state = Style::ELS_PRESSED;
+            lastState = Style::ELS_PRESSED;
         }
 
-        return state;
+        return lastState;
+    }
+
+    inline Style::ElementState getLastElemState() const {
+        return lastState;
     }
 
 protected:
@@ -52,6 +56,7 @@ protected:
 
     Widget *widget;
     bool isDown_[MOUSE_BTN_CNT] = {};
+    mutable Style::ElementState lastState = Style::ELS_NORMAL;
 
 
     constexpr void isDown(MouseBtn btn, bool value) {
@@ -89,18 +94,18 @@ public:
     void updateHovered();
 
     inline Style::ElementState getElemState() const {
-        Style::ElementState state = Style::ELS_NORMAL;
+        lastState = Style::ELS_NORMAL;
 
         // Appropriate, because this is a workaround against dumb MouseMove behaviour
         const_cast<MouseTracker *>(this)->updateHovered();
 
         if (isDown(MouseBtn::Left)) {
-            state = Style::ELS_PRESSED;
+            lastState = Style::ELS_PRESSED;
         } else if (isHovered()) {
-            state = Style::ELS_HOVERED;
+            lastState = Style::ELS_HOVERED;
         }
 
-        return state;
+        return lastState;
     }
 
 protected:
