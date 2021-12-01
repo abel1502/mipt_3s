@@ -159,9 +159,9 @@ inline _myimpl::ColorSliderSV::ColorSliderSV(ColorPicker *parent_, const Rect<do
 inline _myimpl::ColorSliderH::ColorSliderH(ColorPicker *parent_, const Rect<double> &region_,
                                            double min, double max) :
     Base(parent_, region_, min, max, 0,
-         new ColorSliderThumb(this, region_.getCenter())) {}
+         new ColorSliderThumb(this, region_.getCenter(), true)) {}
 
 inline _myimpl::ColorSliderA::ColorSliderA(ColorPicker *parent_, const Rect<double> &region_,
                                            double min, double max) :
     Base(parent_, region_, min, max, 1,
-         new ColorSliderThumb(this, region_.getCenter())) {}
+         new ColorSliderThumb(this, region_.getCenter(), true)) {}
