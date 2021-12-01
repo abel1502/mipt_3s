@@ -13,7 +13,7 @@ Thumb::Thumb(Widget *parent_, const Vector2d &pos_, bool lockV, bool lockH) :
     locked{lockV, lockH} {
 
     mt.sigDrag += [this](MouseBtn btn, const MouseMoveEvent &event) {
-        dispatchEvent(MoveEvent(clampPos(event.pos1) - pos));
+        dispatchEvent(MoveEvent(clampPos(event.pos1) - pos /* + Vector2d {1, 0}*/));
 
         return false;
     };
@@ -97,7 +97,7 @@ bool Thumb::staticShift(const Vector2d &by) {
     return false;
 }
 
-void Thumb::renderThumb(Texture &target, const Rect<double> &at) const {
+void Thumb::renderThumb(Texture &target, const Rect<double> &at) {
     Style::Element elem = Style::EL_SLIDER_THUMB;
 
     if (lockedV()) {
@@ -110,7 +110,36 @@ void Thumb::renderThumb(Texture &target, const Rect<double> &at) const {
         elem = Style::EL_SLIDER_VTHUMB;
     }
 
-    getStyle().drawElement(target, at, elem, mt.getElemState());
+    Style::ElementState
+        lastState = mt.getLastElemState(),
+         curState = mt.getElemState();
+
+    anim.maybeStop(curState);
+
+    if (!anim.isGoing() && lastState != curState) {
+        double duration = 0;
+
+        if (lastState == Style::ELS_HOVERED && curState == Style::ELS_NORMAL) {
+            duration = 0.15;
+        } else if (lastState == Style::ELS_PRESSED) {
+            duration = 0.10;
+        }
+
+        if (sgnDbl(duration) > 0) {
+            anim = getStyle().animElement(at, elem, lastState, curState, duration);
+            anim.start();
+        }
+    }
+
+    // We animate even the static states and transitions, because otherwise
+    // there's a one-pixel difference in positions, which annoys me a lot
+    if (!anim.isGoing()) {
+        anim = getStyle().animElement(at, elem, lastState, curState, 0.001);
+        anim.start();
+    }
+
+    assert(anim.isGoing());
+    anim.render(target, at);
 }
 #pragma endregion Thumb
 

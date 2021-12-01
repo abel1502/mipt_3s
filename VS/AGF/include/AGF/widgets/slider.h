@@ -5,6 +5,7 @@
 #include <AGF/widget.h>
 #include <AGF/widgets/static_group.h>
 #include <AGF/helpers/mouse_tracker.h>
+#include <AGF/helpers/animation.h>
 #include <ACL/type_traits.h>
 #include <ACL/gui/coords.h>
 
@@ -38,7 +39,7 @@ public:
     // Warning: cannot and doesn't check for bounds
     virtual bool staticShift(const Vector2d &by) override;
 
-    virtual void renderThumb(Texture &target, const Rect<double> &at) const;
+    virtual void renderThumb(Texture &target, const Rect<double> &at);
 
     const Vector2d &getPos() const {
         return pos;
@@ -78,6 +79,7 @@ public:
 
 protected:
     MouseTracker mt{this};
+    Animation anim{};
     Vector2d pos;
     bool locked[2] = {};
 
@@ -218,7 +220,7 @@ protected:
         return coords.screen2virt(pos);
     }
 
-    virtual void renderBackground(Texture &target, const Rect<double> &at) const {
+    virtual void renderBackground(Texture &target, const Rect<double> &at) {
         Style::Element elem = Style::EL_SLIDER_BODY_2D;
 
         if constexpr (LockV) {
