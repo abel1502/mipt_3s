@@ -83,7 +83,32 @@ Widget::EventStatus Button::renderCustomized(const RenderEvent &event, Style::El
         return status;
     }
 
-    getStyle().drawElement(event.target, region, elem, mt.getElemState());
+    Style::ElementState
+        lastState = mt.getLastElemState(),
+         curState = mt.getElemState();
+
+    anim.maybeStop(curState);
+
+    if (!anim.isGoing() && lastState != curState) {
+        double duration = 0;
+
+        if (lastState == Style::ELS_HOVERED && curState == Style::ELS_NORMAL) {
+            duration = 0.15;
+        } else if (lastState == Style::ELS_PRESSED) {
+            duration = 0.10;
+        }
+
+        if (sgnDbl(duration) > 0) {
+            anim = getStyle().animElement(region, elem, lastState, curState, duration);
+            anim.start();
+        }
+    }
+
+    if (anim.isGoing()) {
+        anim.render(event.target, region);
+    } else {
+        getStyle().drawElement(event.target, region, elem, curState);
+    }
 
     if (ignoreLabel) {
         return EventStatus::done();

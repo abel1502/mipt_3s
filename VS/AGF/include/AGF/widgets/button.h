@@ -6,6 +6,7 @@
 #include <AGF/widgets/rectangle.h>
 #include <AGF/widgets/label.h>
 #include <AGF/helpers/mouse_tracker.h>
+#include <AGF/helpers/animation.h>
 
 
 namespace abel::gui::widgets {
@@ -28,6 +29,7 @@ public:
 
 protected:
     MouseTracker mt{this};
+    Animation anim{};
 
     SGRP_DECLARE_BINDING_T(label, Label);
 
