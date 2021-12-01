@@ -116,6 +116,7 @@ void Window::renderAt(Vector2d at, const Texture &texture) {
 
     {
         Gdiplus::Graphics graphics{handle};
+        graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
 
         if (graphics.DrawImage(const_cast<Gdiplus::Bitmap *>(&texture.bitmap),
                                (Gdiplus::REAL)at.x(), (Gdiplus::REAL)at.y()) != Gdiplus::Ok) {
@@ -129,6 +130,7 @@ void Window::renderAt(Rect<double> at, const Texture &texture) {
 
     {
         Gdiplus::Graphics graphics{handle};
+        graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
 
         if (graphics.DrawImage(const_cast<Gdiplus::Bitmap *>(&texture.bitmap),
                                (Gdiplus::REAL)at.x(), (Gdiplus::REAL)at.y(),
@@ -242,6 +244,9 @@ void Texture::setup(bool shouldClear) {
 
     // Should be synchronized with Window, otherwise fonts on textures and on the window will look differently
     // graphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
+
+    // TODO: Experiment - find a way to fix thumb's tip
+    graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
 
     if (shouldClear) {
         setFillColor(Color::WHITE);
