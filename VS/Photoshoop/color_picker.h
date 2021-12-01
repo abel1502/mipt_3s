@@ -25,7 +25,7 @@ public:
     using Base::Thumb;
 
 protected:
-    virtual void renderThumb(abel::gui::Texture &target, const Rect<double> &at) const override;
+    virtual void renderThumb(abel::gui::Texture &target, const Rect<double> &at) override;
 };
 
 class ColorSliderSV : public abel::gui::widgets::Slider2D {
@@ -45,7 +45,7 @@ protected:
     mutable abel::unique_ptr<abel::gui::Texture> cachedTexture = nullptr;
 
 
-    virtual void renderBackground(abel::gui::Texture &target, const Rect<double> &at) const override;
+    virtual void renderBackground(abel::gui::Texture &target, const Rect<double> &at) override;
 
 };
 
@@ -66,7 +66,7 @@ protected:
     mutable abel::unique_ptr<abel::gui::Texture> cachedTexture = nullptr;
 
 
-    virtual void renderBackground(abel::gui::Texture &target, const Rect<double> &at) const override;
+    virtual void renderBackground(abel::gui::Texture &target, const Rect<double> &at) override;
 
 };
 
@@ -87,7 +87,7 @@ protected:
     mutable abel::unique_ptr<abel::gui::Texture> cachedTexture = nullptr;
 
 
-    virtual void renderBackground(abel::gui::Texture &target, const Rect<double> &at) const override;
+    virtual void renderBackground(abel::gui::Texture &target, const Rect<double> &at) override;
 
 };
 

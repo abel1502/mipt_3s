@@ -9,13 +9,13 @@ using namespace abel::gui;
 
 namespace _myimpl {
 
-void ColorSliderThumb::renderThumb(abel::gui::Texture &target, const Rect<double> &at) const {
+void ColorSliderThumb::renderThumb(abel::gui::Texture &target, const Rect<double> &at) {
     target.setLineColor(Color::WHITE * 0.6f);
     target.setLineWidth(1.5f);
     target.drawEllipse(pos, at.getDiag() / 2, false);
 }
 
-void ColorSliderSV::renderBackground(Texture &target, const Rect<double> &at) const {
+void ColorSliderSV::renderBackground(Texture &target, const Rect<double> &at) {
     assert(parent);
     double hue = getParent()->getColorH();
 
@@ -56,7 +56,7 @@ void ColorSliderSV::renderBackground(Texture &target, const Rect<double> &at) co
     target.embed(at, *cachedTexture);
 }
 
-void ColorSliderH::renderBackground(Texture &target, const Rect<double> &at) const {
+void ColorSliderH::renderBackground(Texture &target, const Rect<double> &at) {
     if (!cachedTexture) {
         unsigned w = (unsigned)at.w();
         unsigned h = (unsigned)at.h();
@@ -92,7 +92,7 @@ void ColorSliderH::renderBackground(Texture &target, const Rect<double> &at) con
     target.embed(at, *cachedTexture);
 }
 
-void ColorSliderA::renderBackground(Texture &target, const Rect<double> &at) const {
+void ColorSliderA::renderBackground(Texture &target, const Rect<double> &at) {
     if (!cachedTexture) {
         unsigned w = (unsigned)at.w();
         unsigned h = (unsigned)at.h();
