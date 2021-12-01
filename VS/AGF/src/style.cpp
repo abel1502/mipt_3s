@@ -1,5 +1,6 @@
 #include <AGF/llgui.h>
 #include <AGF/style.h>
+#include <AGF/helpers/animation.h>
 #include <ACL/type_traits.h>
 #include <cctype>
 #include <fstream>
@@ -194,6 +195,23 @@ void Style::drawElement(Texture &target, const Rect<double> &dest,
     }
 
     generator.assemble(target, dest);
+}
+
+Animation Style::animElement(const Rect<double> &region, Element element,
+                             ElementState state0, ElementState state1, double duration) const {
+    auto tex0 = unique_ptr<Texture>::createEmplace(region);
+    auto tex1 = unique_ptr<Texture>::createEmplace(region);
+
+    tex0->setFillColor(Color::WHITE, 0);
+    tex0->clear();
+
+    tex1->setFillColor(Color::WHITE, 0);
+    tex1->clear();
+
+    drawElement(*tex0, region, element, state0);
+    drawElement(*tex1, region, element, state1);
+
+    return Animation(std::move(tex0), std::move(tex1), duration, state0, state1);
 }
 
 void Style::sysDrawElement(Texture &target, const Rect<double> &dest,

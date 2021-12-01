@@ -10,6 +10,9 @@
 namespace abel::gui {
 
 
+class Animation;
+
+
 class Style {
 protected:
     struct TileMap;
@@ -68,8 +71,8 @@ public:
     void drawElement(Texture &target, const Rect<double> &dest,
                      Element element, ElementState state) const;
 
-    void animElement(Texture &target, const Rect<double> &dest, Element element,
-                     ElementState state0, ElementState state1, double stage) const;
+    Animation animElement(const Rect<double> &region, Element element,
+                          ElementState state0, ElementState state1, double stage) const;
 
     // TODO: Take all the necessary params
     void drawText(Texture &target, const Rect<double> &dest, const char *text, unsigned format) const;
