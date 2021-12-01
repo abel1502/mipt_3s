@@ -1,3 +1,13 @@
+/**
+ *
+ * This module implement as many comparison operators as in can for all classes.
+ * It does so in two ways:
+ *  1) It complements the existing *member* comparison operators with the ones that can be derived
+ *     (including reversing direction and total ordering complementation)
+ *  2) For every class that defines `__cmp__`, it uses it as a three-way comparison operator (see <=> in C++20)
+ *
+ */
+
 #ifndef ACL_CMP_H
 #define ACL_CMP_H
 
