@@ -89,7 +89,7 @@ protected:
                         tex1 = nullptr;
     Style::ElementState state0 = BAD_STATE;
     Style::ElementState state1 = BAD_STATE;
-    double duration;
+    double duration = 0;
     double state = 0;
     double startTime = 0;
 
