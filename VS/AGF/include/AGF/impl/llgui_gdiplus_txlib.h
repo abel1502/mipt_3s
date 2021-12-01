@@ -347,6 +347,12 @@ public:
 
     void embedPart(Rect<double> at, const Texture &other, Rect<double> part);
 
+    inline void embedTransformed(const Rect<double> &at, const Texture &other,
+                                 const abel::math::Vector4f &colorCoeffs);
+
+    void embedTransformedPart(Rect<double> at, const Texture &other,
+                              const abel::math::Vector4f &colorCoeffs, Rect<double> part);
+
     /// Remember to call applyBuf to have the changes take effect
     [[nodiscard]] PackedColor *getBuf(bool read = true, bool write = true);
 
@@ -423,6 +429,11 @@ inline void Texture::setFont(const char *name, double size) {
 
 inline void Texture::embed(const Rect<double> &at, const Texture &other) {
     return embedPart(at, other, other.getRect());
+}
+
+inline void Texture::embedTransformed(const Rect<double> &at, const Texture &other,
+                                      const abel::math::Vector4f &colorCoeffs) {
+    return embedTransformedPart(at, other, colorCoeffs, other.getRect());
 }
 
 

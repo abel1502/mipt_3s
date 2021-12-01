@@ -542,6 +542,39 @@ void Texture::embedPart(Rect<double> at, const Texture &other, Rect<double> part
     }
 }
 
+void Texture::embedTransformedPart(Rect<double> at, const Texture &other,
+                                   const abel::math::Vector4f &colorCoeffs, Rect<double> part) {
+    // Just to tidy up the matrix expression
+    const auto &cc = colorCoeffs;
+
+    Gdiplus::ColorMatrix matrix = {
+        cc.x(),    0.f,    0.f,    0.f,    0.f,
+           0.f, cc.y(),    0.f,    0.f,    0.f,
+           0.f,    0.f, cc.z(),    0.f,    0.f,
+           0.f,    0.f,    0.f, cc.w(),    0.f,
+           0.f,    0.f,    0.f,    0.f,    1.f,
+    };
+
+    Gdiplus::ImageAttributes attrs{};
+    attrs.SetColorMatrix(&matrix, Gdiplus::ColorMatrixFlagsDefault, Gdiplus::ColorAdjustTypeBitmap);
+
+    at   -=       offset();
+    part -= other.offset();
+
+    Gdiplus::RectF gdiDestRect{(float)at.x(), (float)at.y(),
+                               (float)at.w(), (float)at.h()};
+
+    Gdiplus::RectF gdiSrcRect{(float)part.x(), (float)part.y(),
+                              (float)part.w(), (float)part.h()};
+
+    Gdiplus::Status status = graphics.DrawImage(const_cast<Gdiplus::Bitmap *>(&other.bitmap),
+                                                gdiDestRect, gdiSrcRect, Gdiplus::UnitPixel, &attrs);
+
+    if (status != Gdiplus::Ok) {
+        throw llgui_error("GDI+ DrawImage failed");
+    }
+}
+
 PackedColor *Texture::getBuf(bool read, bool write) {
     if (bitmapData.Scan0) {
         throw llgui_error("Previous buf not yet flushed");
