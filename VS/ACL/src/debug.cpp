@@ -30,12 +30,14 @@ OpTracer &OpTracer::operator=(const OpTracer &other) {
     return *this;
 }
 
+#pragma warning(suppress : 26439)
 OpTracer::OpTracer(OpTracer &&other) {
     msg("move ctor", other);
 
     doCtor();
 }
 
+#pragma warning(suppress : 26439)
 OpTracer &OpTracer::operator=(OpTracer &&other) {
     msg("move asgn", other);
 
