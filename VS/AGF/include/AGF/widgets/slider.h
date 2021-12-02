@@ -161,14 +161,6 @@ public:
         setValue(initial);
     }
 
-    inline const Rect<double> &getLimits() const {
-        return limits;
-    }
-
-    inline void setLimits(const Rect<double> &limits_) {
-        limits = limits_;
-    }
-
 protected:
     SGRP_DECLARE_BINDING_T(thumb, Thumb);
 
