@@ -45,6 +45,11 @@ public:
     constexpr Color(float new_r, float new_g, float new_b) noexcept :
         abel::math::Vector3f(new_r, new_g, new_b) {}
 
+    constexpr Color(const PackedColor &packed) noexcept :
+        Color((float)packed.R / 255.f,
+              (float)packed.G / 255.f,
+              (float)packed.B / 255.f) {}
+
     template <typename T>
     constexpr Color(const abel::math::Vector3<T> &other) noexcept :
         abel::math::Vector3f(other) {}
