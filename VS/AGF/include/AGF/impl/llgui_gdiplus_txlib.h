@@ -300,6 +300,9 @@ public:
     void setFontSize(double size);
     inline double getFontSize() const;
 
+    void setOverwrite(bool value = true);
+    inline void resetOverwrite();
+
     void clear();
 
     #pragma region Draw functions
@@ -357,6 +360,8 @@ public:
     [[nodiscard]] PackedColor *getBuf(bool read = true, bool write = true);
 
     void flushBuf();
+
+    PackedColor getPixelColor(Vector2d pos) const;
 
     // void resize(const Vector2d &newSize);
 
@@ -425,6 +430,10 @@ inline double Texture::getFontSize() const {
 inline void Texture::setFont(const char *name, double size) {
     setFont(name);
     setFontSize(size);
+}
+
+inline void Texture::resetOverwrite() {
+    setOverwrite(false);
 }
 
 inline void Texture::embed(const Rect<double> &at, const Texture &other) {

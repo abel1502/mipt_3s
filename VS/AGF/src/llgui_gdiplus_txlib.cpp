@@ -116,7 +116,7 @@ void Window::renderAt(Vector2d at, const Texture &texture) {
 
     {
         Gdiplus::Graphics graphics{handle};
-        graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
+        // graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
 
         if (graphics.DrawImage(const_cast<Gdiplus::Bitmap *>(&texture.bitmap),
                                (Gdiplus::REAL)at.x(), (Gdiplus::REAL)at.y()) != Gdiplus::Ok) {
@@ -130,7 +130,7 @@ void Window::renderAt(Rect<double> at, const Texture &texture) {
 
     {
         Gdiplus::Graphics graphics{handle};
-        graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
+        // graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
 
         if (graphics.DrawImage(const_cast<Gdiplus::Bitmap *>(&texture.bitmap),
                                (Gdiplus::REAL)at.x(), (Gdiplus::REAL)at.y(),
@@ -246,7 +246,7 @@ void Texture::setup(bool shouldClear) {
     // graphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
 
     // TODO: Experiment - find a way to fix thumb's tip
-    graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
+    // graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
 
     if (shouldClear) {
         setFillColor(Color::WHITE);
@@ -282,6 +282,17 @@ void Texture::setFont(const char *name) {
 
 void Texture::setFontSize(double size) {
     fontSize = size;
+}
+
+void Texture::setOverwrite(bool value) {
+    Gdiplus::Status status = graphics.SetCompositingMode(
+        value ?
+        Gdiplus::CompositingModeSourceCopy :
+        Gdiplus::CompositingModeSourceOver);
+
+    if (status != Gdiplus::Ok) {
+        throw llgui_error("GDI+ SetCompositingMode failed");
+    }
 }
 
 Gdiplus::Color Texture::getGdiplusLineColor() const {
@@ -610,6 +621,23 @@ PackedColor *Texture::getBuf(bool read, bool write) {
 void Texture::flushBuf() {
     bitmap.UnlockBits(&bitmapData);
     bitmapData = {};
+}
+
+PackedColor Texture::getPixelColor(Vector2d pos) const {
+    pos -= offset();
+
+    Gdiplus::Color gdiColor{};
+
+    Gdiplus::Status status = const_cast<Gdiplus::Bitmap &>(bitmap).GetPixel((int)pos.x(), (int)pos.y(), &gdiColor);
+
+    if (status != Gdiplus::Ok) {
+        throw llgui_error("GDI+ GetPixel failed");
+    }
+
+    return PackedColor(gdiColor.GetR(),
+                       gdiColor.GetG(),
+                       gdiColor.GetB(),
+                       gdiColor.GetA());
 }
 #pragma endregion Texture
 
