@@ -200,13 +200,23 @@
     <ClInclude Include="app.h" />
     <ClInclude Include="canvas.h" />
     <ClInclude Include="color_picker.h" />
+    <ClInclude Include="tools\brush.h" />
+    <ClInclude Include="tool.h" />
+    <ClInclude Include="tools\eraser.h" />
     <ClInclude Include="layer.h" />
+    <ClInclude Include="tools\picker.h" />
+    <ClInclude Include="tool_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="color_picker.cpp" />
+    <ClCompile Include="tools\brush.cpp" />
+    <ClCompile Include="tool.cpp" />
+    <ClCompile Include="tools\eraser.cpp" />
     <ClCompile Include="layer.cpp" />
+    <ClCompile Include="tools\picker.cpp" />
+    <ClCompile Include="tool_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\default.style" />

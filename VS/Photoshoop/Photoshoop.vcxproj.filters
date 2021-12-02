@@ -24,6 +24,21 @@
     <ClInclude Include="color_picker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tool_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\brush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\eraser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\picker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -36,6 +51,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="color_picker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tool_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\brush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\eraser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\picker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="layer.cpp">

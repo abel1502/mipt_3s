@@ -5,6 +5,7 @@
 #include <ACL/unique_ptr.h>
 #include <ACL/vector.h>
 #include <AGF/helpers/mouse_tracker.h>
+#include "layer.h"
 
 
 using abel::gui::Rect;
@@ -26,23 +27,19 @@ public:
 
     EVENT_HANDLER_OVERRIDE(abel::gui::MouseMove);
 
-    inline const abel::gui::Texture &activeLayer() const {
-        return *layers[activeLayerIdx];
-    }
+    inline const Layer &activeLayer() const { return layers[activeLayerIdx]; }
+    inline       Layer &activeLayer()       { return layers[activeLayerIdx]; }
 
 protected:
     abel::gui::MouseTracker mt{this};
 
-    abel::vector<abel::unique_ptr<abel::gui::Texture>> layers;
+    abel::vector<Layer> layers;
     unsigned activeLayerIdx = 0;
 
     Color penColor = Color::BLACK;
 
 
-    inline abel::gui::Texture &activeLayer() {
-        return *layers[activeLayerIdx];
-    }
-
     bool onDrag(abel::gui::MouseBtn btn, const abel::gui::MouseMoveEvent &event);
+    bool onClick(const abel::gui::MouseClickEvent &event);
 
 };

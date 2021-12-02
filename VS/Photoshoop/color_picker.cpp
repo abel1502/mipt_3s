@@ -1,6 +1,7 @@
 #include <AGF/llgui.h>
 #include <ACL/unique_ptr.h>
 #include "color_picker.h"
+#include "app.h"
 
 
 using namespace abel;
@@ -151,6 +152,31 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
     sliderSV(new _myimpl::ColorSliderSV(this, regionSV, Rect<double>::wh(0, 1, 1, -1)));
     sliderH (new _myimpl::ColorSliderH (this, regionH , 0, 1));
     sliderA (new _myimpl::ColorSliderA (this, regionA , 0, 1));
+
+    MyApp::getInstance().toolMgr.sigConfigChanged += [this](ToolManager &mgr) {
+        setColor(mgr.getColor());
+        setAlpha(mgr.getAlpha());
+
+        return false;
+    };
+
+    sliderSV().sigChanged += [this](Vector2d value) {
+        MyApp::getInstance().toolMgr.setColor<true>(getColor());
+
+        return false;
+    };
+
+    sliderH().sigChanged += [this](Vector2d value) {
+        MyApp::getInstance().toolMgr.setColor<true>(getColor());
+
+        return false;
+    };
+
+    sliderA().sigChanged += [this](Vector2d value) {
+        MyApp::getInstance().toolMgr.setAlpha<true>(getAlpha());
+
+        return false;
+    };
 }
 
 

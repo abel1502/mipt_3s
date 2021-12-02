@@ -1,5 +1,6 @@
 #include <AGF/llgui.h>
 #include "canvas.h"
+#include "app.h"
 
 
 using namespace abel;
@@ -8,20 +9,17 @@ using namespace abel::gui;
 
 Canvas::Canvas(Widget *parent_, const Rect<double> &region_) :
     Base(parent_, region_),
-    layers(1) {
+    layers{} {
 
-    layers[0].emplace(region.getDiag());
-    activeLayer().setFillColor(Color::GREEN);
-    activeLayer().clear();
+    layers.appendEmplace(region.getDiag());
+    abel::gui::Texture &target = activeLayer().getTexture();
+    target.setFillColor(Color::GREEN);
+    target.clear();
 
     using namespace std::placeholders;
 
-    mt.sigDrag += std::bind(&Canvas::onDrag, this, _1, _2);
-    mt.sigDown += [this](const MouseClickEvent &event) {
-        // We translate single presses into trivial movements, just in case
-        onDrag(event.button, MouseMoveEvent(event.pos, event.pos, event.attrs));
-        return false;
-    };
+    mt.sigDrag += std::bind(&Canvas::onDrag,  this, _1, _2);
+    mt.sigDown += std::bind(&Canvas::onClick, this, _1);
 }
 
 
@@ -38,7 +36,7 @@ EVENT_HANDLER_IMPL(Canvas, Render) {
 
     // TODO: Blend in a separate texture instead
     for (const auto &layer : layers) {
-        event.target.embed(region, *layer);
+        event.target.embed(region, layer.getTexture());
     }
 
     return EventStatus::done();
@@ -77,19 +75,19 @@ bool Canvas::onDrag(MouseBtn btn, const MouseMoveEvent &event) {
         return false;
     }
 
-    Texture &target = activeLayer();
-    // TODO: Only modify through the palette and in ctor
-    float width = 5.f;
-    target.setLineColor(Color::BLACK);
-    target.setFillColor(Color::BLACK);
-    target.setLineWidth(width);
+    MyApp::getInstance().toolMgr.getActiveTool()
+        .applyLine(activeLayer(), event.pos0, event.pos1);
 
-    Vector2d pos0 = event.pos0 - region.getPos();
-    Vector2d pos1 = event.pos1 - region.getPos();
+    return false;
+}
 
-    target.drawLine(pos0, pos1);
-    target.drawCircle(pos0, width / 2);
-    target.drawCircle(pos1, width / 2);
+bool Canvas::onClick(const abel::gui::MouseClickEvent &event) {
+    if (event.button != MouseBtn::Left) {
+        return false;
+    }
+
+    MyApp::getInstance().toolMgr.getActiveTool()
+        .applyPoint(activeLayer(), event.pos);
 
     return false;
 }
