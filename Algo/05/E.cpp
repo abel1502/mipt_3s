@@ -503,6 +503,8 @@ public:
         return 0;
     }
 
+    constexpr bool operator==(const NAME_ &other) const = default;
+
     template <typename U>
     constexpr explicit operator NAME_<U>() const noexcept {
         NAME_<U> result{};
@@ -601,6 +603,71 @@ std::vector<Vec2i> getConvexHull(std::vector<Vec2i> &points) {
 }
 
 
+bool testSegIntersection(Vec2i a0, Vec2i a1, Vec2i b0, Vec2i b1) {
+    using num = num_t;
+    using Vec = Vec2i;
+
+    Vec segA = a1 - a0,
+        segB = b1 - b0;
+
+    num resA = (segA & (b0 - a0)) * (segA & (b1 - a0)),
+        resB = (segB & (a0 - b0)) * (segB & (a1 - b0));
+
+    DBG("segA %lld %lld   segB %lld %lld", segA.x(), segA.y(), segB.x(), segB.y());
+    DBG("resA %lld  resB %lld", resA, resB);
+
+    if (resA != 0 && resB != 0) {
+        return resA < 0 && resB < 0;
+    }
+
+    if ((segA & segB) == 0) {
+        if (((b0 - a0) & segA) != 0)
+            return false;
+
+        const num na0 = 0,
+                  na1 = segA.magnitude(),
+                  nb0 = (b0 - a0) * segA,
+                  nb1 = (b1 - a0) * segA;
+
+        DBG("%lld %lld %lld %lld", na0, na1, nb0, nb1);
+
+        return (nb0 == clamp(nb0, na0, na1) || nb1 == clamp(nb1, na0, na1));
+    }
+
+    if (resA == 0 && resB == 0)
+        return true;
+
+    if ((segA & (b0 - a0)) == 0) {
+        const num na0 = 0,
+                  na1 = segA.magnitude(),
+                  nb  = (b0 - a0) * segA;
+        return nb == clamp(nb, na0, na1) ;
+    }
+
+    if ((segA & (b1 - a0)) == 0) {
+        const num na0 = 0,
+                  na1 = segA.magnitude(),
+                  nb  = (b1 - a0) * segA;
+        return nb == clamp(nb, na0, na1) ;
+    }
+
+    if ((segB & (a0 - b0)) == 0) {
+        const num nb0 = 0,
+                  nb1 = segB.magnitude(),
+                  na  = (a0 - b0) * segB;
+        return na == clamp(na, nb0, nb1) ;
+    }
+
+    if ((segB & (a1 - b0)) == 0) {
+        const num nb0 = 0,
+                  nb1 = segB.magnitude(),
+                  na  = (a1 - b0) * segB;
+        return na == clamp(na, nb0, nb1) ;
+    }
+
+    REQUIRE(false);
+}
+
 
 static bool solve() {
     unsigned n = 0;
@@ -614,22 +681,44 @@ static bool solve() {
         std::cin >> cur;
     }
 
-    const Vec2i ray{1, 0};
+    constexpr Vec2i ray{1, 0};
+    // const Vec2i ray = {10004, 10005};
     Vec2i last = points.back();
+    unsigned cntEdges = 0;
     for (const auto &cur : points) {
-        (ray & (cur - last));
+        Vec2i a = cur,
+              b = last;
 
         last = cur;
+
+        if (a == b) {
+            continue;
+        }
+
+        if (a.y() > b.y()) {
+            std::swap(a, b);
+        }
+
+        if (cmpDbl((b - a).length(), (target - a).length() + (target - b).length()) == 0) {
+            return true;
+        }
+
+        if (testSegIntersection(target, target + ray * 20002, a, b) &&
+            b.y() > target.y() && a.y() <= target.y() &&
+            ((target - a) & (b - a)) < 0) {
+
+            ++cntEdges;
+        }
     }
 
-    return true;
+    return cntEdges % 2 == 1;
 }
 
 //================================================================================
 
 
 int main() {
-    verbosity = 2;
+    verbosity = 0;
 
     printf("%s\n", solve() ? "YES" : "NO");
 
