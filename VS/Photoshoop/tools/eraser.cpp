@@ -7,9 +7,11 @@ void EraserTool::applyLine(Layer &layer, const Vector2d &pos0, const Vector2d &p
 
     double radius = configureTarget(target);
 
+    target.setOverwrite();
     target.drawLine(pos0, pos1);
     target.drawCircle(pos0, radius);
     target.drawCircle(pos1, radius);
+    target.resetOverwrite();
 }
 
 void EraserTool::applyPoint(Layer &layer, const Vector2d &pos) {
@@ -23,9 +25,11 @@ void EraserTool::applyPoint(Layer &layer, const Vector2d &pos) {
 double EraserTool::configureTarget(abel::gui::Texture &target) const {
     double radius = getManager().getRadius();
 
-    target.setLineWidth((float)radius);
+    target.setOverwrite();
+    target.setLineWidth((float)radius * 2);
     target.setLineColor(Color::WHITE, 0);
     target.setFillColor(Color::WHITE, 0);
+    target.resetOverwrite();
 
     return radius;
 }
