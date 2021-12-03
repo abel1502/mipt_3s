@@ -7,8 +7,8 @@ namespace abel::gui::widgets {
 
 #pragma region Thumb
 Thumb::Thumb(Widget *parent_, const Vector2d &pos_, bool lockV, bool lockH) :
-    Base(parent_, Rect<double>::se(pos_ - Vector2d{DEFAULT_SIZE},
-                                   pos_ + Vector2d{DEFAULT_SIZE})),
+    Base(parent_, Rect<double>::se(pos_ - Vector2d{DEFAULT_SIZE / 2},
+                                   pos_ + Vector2d{DEFAULT_SIZE / 2})),
     pos{pos_},
     locked{lockV, lockH} {
 
