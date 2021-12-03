@@ -19,7 +19,8 @@ Canvas::Canvas(Widget *parent_, const Rect<double> &region_) :
     using namespace std::placeholders;
 
     mt.sigDrag += std::bind(&Canvas::onDrag,  this, _1, _2);
-    mt.sigDown += std::bind(&Canvas::onClick, this, _1);
+    mt.sigDown += std::bind(&Canvas::onDown, this, _1);
+    mt.sigDragStateChange += std::bind(&Canvas::onDragStateChange, this, _1, _2, _3);
 }
 
 
@@ -37,6 +38,7 @@ EVENT_HANDLER_IMPL(Canvas, Render) {
     // TODO: Blend in a separate texture instead
     for (const auto &layer : layers) {
         event.target.embed(region, layer.getTexture());
+        event.target.embed(region, layer.getPreview());
     }
 
     return EventStatus::done();
@@ -76,18 +78,34 @@ bool Canvas::onDrag(MouseBtn btn, const MouseMoveEvent &event) {
     }
 
     MyApp::getInstance().toolMgr.getActiveTool()
-        .applyLine(activeLayer(), event.pos0, event.pos1);
+        .applyLine(activeLayer(), event.pos0 - region.getPos(), event.pos1 - region.getPos());
 
     return false;
 }
 
-bool Canvas::onClick(const abel::gui::MouseClickEvent &event) {
+bool Canvas::onDown(const abel::gui::MouseClickEvent &event) {
     if (event.button != MouseBtn::Left) {
         return false;
     }
 
     MyApp::getInstance().toolMgr.getActiveTool()
-        .applyPoint(activeLayer(), event.pos);
+        .applyPoint(activeLayer(), event.pos - region.getPos());
+
+    return false;
+}
+
+bool Canvas::onDragStateChange(abel::gui::MouseBtn btn,
+                               abel::gui::MouseAttrs attrs, bool state) {
+    if (btn != MouseBtn::Left) {
+        return false;
+    }
+
+    if (state) {
+        activeLayer().clearPreview();
+    } else {
+        activeLayer().flushPreview();
+    }
+
 
     return false;
 }

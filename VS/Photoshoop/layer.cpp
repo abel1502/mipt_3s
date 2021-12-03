@@ -9,14 +9,17 @@ Layer::Layer(const Vector2d &size, const Color &defaultColor, double defaultAlph
     getTexture().setFillColor(defaultColor, defaultAlpha);
     getTexture().clear();
 
-    getPreview().setFillColor(Color::WHITE, 0);
-    getPreview().clear();
+    clearPreview();
 }
 
 
 void Layer::flushPreview() {
     getTexture().embed(getTexture().getRect(), getPreview());
+    clearPreview();
+}
 
+
+void Layer::clearPreview() {
     getPreview().setFillColor(Color::WHITE, 0);
     getPreview().clear();
 }

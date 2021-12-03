@@ -40,6 +40,7 @@ protected:
 
 
     bool onDrag(abel::gui::MouseBtn btn, const abel::gui::MouseMoveEvent &event);
-    bool onClick(const abel::gui::MouseClickEvent &event);
+    bool onDown(const abel::gui::MouseClickEvent &event);
+    bool onDragStateChange(abel::gui::MouseBtn btn, abel::gui::MouseAttrs attrs, bool state);
 
 };

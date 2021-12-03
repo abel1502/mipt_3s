@@ -74,7 +74,8 @@ void MyApp::init(int argc, const char **argv) {
     mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A slider", slider /*new Window::EmptyBody()*/);
     mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette);
 
-    palette->setColor(Color::WHITE);
+    // palette->setColor(Color::BLACK);
+    // palette->setAlpha(1);
 
 
     mainWidget = mgr;

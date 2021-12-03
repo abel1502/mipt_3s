@@ -22,6 +22,8 @@ public:
 
     void flushPreview();
 
+    void clearPreview();
+
     Vector2d getSize() const {
         return texture->getSize();
     }

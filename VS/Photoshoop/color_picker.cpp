@@ -177,6 +177,9 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
 
         return false;
     };
+
+    setColor(Color::BLACK);
+    setAlpha(0);
 }
 
 
