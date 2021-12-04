@@ -175,11 +175,15 @@ public:
     inline const WindowManager &getParent   () const { return *getParentPtr(); }
     inline       WindowManager &getParent   ()       { return *getParentPtr(); }
 
+    constexpr bool isEssential() const { return essential; }
+    constexpr void markEssential(bool value = true) { essential = value; }
+
     SGRP_DECLARE_BINDING_I(contents, 0)
 
     EVENT_HANDLER_OVERRIDE(Render);
 
 protected:
+    bool essential = false;
     bool dragged = false;
     bool cacheOnDrag = true;
     unique_ptr<Texture> cachedTexture = nullptr;

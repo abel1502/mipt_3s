@@ -141,6 +141,10 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
     contents().staticShift(Vector2d(borderWidth, headerHeight));
 
     header().closeBtn().sigClick += [this]() {
+        if (isEssential()) {
+            return false;
+        }
+
         getParent().close(this);  // Already enqueues stuff
 
         return true;

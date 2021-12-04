@@ -69,10 +69,12 @@ void MyApp::init(int argc, const char **argv) {
     };
 
     WindowManager *mgr = new WindowManager(nullptr, Rect<double>::wh(0, 0, 800, 600));
-    mgr->createWindow(Rect<double>::wh(140,  50, 300, 200), "Some buttons", grp);
+    mgr->createWindow(Rect<double>::wh(140,  50, 300, 200), "Some buttons", grp)
+        .markEssential();
     mgr->createWindow(Rect<double>::wh(240,  70, 300, 200), "A drawing canvas", canvas);
     mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A slider", slider /*new Window::EmptyBody()*/);
-    mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette);
+    mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette)
+        .markEssential();
 
     // palette->setColor(Color::BLACK);
     // palette->setAlpha(1);
