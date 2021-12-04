@@ -400,7 +400,7 @@ public:
                demandValidIter(fromIter);
                idx_t from = fromIter.idx;,
                const iterator &fromIter);
-    
+
     DMB_BIDIR_(Before, After, toIter.idx,
                demandValidIter(toIter);
                demandValidIter(fromIter);
@@ -463,6 +463,29 @@ public:
 
     inline const_iterator findByPos(int pos) const {
         return const_cast<list *>(this)->findByPos(pos);
+    }
+    //--------------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------------
+    // Filters
+
+    template <typename P>
+    void filter(P predicate) {
+        iterator iter      = begin();
+        iterator cachedEnd = end  ();
+
+        while (iter != cachedEnd) {
+            if (!predicate(*iter)) {
+                iterator toRemove = iter;
+                // Has to be done before actual removal,
+                // because otherwise the next index would be messed up
+                ++iter;
+
+                erase(toRemove);
+            } else {
+                ++iter;
+            }
+        }
     }
     //--------------------------------------------------------------------------------
 
