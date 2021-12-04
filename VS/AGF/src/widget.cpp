@@ -87,6 +87,16 @@ EVENT_HANDLER_IMPL(Widget, User) {
 Widget::Widget(Widget *parent_, const Rect<double> &region_) :
     parent{parent_}, region{region_} {}  // We cannot copy parent's style here yet, because it wan't yet set
 
+void Widget::die() {
+    if (dead) {
+        return;
+    }
+
+    dead = true;
+
+    sigDeath(*this);
+}
+
 bool Widget::updateParent(Widget *parent_) {
     if (parent == parent_)
         return true;

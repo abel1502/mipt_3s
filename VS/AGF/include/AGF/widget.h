@@ -9,6 +9,7 @@
 #include <AGF/llgui_pre.h>
 #include <AGF/style.h>
 #include <ACL/unique_ptr.h>
+#include <ACL/signal.h>
 
 /*
 #define EVENT_HANDLER_NAME(EVENT_NAME) \
@@ -84,6 +85,10 @@ public:
     static_assert(sizeof(EventStatus) <= 4);
 
 
+    // Fires once
+    Signal<void (Widget &widget)> sigDeath{};
+
+
     Widget() = delete;
 
     virtual ~Widget() = default;
@@ -100,6 +105,10 @@ public:
     inline const Style &getStyle() const {
         return const_cast<Widget *>(this)->getStyle();
     }
+
+    constexpr bool isDead() const { return dead; }
+
+    void die();
 
     virtual bool updateParent(Widget *parent_);
 
@@ -121,6 +130,7 @@ protected:
     Rect<double> region;
     StyleManager::StyleHandle styleHandle = StyleManager::ROOT_STYLE_HANDLE;
     bool hidden = false;
+    bool dead = false;
 
 
     Widget(Widget *parent_, const Rect<double> &region_);
@@ -138,6 +148,8 @@ protected:
 
     template <typename T>
     EventStatus dispatchToChild(Widget &child, const T &event) {
+        assert(!child.isDead());
+
         if constexpr (!T::demands_modification) {
             return child.dispatchEvent(event);
         }

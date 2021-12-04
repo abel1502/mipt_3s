@@ -106,22 +106,6 @@ EVENT_HANDLER_IMPL(Borders, Render) {
 WindowManager::WindowManager(Widget *parent_, const Rect<double> &region_) :
     Base(parent_, region_) {}
 
-void WindowManager::close(Window *window) {
-    // TODO: Perhaps remove the check?
-    if (children.findByValue(window) == children.end()) {
-        throw error("Specified window doesn't belong to this manager");
-    }
-
-    Application::getInstance().enqueueAction([this, window](Application &app) {
-        auto iter = children.findByValue(window);
-        if (iter == children.end())
-            return;  // Apparently, the window was already deleted
-
-        children.erase(iter);
-        // app.demandRedraw();
-    });
-}
-
 
 Window::Window(WindowManager *parent_, const Rect<double> &region_,
        const char *title_, Content *contents_) :
@@ -145,7 +129,7 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
             return false;
         }
 
-        getParent().close(this);  // Already enqueues stuff
+        die();  // Dispatched lazily
 
         return true;
     };

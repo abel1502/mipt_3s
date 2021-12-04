@@ -17,25 +17,28 @@ constexpr bool eventCapturesFocus<MouseClickEvent> = true;
 
 
 // TODO: Maybe inherit virtually
-template <typename ITEM>
+template <typename Item>
 class GroupOf : public /*virtual*/ Widget {
 public:
     EVENT_HANDLER_USING(Widget);
+
+    using child_type = Item;
+
 
     GroupOf(Widget *parent_, const Rect<double> &region_) :
         Widget(parent_, region_) {}
 
     template <typename T, typename ... As>
     T &createChild(const Rect<double> &relRegion, As &&... args) {
-        static_assert(std::is_base_of_v<ITEM, T>);
+        static_assert(std::is_base_of_v<child_type, T>);
 
         // TODO: Maybe disallow overflow?
-        ITEM &child = *children.insertBackEmplace(new T(this, region.relRect(relRegion, true), std::forward<As>(args)...));
+        child_type &child = *children.insertBackEmplace(new T(this, region.relRect(relRegion, true), std::forward<As>(args)...));
 
         return dynamic_cast<T &>(child);
     }
 
-    ITEM &addChild(ITEM *child) {
+    child_type &addChild(child_type *child) {
         assert(child);
         children.insertBackEmplace(child);
         child->updateParent(this);
@@ -43,8 +46,10 @@ public:
         return *child;
     }
 
-    #define EVENTS_DSL_ITEM_(NAME) \
-        EVENT_HANDLER_OVERRIDE(NAME);
+    #define EVENTS_DSL_ITEM_(NAME)          \
+        EVENT_HANDLER_OVERRIDE(NAME) {      \
+            return _processEvent(event);    \
+        }
     #include <AGF/events.dsl.h>
 
     virtual bool staticShift(const Vector2d &by) override {
@@ -70,16 +75,17 @@ public:
     }
 
 protected:
-    list<unique_ptr<ITEM>> children{};
+    list<unique_ptr<child_type>> children{};
 
 
-    // TODO: A public alternative
-    void clearChildren() {
-        children.clear();
+    void cleanupDeadChildren() {
+        children.filter([](const unique_ptr<child_type> &child) { return child && !child->isDead(); });
     }
 
     // Render event has to be handled separately, because it works in reverse
     inline EventStatus _processEvent(const RenderEvent &event) {
+        cleanupDeadChildren();
+
         EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE))
@@ -105,6 +111,8 @@ protected:
 
     // FocusUpdates should only be passed to the active child
     inline EventStatus _processEvent(const FocusUpdateEvent &event) {
+        cleanupDeadChildren();
+
         EventStatus status = Widget::dispatchEvent(event);
 
         if (!status.shouldHandle(status.NODE))
@@ -125,6 +133,8 @@ protected:
         if constexpr (std::is_same_v<T, RenderEvent> || std::is_same_v<T, FocusUpdateEvent>) {
             return _processEvent(event);  // This is NOT recursion, but delegation to specific overloads!
         }
+
+        cleanupDeadChildren();
 
         EventStatus status = Widget::dispatchEvent(event);
 
@@ -160,15 +170,6 @@ protected:
     }
 
 };
-
-
-#define EVENTS_DSL_ITEM_(NAME)                  \
-    template <typename ITEM>                    \
-    EVENT_HANDLER_IMPL(GroupOf<ITEM>, NAME) {   \
-        return _processEvent(event);            \
-    }
-
-#include <AGF/events.dsl.h>
 
 
 extern template

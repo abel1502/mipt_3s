@@ -139,8 +139,6 @@ public:
         ));
     }
 
-    void close(Window *window);
-
 protected:
     using Base::createChild;
 
