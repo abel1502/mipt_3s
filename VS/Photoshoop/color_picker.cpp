@@ -179,7 +179,7 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
     };
 
     setColor(Color::BLACK);
-    setAlpha(0);
+    setAlpha(1);
 }
 
 

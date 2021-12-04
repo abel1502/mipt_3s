@@ -80,6 +80,8 @@ bool Canvas::onDrag(MouseBtn btn, const MouseMoveEvent &event) {
     MyApp::getInstance().toolMgr.getActiveTool()
         .applyLine(activeLayer(), event.pos0 - region.getPos(), event.pos1 - region.getPos());
 
+    MyApp::getInstance().demandRedraw();
+
     return false;
 }
 
@@ -90,6 +92,8 @@ bool Canvas::onDown(const abel::gui::MouseClickEvent &event) {
 
     MyApp::getInstance().toolMgr.getActiveTool()
         .applyPoint(activeLayer(), event.pos - region.getPos());
+
+    MyApp::getInstance().demandRedraw();
 
     return false;
 }
