@@ -53,19 +53,23 @@ EVENT_HANDLER_IMPL(Widget, Exit) {
 }
 
 EVENT_HANDLER_IMPL(Widget, MouseClick) {
-    if (hidden || (!Application::getInstance().isMouseCaptured(this) &&
-                   !hitTest(event.pos)))
-        return EventStatus::stop(EventStatus::NODE);
+    if (!hidden && (Application::getInstance().isMouseCaptured(this) ||
+                    hitTest(event.pos))) {
 
-    return EventStatus::skip();
+        return EventStatus::skip();
+    }
+
+    return EventStatus::stop(EventStatus::NODE);
 }
 
 EVENT_HANDLER_IMPL(Widget, MouseMove) {
-    // TODO: Hit-test based cutoff
-    if (hidden)
-        return EventStatus::stop(EventStatus::NODE);
+    // TODO: Perhaps remove the hit-test based cutoff
+    if (!hidden && (Application::getInstance().isMouseCaptured(this) ||
+                    hitTest(event.getCutoffPos()))) {
+        return EventStatus::skip();
+    }
 
-    return EventStatus::skip();
+    return EventStatus::stop(EventStatus::NODE);
 }
 
 EVENT_HANDLER_IMPL(Widget, KeyPress) {
@@ -134,6 +138,30 @@ Style &Widget::getStyle() {
 
 bool Widget::hitTest(const Vector2d &pos) const {
     return region.contains(pos);
+}
+
+Widget::EventStatus Widget::handleMouseOpaque(const MouseMoveEvent  &event, EventStatus baseStatus) {
+    if (!baseStatus.shouldHandle(baseStatus.NODE)) {
+        return baseStatus;
+    }
+
+    if (hitTest(event.getCutoffPos())) {
+        return EventStatus::stop(EventStatus::TREE);
+    }
+
+    return baseStatus;
+}
+
+Widget::EventStatus Widget::handleMouseOpaque(const MouseClickEvent &event, EventStatus baseStatus) {
+    if (!baseStatus.shouldHandle(baseStatus.NODE)) {
+        return baseStatus;
+    }
+
+    if (hitTest(event.pos)) {
+        return EventStatus::stop(EventStatus::TREE);
+    }
+
+    return baseStatus;
 }
 
 

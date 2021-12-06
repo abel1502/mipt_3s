@@ -274,7 +274,8 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
             lastPosSet = true;
         }
 
-        enqueueEvent(MouseMoveEvent{lastPos, curPos, MouseAttrs{wParam}});
+        enqueueEvent(MouseMoveEvent{lastPos, curPos, MouseAttrs{wParam}, false});
+        enqueueEvent(MouseMoveEvent{lastPos, curPos, MouseAttrs{wParam}, true });
         lastPos = curPos;
     } return 0;
 

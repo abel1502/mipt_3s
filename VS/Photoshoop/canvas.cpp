@@ -45,31 +45,11 @@ EVENT_HANDLER_IMPL(Canvas, Render) {
 }
 
 EVENT_HANDLER_IMPL(Canvas, MouseClick) {
-    EventStatus status = Base::dispatchEvent(event);
-
-    if (!status.shouldHandle(status.NODE)) {
-        return status;
-    }
-
-    if (!mt.processEvent(event)) {
-        return status;
-    }
-
-    return EventStatus::stop(EventStatus::TREE);
+    return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
 EVENT_HANDLER_IMPL(Canvas, MouseMove) {
-    EventStatus status = Base::dispatchEvent(event);
-
-    if (!status.shouldHandle(status.NODE)) {
-        return status;
-    }
-
-    if (!mt.processEvent(event)) {
-        return status;
-    }
-
-    return EventStatus::stop(EventStatus::TREE);
+    return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
 bool Canvas::onDrag(MouseBtn btn, const MouseMoveEvent &event) {

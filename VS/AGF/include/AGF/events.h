@@ -90,19 +90,42 @@ EVENT_CLS_DECL_(MouseClick) {
         pos{pos_}, attrs{attrs_}, button{button_}, type{type_} {}
 };
 
+// Warning: remember to test the type, because otherwise you would receive the same event twice occasionally
 EVENT_CLS_DECL_(MouseMove) {
     Vector2d pos0;
     Vector2d pos1;
     MouseAttrs attrs;
+    bool type;
 
 
     constexpr MouseMoveEvent(const Vector2d &pos0_, const Vector2d &pos1_,
-                             const MouseAttrs &attrs_) noexcept :
-        pos0{pos0_}, pos1{pos1_}, attrs{attrs_} {}
+                             const MouseAttrs &attrs_, bool type_) noexcept :
+        pos0{pos0_}, pos1{pos1_}, attrs{attrs_}, type{type_} {}
 
     constexpr Vector2d getDelta() const noexcept {
         return pos1 - pos0;
     }
+
+    constexpr bool isFrom() const noexcept {
+        return !type;
+    }
+
+    constexpr bool isTo() const noexcept {
+        return type;
+    }
+
+    constexpr Vector2d &getCutoffPos() noexcept {
+        if (isFrom()) {
+            return pos0;
+        } else {
+            return pos1;
+        }
+    }
+
+    constexpr const Vector2d &getCutoffPos() const noexcept {
+        return const_cast<MouseMoveEvent *>(this)->getCutoffPos();
+    }
+
 };
 
 EVENT_CLS_DECL_(KeyPress) {};

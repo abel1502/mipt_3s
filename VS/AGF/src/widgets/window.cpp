@@ -27,26 +27,11 @@ Header::Header(Window *parent_, const Rect<double> &region_, const char *title_)
          ) {}
 
 EVENT_HANDLER_IMPL(Header, MouseMove) {
-    if (!mt.isDragged(MouseBtn::Left)) {
-        return Base::dispatchEvent(event);
-    }
-
-    // Return value ignored, because we stop anyway
-    mt.processEvent(event);
-
-    return EventStatus::stop(EventStatus::TREE);
+    return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
 EVENT_HANDLER_IMPL(Header, MouseClick) {
-    EventStatus status = Base::dispatchEvent(event);
-
-    if (!status.shouldHandle(status.NODE))
-        return status;
-
-    if (!mt.processEvent(event))
-        return status;
-
-    return EventStatus::stop(EventStatus::TREE);
+    return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
 EVENT_HANDLER_IMPL(Header, Render) {
@@ -76,15 +61,11 @@ Borders::Borders(Window *parent_, const Rect<double> &region_) :
     Base(parent_, region_) {}
 
 EVENT_HANDLER_IMPL(Borders, MouseClick) {
-    EventStatus status = Base::dispatchEvent(event);
+    return handleMouseOpaque(event, Base::dispatchEvent(event));
+}
 
-    if (!status.shouldHandle(status.NODE))
-        return status;
-
-    if (hitTest(event.pos))
-        return EventStatus::stop(EventStatus::TREE);
-
-    return EventStatus::skip();
+EVENT_HANDLER_IMPL(Borders, MouseMove) {
+    return handleMouseOpaque(event, Base::dispatchEvent(event));
 }
 
 EVENT_HANDLER_IMPL(Borders, Render) {

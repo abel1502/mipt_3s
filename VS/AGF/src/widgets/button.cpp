@@ -33,41 +33,15 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
     assert(areChildrenSet());
 
     // Intentionally skipping StaticGroup::dispatchEvent, not to pass this to our children
-    EventStatus status = Widget::dispatchEvent(event);
+    // EventStatus status = Widget::dispatchEvent(event);
 
-    if (!status.shouldHandle(status.NODE)) {
-        return status;
-    }
-
-    if (!mt.processEvent(event)) {
-        return status;
-    }
-
-    return EventStatus::stop(EventStatus::TREE);
+    // TODO: Widget::?
+    return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
 
 EVENT_HANDLER_IMPL(Button, MouseMove) {
-    EventStatus status = StaticGroup::dispatchEvent(event);
-
-    if (!status.shouldHandle(status.NODE)) {
-        return status;
-    }
-
-    if (!mt.processEvent(event)) {
-        return status;
-    }
-
-    // TODO: Maybe validate that we aren't covered by another widget?
-    // TODO: Add a timer to the hovered state
-
-    // TODO: Encapsulate into a widget method?
-    // And finish the MouseMove screening logic in general (add this handler to window borders)
-    // Removed for now, probably forever
-    // if (hitTest(event.pos0) && hitTest(event.pos1))
-    //     return EventStatus::stop(EventStatus::TREE);
-
-    return EventStatus::stop(EventStatus::TREE);
+    return mt.processEvent(event, StaticGroup::dispatchEvent(event));
 }
 
 

@@ -162,6 +162,9 @@ protected:
     // TODO: Perhaps inline somehow, but I can't see an easy way
     Style &getStyle();
 
+    EventStatus handleMouseOpaque(const MouseMoveEvent  &event, EventStatus baseStatus);
+    EventStatus handleMouseOpaque(const MouseClickEvent &event, EventStatus baseStatus);
+
 };
 
 template <>

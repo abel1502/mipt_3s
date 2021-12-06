@@ -6,11 +6,18 @@
 namespace abel::gui {
 
 
-bool MouseClickTracker::processEvent(const MouseClickEvent &event) {
+Widget::EventStatus MouseClickTracker::processEvent(const MouseClickEvent &event,
+                                                    Widget::EventStatus baseStatus) {
+    // TODO: Finish this and the rest
+    if (!baseStatus.shouldHandle(baseStatus.NODE)) {
+        return baseStatus;
+    }
+
     bool hit = widget->hitTest(event.pos);
 
-    if (!hit && !Application::getInstance().isMouseCaptured(widget))
-        return false;
+    if (!hit && !Application::getInstance().isMouseCaptured(widget)) {
+        return Widget::EventStatus::skip();
+    }
 
     if (event.type == decltype(event.type)::Down) {
         // DBG("Down %s", event.button == MouseBtn::Left ? "Left" : "Right");
@@ -19,7 +26,7 @@ bool MouseClickTracker::processEvent(const MouseClickEvent &event) {
         // assert(!isDown(event.button));
         if (isDown(event.button)) {
             DBG("Double down!");
-            return true;
+            return Widget::EventStatus::stop(baseStatus.TREE);
         }
 
         // I guess I should only capture upon left click
@@ -46,41 +53,66 @@ bool MouseClickTracker::processEvent(const MouseClickEvent &event) {
         }
     }
 
-    return true;
+    return Widget::EventStatus::stop(baseStatus.TREE);
 }
 
 
-bool MouseTracker::processEvent(const MouseClickEvent &event) {
-    bool hit = MouseClickTracker::processEvent(event);
+Widget::EventStatus MouseTracker::processEvent(const MouseClickEvent &event,
+                                               Widget::EventStatus baseStatus) {
+    bool wasDown = isDown(event.button);
 
-    if (hit) {
-        sigDragStateChange(event.button, event.attrs, event.type == MouseClickType::Down);
+    baseStatus = MouseClickTracker::processEvent(event, baseStatus);
+
+    if (wasDown != isDown(event.button)) {
+        sigDragStateChange(event.button, event.attrs, isDown(event.button));
     }
 
-    return hit;
+    return baseStatus;
 }
 
 
-bool MouseTracker::processEvent(const MouseMoveEvent &event) {
+Widget::EventStatus MouseTracker::processEvent(const MouseMoveEvent &event,
+                                               Widget::EventStatus baseStatus) {
     constexpr MouseBtn BUTTONS[MOUSE_BTN_CNT] = {MouseBtn::Left, MouseBtn::Middle, MouseBtn::Right};
 
-    isHovered(widget->hitTest(event.pos1));
-
-    sigHoverStateChange(isHovered());
-
-    for (MouseBtn btn : BUTTONS) {
-        if (!isDown(btn))
-            continue;
-
-        sigDrag(btn, event);
+    if (!baseStatus.shouldHandle(baseStatus.NODE)) {
+        return baseStatus;
     }
 
-    // TODO: Rework after MouseMoveEvent change
-    return widget->hitTest(event.pos0) && isHovered();
+    lastMoveType = event.type;
+
+    bool hoverHit = widget->hitTest(event.pos1);
+
+    if (isHovered() != hoverHit) {
+        isHovered(hoverHit);
+
+        sigHoverStateChange(hoverHit);
+    }
+
+    bool hit = widget->hitTest(event.getCutoffPos());
+
+    if (!hit && !Application::getInstance().isMouseCaptured(widget)) {
+        return Widget::EventStatus::skip();
+    }
+
+    if (event.isFrom()) {
+        for (MouseBtn btn : BUTTONS) {
+            if (!isDown(btn))
+                continue;
+
+            sigDrag(btn, event);
+        }
+    }
+
+    return Widget::EventStatus::stop(baseStatus.TREE);
 }
 
-void MouseTracker::updateHovered() {
-    isHovered(isHovered() && widget->hitTest(Window::getInstance().getMousePos()));
+void MouseTracker::updateHovered() const {
+    // If we didn't receive a move-to event, this means it was screened by another widget, so
+    // we aren't hovered anymore
+    if (!lastMoveType) {
+        isHovered_ = false;
+    }
 }
 
 

@@ -132,21 +132,8 @@ public:
         return _dispatchToChildren(event);
     }
 
-    // Just to prevent move transparency
-    // TODO: Remove later
     EVENT_HANDLER_OVERRIDE(MouseMove) {
-        // Skipping Base for now to fiddle with the order
-        EventStatus status = Base::dispatchEvent(event);
-
-        if (!status.shouldHandle(status.NODE)) {
-            return status;
-        }
-
-        if (hitTest(event.pos0) && hitTest(event.pos1)) {
-            return EventStatus::stop(EventStatus::TREE);
-        }
-
-        return status;
+        return handleMouseOpaque(event, Base::dispatchEvent(event));
     }
 
     inline Vector2d getValue() const {

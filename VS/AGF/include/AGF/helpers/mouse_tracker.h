@@ -25,7 +25,8 @@ public:
         assert(widget);
     }
 
-    bool processEvent(const MouseClickEvent &event);
+    Widget::EventStatus processEvent(const MouseClickEvent &event,
+                                     Widget::EventStatus baseStatus);
 
     constexpr bool isDown(MouseBtn btn) const {
         assert((unsigned)btn < MOUSE_BTN_CNT);
@@ -78,9 +79,11 @@ public:
     inline MouseTracker(Widget *widget_) :
         MouseClickTracker(widget_) {}
 
-    bool processEvent(const MouseClickEvent &event);
+    Widget::EventStatus processEvent(const MouseClickEvent &event,
+                                     Widget::EventStatus baseStatus);
 
-    bool processEvent(const MouseMoveEvent &event);
+    Widget::EventStatus processEvent(const MouseMoveEvent &event,
+                                     Widget::EventStatus baseStatus);
 
     constexpr bool isHovered() const {
         return isHovered_;
@@ -90,14 +93,12 @@ public:
         return isDown(btn);
     }
 
-    // TODO: Perhaps remove after everything is fixed
-    void updateHovered();
+    void updateHovered() const;
 
     inline Style::ElementState getElemState() const {
         lastState = Style::ELS_NORMAL;
 
-        // Appropriate, because this is a workaround against dumb MouseMove behaviour
-        const_cast<MouseTracker *>(this)->updateHovered();
+        updateHovered();
 
         if (isDown(MouseBtn::Left)) {
             lastState = Style::ELS_PRESSED;
@@ -109,7 +110,8 @@ public:
     }
 
 protected:
-    bool isHovered_ = false;
+    mutable bool isHovered_ = false;
+    bool lastMoveType = false;  // <=> from
 
     constexpr void isHovered(bool value) {
         isHovered_ = value;
