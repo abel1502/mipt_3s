@@ -26,7 +26,12 @@ public:
 
 
     GroupOf(Widget *parent_, const Rect<double> &region_) :
-        Widget(parent_, region_) {}
+        Widget(parent_, region_) {
+
+        sigDeath += [](Widget &widget) {
+            return dynamic_cast<GroupOf &>(widget).killChildren();
+        };
+    }
 
     template <typename T = child_type, typename ... As>
     T &createChild(const Rect<double> &relRegion, As &&... args) {
@@ -167,6 +172,12 @@ protected:
         children.moveFront(child);
 
         children.front()->dispatchEvent(FocusUpdateEvent{true});
+    }
+
+    void killChildren() {
+        for (auto &child : children) {
+            child->die();
+        }
     }
 
 };

@@ -82,6 +82,10 @@ protected:
         Widget(parent_, region_), children{std::forward<As>(args)...} {
 
         _updateParents();
+
+        sigDeath += [](Widget &widget) {
+            return dynamic_cast<StaticGroup &>(widget).killChildren();
+        };
     }
 
     template <unsigned I>
@@ -209,6 +213,15 @@ protected:
         REQUIRE(areChildrenSet());
 
         return _dispatchToChildren(event);
+    }
+
+    template <unsigned I = 0>
+    void killChildren() {
+        if constexpr (I < Types::size) {
+            child<I>().die();
+
+            killChildren<I + 1>();
+        }
     }
 
 };
