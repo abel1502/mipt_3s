@@ -28,17 +28,17 @@ public:
     GroupOf(Widget *parent_, const Rect<double> &region_) :
         Widget(parent_, region_) {}
 
-    template <typename T, typename ... As>
+    template <typename T = child_type, typename ... As>
     T &createChild(const Rect<double> &relRegion, As &&... args) {
         static_assert(std::is_base_of_v<child_type, T>);
 
         // TODO: Maybe disallow overflow?
-        child_type &child = *children.insertBackEmplace(new T(this, region.relRect(relRegion, true), std::forward<As>(args)...));
+        child_type &child = addChild(new T(this, region.relRect(relRegion, true), std::forward<As>(args)...));
 
         return dynamic_cast<T &>(child);
     }
 
-    child_type &addChild(child_type *child) {
+    virtual child_type &addChild(child_type *child) {
         assert(child);
         children.insertBackEmplace(child);
         child->updateParent(this);
@@ -174,7 +174,6 @@ protected:
 
 extern template
 class GroupOf<Widget>;
-
 
 using Group = GroupOf<Widget>;
 
