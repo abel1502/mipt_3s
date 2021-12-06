@@ -23,7 +23,7 @@
     EventStatus dispatchEvent(const EVENT_CLS_NAME(EVENT_NAME) &event)
 
 #define EVENT_HANDLER_METHOD_SCOPED(CLS, EVENT_NAME) \
-    Widget::EventStatus CLS::dispatchEvent(const EVENT_CLS_NAME(EVENT_NAME) &event)
+    abel::gui::Widget::EventStatus CLS::dispatchEvent(const EVENT_CLS_NAME(EVENT_NAME) &event)
 
 #define EVENT_HANDLER_DECL(EVENT_NAME) \
     virtual EVENT_HANDLER_METHOD(EVENT_NAME)
