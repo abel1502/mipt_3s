@@ -209,7 +209,7 @@ public:
         } else if (cmpDbl(max, rgb.r()) == 0) {
             h = PART * (rgb.g() - rgb.b()) / (max - min);
 
-            if (cmpDbl(rgb.g(), rgb.b()) >= 0) {
+            if (cmpDbl(rgb.g(), rgb.b()) < 0) {
                 h += 1;
             }
         } else if (cmpDbl(max, rgb.g()) == 0) {
