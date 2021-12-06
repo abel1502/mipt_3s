@@ -11,6 +11,9 @@
 // std has better equivalents
 #undef min
 #undef max
+#ifndef M_PI
+#error _USE_MATH_DEFINES didn't work
+#endif
 
 
 namespace abel::math {

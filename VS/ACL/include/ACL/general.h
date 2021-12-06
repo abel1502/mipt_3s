@@ -3,6 +3,9 @@
 
 // These includes are here 'by standard', and will not be removed under any circumstances.
 // You may rely on them being present here, and not include them manually
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES 1
+#endif
 #include <cstdlib>
 #include <utility>
 #include <cassert>
