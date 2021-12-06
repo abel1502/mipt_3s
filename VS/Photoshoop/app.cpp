@@ -3,6 +3,7 @@
 #include "app.h"
 #include "canvas.h"
 #include "color_picker.h"
+#include "physics/widget.h"
 
 
 abel::gui::Application::app_ptr_t abel::gui::Application::create() {
@@ -68,12 +69,16 @@ void MyApp::init(int argc, const char **argv) {
         return false;
     };
 
+    MoleculesWidget *molecules = new MoleculesWidget(nullptr, Rect<double>::wh(0, 0, 400, 300));
+
     WindowManager *mgr = new WindowManager(nullptr, Rect<double>::wh(0, 0, 800, 600));
     mgr->createWindow(Rect<double>::wh(140,  50, 300, 200), "Some buttons", grp)
         .markEssential();
     mgr->createWindow(Rect<double>::wh(240,  70, 300, 200), "A drawing canvas", canvas);
     mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A slider", slider /*new Window::EmptyBody()*/);
     mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette)
+        .markEssential();
+    mgr->createWindow(Rect<double>::wh(400, 10, 400, 300), "These molecules look familiar", molecules)
         .markEssential();
 
     // palette->setColor(Color::BLACK);
