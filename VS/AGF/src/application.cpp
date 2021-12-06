@@ -106,7 +106,9 @@ void Application::run() {
         }
 
         double curTime = getTime();
+        actionExecMutex.lock();
         sigTick(curTime - lastTime);
+        actionExecMutex.unlock();
         lastTime = curTime;
 
         // asm volatile ("pause");
