@@ -57,10 +57,12 @@ bool Canvas::onDrag(MouseBtn btn, const MouseMoveEvent &event) {
         return false;
     }
 
-    MyApp::getInstance().toolMgr.getActiveTool()
-        .applyLine(activeLayer(), event.pos0 - region.getPos(), event.pos1 - region.getPos());
+    MyApp::getInstance().enqueueAction([this, event, &myApp = MyApp::getInstance()](Application &) {
+        myApp.toolMgr.getActiveTool()
+            .applyLine(activeLayer(), event.pos0 - region.getPos(), event.pos1 - region.getPos());
 
-    MyApp::getInstance().demandRedraw();
+        myApp.demandRedraw();
+    });
 
     return false;
 }
@@ -70,10 +72,12 @@ bool Canvas::onDown(const abel::gui::MouseClickEvent &event) {
         return false;
     }
 
-    MyApp::getInstance().toolMgr.getActiveTool()
-        .applyPoint(activeLayer(), event.pos - region.getPos());
+    MyApp::getInstance().enqueueAction([this, event, &myApp = MyApp::getInstance()](Application &) {
+        myApp.toolMgr.getActiveTool()
+            .applyPoint(activeLayer(), event.pos - region.getPos());
 
-    MyApp::getInstance().demandRedraw();
+        myApp.demandRedraw();
+    });
 
     return false;
 }
@@ -84,12 +88,13 @@ bool Canvas::onDragStateChange(abel::gui::MouseBtn btn,
         return false;
     }
 
-    if (state) {
-        activeLayer().clearPreview();
-    } else {
-        activeLayer().flushPreview();
-    }
-
+    MyApp::getInstance().enqueueAction([this, state](Application &) {
+        if (state) {
+            activeLayer().clearPreview();
+        } else {
+            activeLayer().flushPreview();
+        }
+    });
 
     return false;
 }
