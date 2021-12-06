@@ -6,7 +6,7 @@ Layer::Layer(const Vector2d &size, const Color &defaultColor, double defaultAlph
     texture{new abel::gui::Texture(size)},
     preview{new abel::gui::Texture(size)} {
 
-    getTexture().setFillColor(defaultColor, defaultAlpha);
+    getTexture().setFillColor(defaultColor, (float)defaultAlpha);
     getTexture().clear();
 
     clearPreview();
