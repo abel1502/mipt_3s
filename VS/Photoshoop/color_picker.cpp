@@ -136,22 +136,20 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
          nullptr,
          nullptr) {
 
-    double height = region.h();
+    const double height = region.h();
+    const double width  = region.w();
 
-    Rect<double> regionSV = region;
-    regionSV.h(height * 0.7);
+    const double sliderHeight = abel::gui::widgets::Thumb::DEFAULT_SIZE * 1.25;
 
-    Rect<double> regionH = region;
-    regionH.y(height * 0.75);
-    regionH.h(height * 0.1);
+    REQUIRE(height >= sliderHeight * 5);
 
-    Rect<double> regionA = region;
-    regionA.y(height * 0.9);
-    regionA.h(height * 0.1);
+    const Rect<double> regionSV = Rect<double>::wh(0, 0, width, height - 2 * sliderHeight);
+    const Rect<double> regionH  = Rect<double>::wh(0, height - 2 * sliderHeight, width, sliderHeight);
+    const Rect<double> regionA  = Rect<double>::wh(0, height - sliderHeight, width, sliderHeight);
 
-    sliderSV(new _myimpl::ColorSliderSV(this, regionSV, Rect<double>::wh(0, 1, 1, -1)));
-    sliderH (new _myimpl::ColorSliderH (this, regionH , 0, 1));
-    sliderA (new _myimpl::ColorSliderA (this, regionA , 0, 1));
+    sliderSV(new _myimpl::ColorSliderSV(nullptr, regionSV, Rect<double>::wh(0, 1, 1, -1)));
+    sliderH (new _myimpl::ColorSliderH (nullptr, regionH , 0, 1));
+    sliderA (new _myimpl::ColorSliderA (nullptr, regionA , 0, 1));
 
     MyApp::getInstance().toolMgr.sigConfigChanged += [this](ToolManager &mgr) {
         setColor(mgr.getColor());
@@ -217,4 +215,74 @@ void ColorPicker::setColorS(double value) {
 
 void ColorPicker::setColorV(double value) {
     sliderSV().setValue({sliderSV().getValue().x(), value});
+}
+
+
+SizePicker::SizePicker(Widget *parent_, const Rect<double> &region_) :
+    Base(parent_, region_, MIN_SIZE, MAX_SIZE, DEFAULT_SIZE) {}
+
+
+ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
+    Base(parent_, region_, nullptr, nullptr, nullptr) {
+
+    const double height = region.h();
+    const double width = region.w();
+
+    const double colW[2] = {width * 0.4, width * 0.6};
+    const double colX[2] = {0, colW[0]};
+
+    const double sliderHeight = abel::gui::widgets::Thumb::DEFAULT_SIZE * 1.15;
+    const double paletteHeight = colW[0] + 2 * sliderHeight;
+
+    const Rect<double> regionColorPicker = Rect<double>::wh(colX[0], 0,             colW[0], paletteHeight);
+    const Rect<double> regionSizePicker  = Rect<double>::wh(colX[0], paletteHeight, colW[0], sliderHeight);
+    const Rect<double> regionTools       = Rect<double>::wh(colX[1], 0,             colW[1], height);
+
+    colorPicker(new ColorPicker(nullptr, regionColorPicker));
+    sizePicker(new SizePicker(nullptr, regionSizePicker));
+    toolButtons(new _tool_buttons_type(nullptr, regionTools, abel::gui::widgets::LAD_VERTICAL));
+
+    const double btnX = 0;
+    const double btnW = colW[1] * 0.9;
+    const double btnH = 30;
+
+    toolButtons()
+        .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), "Brush")
+        .sigClick += []() {
+
+        MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_BRUSH);
+
+        return false;
+    };
+
+    toolButtons()
+        .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), "Eraser")
+        .sigClick += []() {
+
+        MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_ERASER);
+
+        return false;
+    };
+
+    toolButtons()
+        .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), "Picker")
+        .sigClick += []() {
+
+        MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_COLOR_PICKER);
+
+        return false;
+    };
+
+
+    MyApp::getInstance().toolMgr.sigConfigChanged += [this](ToolManager &mgr) {
+        sizePicker().setSize(mgr.getRadius() * 2);
+
+        return false;
+    };
+
+    sizePicker().sigChanged += [](Vector2d value) {
+        MyApp::getInstance().toolMgr.setRadius<true>(value.x() / 2);
+
+        return false;
+    };
 }

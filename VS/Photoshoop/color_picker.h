@@ -135,6 +135,62 @@ protected:
 };
 
 
+class SizePicker : public abel::gui::widgets::SliderH {
+public:
+    using Base = abel::gui::widgets::SliderH;
+    EVENT_HANDLER_USING(Base);
+
+    static constexpr double
+        MIN_SIZE = 1,
+        MAX_SIZE = 50,
+        DEFAULT_SIZE = 5;
+
+
+    SizePicker(Widget *parent_, const Rect<double> &region_);
+
+    inline double getSize() const;
+    inline void setSize(double value);
+
+protected:
+    //
+
+};
+
+
+namespace _myimpl {
+
+
+using _ToolsWidgetBase =
+    abel::gui::widgets::StaticGroup<
+        ColorPicker,
+        SizePicker,
+        abel::gui::widgets::LayoutOf<
+            abel::gui::widgets::Button
+        >
+    >;
+
+
+}
+
+
+class ToolsWidget : public _myimpl::_ToolsWidgetBase {
+public:
+    using Base = _myimpl::_ToolsWidgetBase;
+    EVENT_HANDLER_USING(Base);
+
+
+    ToolsWidget(Widget *parent_, const Rect<double> &region_);
+
+protected:
+    using _tool_buttons_type = Base::Types::item<2>; // The type name is too long
+
+    SGRP_DECLARE_BINDING_T(colorPicker, ColorPicker);
+    SGRP_DECLARE_BINDING_T( sizePicker,  SizePicker);
+    SGRP_DECLARE_BINDING_T(toolButtons, _tool_buttons_type);
+
+};
+
+
 inline double ColorPicker::getAlpha() const {
     return sliderA().getValue();
 }
@@ -165,3 +221,12 @@ inline _myimpl::ColorSliderA::ColorSliderA(ColorPicker *parent_, const Rect<doub
                                            double min, double max) :
     Base(parent_, region_, min, max, 1,
          new ColorSliderThumb(this, region_.getCenter(), true)) {}
+
+
+inline double SizePicker::getSize() const {
+    return getValue();
+}
+
+inline void SizePicker::setSize(double value) {
+    return setValue(value);
+}
