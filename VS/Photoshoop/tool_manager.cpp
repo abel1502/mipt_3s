@@ -12,3 +12,33 @@ ToolManager::ToolManager(double radius_, const Color &color_, double alpha_) :
     tools.appendEmplace(new EraserTool(this));
     tools.appendEmplace(new PickerTool(this));
 }
+
+Tool &ToolManager::selectTool(unsigned idx) {
+    REQUIRE(idx < tools.getSize());
+
+    activeToolIdx = idx;
+
+    return getActiveTool();
+}
+
+Tool &ToolManager::selectBasicTool(BasicToolType type) {
+    unsigned idx = -1u;
+
+    switch (type) {
+    case BTT_BRUSH:
+        idx = 0;
+        break;
+
+    case BTT_ERASER:
+        idx = 1;
+        break;
+
+    case BTT_COLOR_PICKER:
+        idx = 2;
+        break;
+
+    NODEFAULT
+    }
+
+    return selectTool(idx);
+}
