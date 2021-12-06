@@ -57,17 +57,19 @@ void MyApp::init(int argc, const char **argv) {
     //     return false;
     // };
 
-    ColorPicker *palette = new ColorPicker(nullptr, Rect<double>::wh(0, 0, 120, 175));
+    // ColorPicker *palette = new ColorPicker(nullptr, Rect<double>::wh(0, 0, 120, 175));
 
-    btn2.sigClick += [palette]() {
-        // TODO: Very bad, because palette could have been destroyed
-        Color color = palette->getColor();
+    // btn2.sigClick += [palette]() {
+    //     // TODO: Very bad, because palette could have been destroyed
+    //     Color color = palette->getColor();
+    //
+    //     DBG("The color is %f %f %f %f", color.r(), color.g(), color.b(), palette->getAlpha());
+    //     palette->setColor(color);
+    //
+    //     return false;
+    // };
 
-        DBG("The color is %f %f %f %f", color.r(), color.g(), color.b(), palette->getAlpha());
-        palette->setColor(color);
-
-        return false;
-    };
+    ToolsWidget *palette = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 250, 175));
 
     MoleculesWidget *molecules = new MoleculesWidget(nullptr, Rect<double>::wh(0, 0, 400, 300));
 
@@ -79,7 +81,7 @@ void MyApp::init(int argc, const char **argv) {
     mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette)
         .markEssential();
     mgr->createWindow(Rect<double>::wh(400, 10, 400, 300), "These molecules look familiar", molecules)
-        .markEssential();
+        /*.markEssential() */ ;
 
     // palette->setColor(Color::BLACK);
     // palette->setAlpha(1);
