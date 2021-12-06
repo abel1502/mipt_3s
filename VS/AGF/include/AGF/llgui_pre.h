@@ -2,6 +2,7 @@
 #define AGF_LLGUI_PRE_H
 
 #include <ACL/general.h>
+#include <ACL/math/cmath.h>
 #include <ACL/gui/color.h>
 #include <ACL/gui/rect.h>
 #include <ACL/gui/coords.h>
