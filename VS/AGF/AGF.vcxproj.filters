@@ -63,6 +63,9 @@
     <ClCompile Include="src\helpers\animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\helpers\wiget_ref.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\widgets\layout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AGF\helpers\animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AGF\helpers\widget_ref.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AGF\widgets\layout.h">
