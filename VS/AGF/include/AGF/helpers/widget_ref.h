@@ -5,7 +5,6 @@
 #include <AGF/widget.h>
 #include <AGF/widgets/window.h>
 #include <ACL/type_traits.h>
-#include <ACL/cmp.h>
 #include <ACL/unique_ptr.h>
 #include <ACL/vector.h>
 
@@ -31,9 +30,13 @@ public:
     using widget_ref_type = WidgetRef<type>;
 
 
-    static WidgetRefMgr &getInstance();
+    static WidgetRefMgr &getInstance() {
+        if (!instance) {
+            instance = new WidgetRefMgr();
+        }
 
-    static void onDeath(Widget &widget);
+        return *instance;
+    }
 
 protected:
     friend class widget_ref_type;
@@ -44,12 +47,22 @@ protected:
     vector<widget_ref_type &> managedReferences{};
 
 
-    WidgetRefMgr();
+    static void onDeath(Widget &widget);
 
+
+    WidgetRefMgr() {};
+
+    bool isHookedToWidget(const type &widget) const noexcept;
+
+    void     hookToWidget(type &widget);
+    void unhookFromWidget(type &widget);
+
+
+    // ======================================
+    // Exposed only to WidgetRef<T>:
     void   registerRef(widget_ref_type &ref);
     void unregisterRef(widget_ref_type &ref);
-
-    void hookToWidget(type &widget);
+    // ======================================
 
 };
 
@@ -74,8 +87,10 @@ public:
     WidgetRef(const WidgetRef &other);
     WidgetRef &operator=(const WidgetRef &other);
 
-    WidgetRef(WidgetRef &&other);
-    WidgetRef &operator=(WidgetRef &&other);
+    WidgetRef(WidgetRef &&other) noexcept;
+    WidgetRef &operator=(WidgetRef &&other) noexcept;
+
+    ~WidgetRef();
 
 
     constexpr bool isAlive() const noexcept {
@@ -101,17 +116,74 @@ public:
         return target;
     }
 
-    void reset(type *newPtr = nullptr);
+    void reset(type *newTarget = nullptr);
+
+    constexpr unsigned getHash() const {
+        return hash;
+    }
 
 protected:
     friend class WidgetRefMgr<T>;
 
+    static unsigned curHash;
+
     type *target = nullptr;
+    const unsigned hash = curHash++;
+
+
+    inline static WidgetRefMgr<T> &getManager() {
+        return WidgetRefMgr<T>::getInstance();
+    }
 
 };
 
 
+namespace _impl {
+
+template <typename T>
+void WidgetRefMgr<T>::registerRef(widget_ref_type &ref) {
+    if (ref.isDead()) {
+        ERR("Dead ref registration attempted. Skipping");
+
+        return;
+    }
+
+    managedReferences.append(ref);
+    hookToWidget(*ref);
 }
 
+template <typename T>
+void WidgetRefMgr<T>::unregisterRef(widget_ref_type &ref) {
+    managedReferences.filterUnordered(
+        [hash = ref.getHash()](const widget_ref_type &other) {
+            return other.getHash() == hash;
+        }
+    );
+
+    // TODO: Perhaps unhook from non-referenced widgets?
+}
+
+template <typename T>
+void WidgetRefMgr<T>::hookToWidget(type &widget) {
+    if (isHookedToWidget(widget)) {
+        return;
+    }
+
+    widget.sigDeath += onDeath;
+}
+
+template <typename T>
+void WidgetRefMgr<T>::unhookFromWidget(type &widget) {
+    widget.sigDeath -= onDeath;
+}
+
+}  // namespace _impl
+
+
+template <typename T>
+unsigned WidgetRef<T>::curHash = 0x1000;
+
+
+}
 
 #endif // AGF_HELPERS_WINDOW_REF_H
