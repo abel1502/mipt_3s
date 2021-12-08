@@ -1,5 +1,6 @@
 #include <AGF/llgui.h>
 #include <AGF/widgets/all.h>
+#include <AGF/helpers/widget_ref.h>
 #include "app.h"
 #include "canvas.h"
 #include "color_picker.h"
@@ -28,8 +29,10 @@ void MyApp::init(int argc, const char **argv) {
 
     using namespace abel::gui::widgets;
     using abel::gui::Rect;
+    using abel::gui::WidgetRef;
+    using abel::gui::WidgetRefTo;
 
-    Group *grp = new Group(nullptr, Rect<double>::wh(10, 10, 140, 170));
+    Group *grp = new Group(nullptr, Rect<double>::wh(10, 10, 290, 170));
 
     Button &btn1 = grp->createChild<Button>(Rect<double>::wh(20, 20, 100, 60), "Button one");
     btn1.sigClick += [](){
@@ -72,6 +75,23 @@ void MyApp::init(int argc, const char **argv) {
     ToolsWidget *palette = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 250, 175));
 
     MoleculesWidget *molecules = new MoleculesWidget(nullptr, Rect<double>::wh(0, 0, 400, 300));
+
+    {
+        Layout &lay = grp->createChild<Layout>(Rect<double>::wh(140, 0, 150, 170));
+        lay.createChild<Button>(Rect<double>::wh(0, 0, 140, 30), "Spawn a molecule")
+            .sigClick += [molecules = WidgetRefTo/*<decltype(molecules)>*/(molecules)]() {
+
+            if (!molecules) {
+                DBG("No more molecules, unhooking");
+
+                return true;
+            }
+
+            molecules->getManager().addRandomMolecule(Molecule::P_BALL);
+
+            return false;
+        };
+    }
 
     WindowManager *mgr = new WindowManager(nullptr, Rect<double>::wh(0, 0, 800, 600));
     mgr->createWindow(Rect<double>::wh(140,  50, 300, 200), "Some buttons", grp)
