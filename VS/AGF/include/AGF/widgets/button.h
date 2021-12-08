@@ -27,6 +27,9 @@ public:
     EVENT_HANDLER_OVERRIDE(MouseMove);
     EVENT_HANDLER_OVERRIDE(Render);
 
+    inline const Label &getLabel() const;
+    inline       Label &getLabel()      ;
+
 protected:
     MouseTracker mt{this};
     Animation anim{};
@@ -36,6 +39,15 @@ protected:
     EventStatus renderCustomized(const RenderEvent &event, Style::Element elem, bool ignoreLabel);
 
 };
+
+
+inline const Label &Button::getLabel() const {
+    return label();
+}
+
+inline Label &Button::getLabel() {
+    return label();
+}
 
 
 }
