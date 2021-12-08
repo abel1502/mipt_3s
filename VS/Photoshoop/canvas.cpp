@@ -88,13 +88,14 @@ bool Canvas::onDragStateChange(abel::gui::MouseBtn btn,
         return false;
     }
 
-    MyApp::getInstance().enqueueAction([this, state](Application &) {
-        if (state) {
-            activeLayer().clearPreview();
-        } else {
+    // TODO: Perhaps clear after flush only?
+    if (state) {
+        activeLayer().clearPreview();
+    } else {
+        MyApp::getInstance().enqueueAction([this](Application &) {
             activeLayer().flushPreview();
-        }
-    });
+        });
+    }
 
     return false;
 }
