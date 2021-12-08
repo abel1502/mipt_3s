@@ -125,7 +125,7 @@ protected:
 
 
     // Returns callback index, or BAD_IDX on error
-    unsigned findCallback(callback_t *cb) {
+    unsigned findCallback(callback_t *cb) const {
         for (unsigned i = 0; i < callbacks.getSize(); ++i) {
             if (callbacks[i] == cb) {
                 return i;
