@@ -208,6 +208,7 @@
     <ClInclude Include="physics\manager.h" />
     <ClInclude Include="physics\molecule.h" />
     <ClInclude Include="physics\widget.h" />
+    <ClInclude Include="spline.h" />
     <ClInclude Include="tools\brush.h" />
     <ClInclude Include="tool.h" />
     <ClInclude Include="tools\eraser.h" />
@@ -227,6 +228,7 @@
     <ClCompile Include="physics\manager.cpp" />
     <ClCompile Include="physics\molecule.cpp" />
     <ClCompile Include="physics\widget.cpp" />
+    <ClCompile Include="spline.cpp" />
     <ClCompile Include="tools\brush.cpp" />
     <ClCompile Include="tool.cpp" />
     <ClCompile Include="tools\eraser.cpp" />
