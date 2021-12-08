@@ -35,8 +35,8 @@ void Animation::render(Texture &target, const Rect<double> &at) {
 
     float part = (float)(state / duration);
 
-    target.embedTransformed(at, *tex0, {1, 1, 1, 1 - part});
-    target.embedTransformed(at, *tex1, {1, 1, 1,     part});
+    target.embedTransformed(at, *tex0, {1, 1, 1, 1/* - part*/});
+    target.embedTransformed(at, *tex1, {1, 1, 1,       part  });
 
     tick();
 }
