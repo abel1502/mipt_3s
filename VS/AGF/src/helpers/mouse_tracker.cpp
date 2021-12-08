@@ -67,10 +67,17 @@ Widget::EventStatus MouseTracker::processEvent(const MouseClickEvent &event,
         sigDragStateChange(event.button, event.attrs, isDown(event.button));
 
         // TODO: Fix slider via this
-        if (!isHovered()) {
-            isHovered(true);
-            sigHoverStateChange(true);
-        }
+        // if (!isHovered() && !wasDown) {
+        //     isHovered(true);
+        //     sigHoverStateChange(true);
+        // }
+
+        // To update the hovered status.
+        // The other type will be enqueued automatically
+        Application::getInstance().enqueueAction([event](Application &app) {
+            app.dispatchEvent(MouseMoveEvent(event.pos, event.pos, event.attrs, false));
+            app.dispatchEvent(MouseMoveEvent(event.pos, event.pos, event.attrs, true ));
+        });
     }
 
     return baseStatus;
