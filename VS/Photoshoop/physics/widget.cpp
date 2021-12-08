@@ -17,7 +17,7 @@ MoleculesWidget::MoleculesWidget(Widget *parent_, const Rect<double> &region_) :
 
     //manager.addMolecule(Vector2d{10, 2}, 2.d, Molecule::P_BALL).getComp<PhysComp>().getImpulse() = Vector2d{0, 0};*/
 
-    static constexpr unsigned MOLECULES_CNT = 20;
+    static constexpr unsigned MOLECULES_CNT = 25;
 
     for (unsigned i = 0; i < MOLECULES_CNT; ++i) {
         //manager.addRandomMolecule();

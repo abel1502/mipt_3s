@@ -80,7 +80,7 @@ void MyApp::init(int argc, const char **argv) {
     mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A slider", slider /*new Window::EmptyBody()*/);
     mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette)
         .markEssential();
-    mgr->createWindow(Rect<double>::wh(400, 10, 400, 300), "These molecules look familiar", molecules)
+    mgr->createWindow(Rect<double>::wh(400,  50, 400, 300), "These molecules look familiar", molecules)
         /*.markEssential() */ ;
 
     // palette->setColor(Color::BLACK);

@@ -103,7 +103,7 @@ public:
 
 class MagneticPhysComp : public PhysComp {
 public:
-    static constexpr double MAGNETISM_COEFF = 40000.;  // The real one was absurdly high
+    static constexpr double MAGNETISM_COEFF = 40000. * 5;  // The real one was absurdly high
 
 
     inline MagneticPhysComp(Molecule *object_, const Vector2d &pos_, double mass_,
