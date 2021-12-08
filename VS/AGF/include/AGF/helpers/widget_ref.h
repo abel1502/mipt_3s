@@ -7,30 +7,21 @@
 #include <ACL/type_traits.h>
 #include <ACL/unique_ptr.h>
 #include <ACL/vector.h>
+#include <set>
 
 
 namespace abel::gui {
 
 
-template <typename T>
 class WidgetRef;
-
-template <typename T>
-class WidgetRefMgr;
 
 
 namespace _impl {
 
 
-template <typename T>
 class WidgetRefMgr {
-    static_assert(std::is_base_of_v<Widget, T>);
 public:
-    using type = T;
-    using widget_ref_type = WidgetRef<type>;
-
-
-    static WidgetRefMgr &getInstance() {
+    static inline WidgetRefMgr &getInstance() {
         if (!instance) {
             instance = new WidgetRefMgr();
         }
@@ -39,58 +30,76 @@ public:
     }
 
 protected:
-    friend class widget_ref_type;
+    friend class WidgetRef;
 
-    static unique_ptr<WidgetRefMgr> instance = nullptr;
+    static unique_ptr<WidgetRefMgr> instance;
 
 
-    vector<widget_ref_type &> managedReferences{};
+    std::set<WidgetRef *> managedReferences{};
 
 
     static void onDeath(Widget &widget);
 
 
-    WidgetRefMgr() {};
+    WidgetRefMgr();
 
-    bool isHookedToWidget(const type &widget) const noexcept;
+    bool isHookedToWidget(const Widget &widget) const noexcept;
 
-    void     hookToWidget(type &widget);
-    void unhookFromWidget(type &widget);
+    void     hookToWidget(Widget &widget);
+    void unhookFromWidget(Widget &widget);
 
+    // =======================================
+    // Exposed only to WidgetRef:
+    void   registerRef(WidgetRef *ref);
+    void unregisterRef(WidgetRef *ref);
 
-    // ======================================
-    // Exposed only to WidgetRef<T>:
-    void   registerRef(widget_ref_type &ref);
-    void unregisterRef(widget_ref_type &ref);
-    // ======================================
+    void refMoved(WidgetRef *from,
+                  WidgetRef *to);
+
+    void refTargetChanged(WidgetRef *ref,
+                          Widget *oldTarget,
+                          Widget *newTarget);
+    // =======================================
 
 };
 
+}  // namespace _impl
 
-}
 
-
-template <typename T>
 class WidgetRef {
-    static_assert(std::is_base_of_v<Widget, T>);
 public:
     DECLARE_ERROR(error, abel::error)
 
-    using type = T;
 
+    WidgetRef(Widget *target_ = nullptr);
 
-    WidgetRef(type *target_);
+    inline WidgetRef(Widget &target_) :
+        WidgetRef(&target_) {}
 
-    inline WidgetRef(type &target_) :
-        WidgetRef(&target) {}
+    inline WidgetRef(const WidgetRef &other) :
+        WidgetRef(other.get()) {}
 
-    WidgetRef(const WidgetRef &other);
-    WidgetRef &operator=(const WidgetRef &other);
+    inline WidgetRef &operator=(const WidgetRef &other) {
+        reset(other.get());
 
-    WidgetRef(WidgetRef &&other) noexcept;
-    WidgetRef &operator=(WidgetRef &&other) noexcept;
+        return *this;
+    }
 
-    ~WidgetRef();
+    inline WidgetRef(WidgetRef &&other) {
+        move(std::move(other));
+    }
+
+    inline WidgetRef &operator=(WidgetRef &&other) {
+        reset();
+
+        move(std::move(other));
+
+        return *this;
+    }
+
+    inline ~WidgetRef() {
+        reset();
+    }
 
 
     constexpr bool isAlive() const noexcept {
@@ -105,83 +114,133 @@ public:
         return isAlive();
     }
 
-    constexpr type &operator*() const noexcept {
+    constexpr Widget &operator*() const {
         if (isDead())
             throw error("dead reference dereferencing");
 
         return *target;
     }
 
-    constexpr type *operator->() const noexcept {
+    constexpr Widget *operator->() const noexcept {
         return target;
     }
 
-    void reset(type *newTarget = nullptr);
-
-    constexpr unsigned getHash() const {
-        return hash;
+    constexpr Widget *get() const noexcept {
+        return target;
     }
+
+    void reset();
+
+    void reset(Widget *newTarget);
 
 protected:
-    friend class WidgetRefMgr<T>;
+    friend class _impl::WidgetRefMgr;
 
-    static unsigned curHash;
-
-    type *target = nullptr;
-    const unsigned hash = curHash++;
+    Widget *target = nullptr;
 
 
-    inline static WidgetRefMgr<T> &getManager() {
-        return WidgetRefMgr<T>::getInstance();
+    void move(WidgetRef &&other);
+
+    inline static _impl::WidgetRefMgr &getManager() {
+        return _impl::WidgetRefMgr::getInstance();
     }
+
+    // =======================================
+    // Exposed only to WidgetRefMgr:
+    inline void died() {
+        target = nullptr;
+
+        // No sync-back to the manager,
+        // because it was the one to invoke us
+    }
+    // =======================================
 
 };
 
 
-namespace _impl {
-
 template <typename T>
-void WidgetRefMgr<T>::registerRef(widget_ref_type &ref) {
-    if (ref.isDead()) {
-        ERR("Dead ref registration attempted. Skipping");
+class WidgetRefTo : public WidgetRef {
+    static_assert(std::is_base_of_v<Widget, T>);
+public:
+    using type = T;
+    using nonconst_type = std::remove_const_t<type>;
 
-        return;
+
+    inline WidgetRefTo(type *target_) :
+        WidgetRef(const_cast<nonconst_type *>(target_)) {}
+
+    inline WidgetRefTo(type &target_) :
+        WidgetRefTo(&target_) {}
+
+    template <typename U>
+    inline WidgetRefTo(const WidgetRefTo<U> &other) :
+        WidgetRefTo(other.get()) {
+
+        static_assert(std::is_convertible_v<U *, type *>);
     }
 
-    managedReferences.append(ref);
-    hookToWidget(*ref);
-}
+    template <typename U>
+    WidgetRefTo &operator=(const WidgetRefTo<U> &other) {
+        static_assert(std::is_convertible_v<U *, type *>);
 
-template <typename T>
-void WidgetRefMgr<T>::unregisterRef(widget_ref_type &ref) {
-    managedReferences.filterUnordered(
-        [hash = ref.getHash()](const widget_ref_type &other) {
-            return other.getHash() == hash;
-        }
-    );
+        reset(other.get());
 
-    // TODO: Perhaps unhook from non-referenced widgets?
-}
-
-template <typename T>
-void WidgetRefMgr<T>::hookToWidget(type &widget) {
-    if (isHookedToWidget(widget)) {
-        return;
+        return *this;
     }
 
-    widget.sigDeath += onDeath;
-}
+    template <typename U>
+    inline WidgetRefTo(WidgetRefTo<U> &&other) :
+        WidgetRef(std::move(other)) {
+        static_assert(std::is_convertible_v<U *, type *>);
+    }
+
+    template <typename U>
+    WidgetRefTo &operator=(WidgetRefTo<U> &&other) {
+        static_assert(std::is_convertible_v<U *, type *>);
+
+        WidgetRef::operator=(std::move(other));
+
+        return *this;
+    }
+
+
+
+    constexpr type &operator*() const noexcept {
+        return dynamic_cast<type &>(WidgetRef::operator*());
+    }
+
+    constexpr type *operator->() const noexcept {
+        return dynamic_cast<type *>(WidgetRef::operator->());
+    }
+
+    constexpr type *get() const noexcept {
+        return dynamic_cast<type *>(WidgetRef::get());
+    }
+
+    inline void reset(type *newTarget = nullptr) {
+        return WidgetRef::reset(const_cast<nonconst_type *>(newTarget));
+    }
+
+protected:
+    //
+
+};
+
+
+template <>
+class WidgetRefTo<Widget> : public WidgetRef {};
 
 template <typename T>
-void WidgetRefMgr<T>::unhookFromWidget(type &widget) {
-    widget.sigDeath -= onDeath;
-}
+using ConstWidgetRefTo = WidgetRefTo<const T>;
 
-}  // namespace _impl
+using ConstWidgetRef = ConstWidgetRefTo<Widget>;
 
 
-template <typename T>
-unsigned WidgetRef<T>::curHash = 0x1000;
+extern template
+class WidgetRefTo<Widget>;
+
+extern template
+class WidgetRefTo<const Widget>;
 
 
 }
