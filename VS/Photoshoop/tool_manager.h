@@ -63,6 +63,8 @@ public:
         return result;
     }
 
+    inline bool isBasicToolActive(BasicToolType type);
+
     constexpr double getRadius() const {
         return radius;
     }
@@ -121,4 +123,20 @@ protected:
     }
 
 };
+
+
+inline bool ToolManager::isBasicToolActive(BasicToolType type) {
+    switch (type) {
+    case BTT_BRUSH:
+        return activeToolIdx == 0;
+
+    case BTT_ERASER:
+        return activeToolIdx == 1;
+
+    case BTT_COLOR_PICKER:
+        return activeToolIdx == 2;
+
+    NODEFAULT
+    }
+}
 

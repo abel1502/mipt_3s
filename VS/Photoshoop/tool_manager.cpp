@@ -18,6 +18,8 @@ Tool &ToolManager::selectTool(unsigned idx) {
 
     activeToolIdx = idx;
 
+    syncBack();
+
     return getActiveTool();
 }
 
