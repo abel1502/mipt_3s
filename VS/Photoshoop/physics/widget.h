@@ -22,6 +22,9 @@ public:
 
     EVENT_HANDLER_OVERRIDE(abel::gui::Render);
 
+    constexpr const MoleculeManager &getManager() const { return manager; }
+    constexpr       MoleculeManager &getManager()       { return manager; }
+
 protected:
     abel::unique_ptr<abel::gui::Texture> texture{new Texture(region.getDiag())};
     MoleculeManager manager{*texture};
