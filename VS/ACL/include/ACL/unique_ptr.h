@@ -130,11 +130,11 @@ public:
         return ptr == nullptr;
     }
 
-    inline bool operator==(T *other) const noexcept {
+    inline bool operator==(const T *other) const noexcept {
         return ptr == other;
     }
 
-    inline bool operator<(T *other) const noexcept {
+    inline bool operator<(const T *other) const noexcept {
         return ptr < other;
     }
 
