@@ -6,10 +6,9 @@ namespace abel::gui::widgets {
 
 
 #pragma region Thumb
-Thumb::Thumb(Widget *parent_, const Vector2d &pos_, bool lockV, bool lockH) :
-    Base(parent_, Rect<double>::se(pos_ - Vector2d{DEFAULT_SIZE / 2},
-                                   pos_ + Vector2d{DEFAULT_SIZE / 2})),
-    pos{pos_},
+Thumb::Thumb(Widget *parent_, const Rect<double> &region_, bool lockV, bool lockH) :
+    Base(parent_, region_),
+    pos{region.getCenter()},
     locked{lockV, lockH} {
 
     mt.sigDrag += [this](MouseBtn btn, const MouseMoveEvent &event) {
@@ -53,18 +52,6 @@ EVENT_HANDLER_IMPL(Thumb, Move) {
     sigMove(*this);
 
     return status;
-}
-
-bool Thumb::setStyle(StyleManager::StyleHandle newHandle) {
-    if (Base::setStyle(newHandle)) {
-        return true;
-    }
-
-    Vector2d diag{getStyle().sliderThumbSize / 2.};
-
-    region = Rect<double>::se(pos - diag, pos + diag);
-
-    return false;
 }
 
 bool Thumb::staticShift(const Vector2d &by) {

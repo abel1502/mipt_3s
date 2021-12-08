@@ -42,7 +42,6 @@ public:
     // TODO: Some text formatting attributes
     double wndHeaderHeight = 30;
     double wndBorderWidth  = 5;
-    double sliderThumbSize = 15;
 
 
     constexpr Style() noexcept = default;  // Warning: requires some tilemaps to be set manually

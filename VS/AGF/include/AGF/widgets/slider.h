@@ -24,7 +24,13 @@ public:
     Signal<bool (const Thumb &thumb)> sigMove{};
 
 
-    Thumb(Widget *parent_, const Vector2d &pos, bool lockV = false, bool lockH = false);
+    Thumb(Widget *parent_, const Rect<double> &region_, bool lockV = false, bool lockH = false);
+
+    inline Thumb(Widget *parent_, const Vector2d &pos_, bool lockV = false, bool lockH = false) :
+        Thumb(parent_,
+              Rect<double>::wh(pos - Vector2d{DEFAULT_SIZE / 2},
+                               Vector2d{DEFAULT_SIZE}),
+              lockV, lockH) {}
 
     EVENT_HANDLER_OVERRIDE(Render);
 
@@ -33,8 +39,6 @@ public:
     EVENT_HANDLER_OVERRIDE(MouseMove);
 
     EVENT_HANDLER_OVERRIDE(Move);
-
-    virtual bool setStyle(StyleManager::StyleHandle newHandle) override;
 
     // Warning: cannot and doesn't check for bounds
     virtual bool staticShift(const Vector2d &by) override;
@@ -51,21 +55,24 @@ public:
     constexpr void lockV(bool value) { locked[0] = value; };
     constexpr void lockH(bool value) { locked[1] = value; };
 
+    template <bool Visual = false>
     inline Rect<double> getBounds() const {
         assert(parent);
 
         Rect<double> bounds =  parent->getRegion().padded(region.w() / 2, region.h() / 2);
 
+        constexpr double EXTRA_LOCKED_PAD = Visual ? 3 : 0;
+
         if (lockedV()) {
             double val = bounds.getCenter().y();
-            bounds.y0(val);
-            bounds.y1(val);
+            bounds.y0(val - EXTRA_LOCKED_PAD);
+            bounds.y1(val + EXTRA_LOCKED_PAD);
         }
 
         if (lockedH()) {
             double val = bounds.getCenter().x();
-            bounds.x0(val);
-            bounds.x1(val);
+            bounds.x0(val - EXTRA_LOCKED_PAD);
+            bounds.x1(val + EXTRA_LOCKED_PAD);
         }
 
         return bounds;
@@ -112,7 +119,8 @@ public:
             return status;
         }
 
-        renderBackground(event.target, region.padded(getStyle().sliderThumbSize / 2 - 2));
+        /*region.padded(getStyle().sliderThumbSize / 2 - 2)*/
+        renderBackground(event.target, thumb().getBounds<true>()/*.padded(-2)*/);
 
         return _dispatchToChildren(event);
     }
