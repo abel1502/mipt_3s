@@ -1,5 +1,6 @@
 #include <AGF/llgui.h>
 #include <ACL/unique_ptr.h>
+#include <AGF/helpers/widget_ref.h>
 #include "color_picker.h"
 #include "app.h"
 
@@ -151,27 +152,43 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
     sliderH (new _myimpl::ColorSliderH (nullptr, regionH , 0, 1));
     sliderA (new _myimpl::ColorSliderA (nullptr, regionA , 0, 1));
 
-    MyApp::getInstance().toolMgr.sigConfigChanged += [this](ToolManager &mgr) {
-        setColor(mgr.getColor());
-        setAlpha(mgr.getAlpha());
+    MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(this)](ToolManager &mgr) {
+        if (!inst) {
+            return true;
+        }
+
+        inst->setColor(mgr.getColor());
+        inst->setAlpha(mgr.getAlpha());
 
         return false;
     };
 
-    sliderSV().sigChanged += [this](Vector2d value) {
-        MyApp::getInstance().toolMgr.setColor<true>(getColor());
+    sliderSV().sigChanged += [inst = WidgetRefTo(this)](Vector2d value) {
+        if (!inst) {
+            return true;
+        }
+
+        MyApp::getInstance().toolMgr.setColor<true>(inst->getColor());
 
         return false;
     };
 
-    sliderH().sigChanged += [this](Vector2d value) {
-        MyApp::getInstance().toolMgr.setColor<true>(getColor());
+    sliderH().sigChanged += [inst = WidgetRefTo(this)](Vector2d value) {
+        if (!inst) {
+            return true;
+        }
+
+        MyApp::getInstance().toolMgr.setColor<true>(inst->getColor());
 
         return false;
     };
 
-    sliderA().sigChanged += [this](Vector2d value) {
-        MyApp::getInstance().toolMgr.setAlpha<true>(getAlpha());
+    sliderA().sigChanged += [inst = WidgetRefTo(this)](Vector2d value) {
+        if (!inst) {
+            return true;
+        }
+
+        MyApp::getInstance().toolMgr.setAlpha<true>(inst->getAlpha());
 
         return false;
     };
@@ -246,33 +263,77 @@ ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
     const double btnW = colW[1] * 0.9;
     const double btnH = 30;
 
-    toolButtons()
-        .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), "Brush")
-        .sigClick += []() {
+    {
+        constexpr const char *NAMES[] = {"Brush",
+                                        "*Brush"};
 
-        MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_BRUSH);
+        abel::gui::widgets::Button &btn = toolButtons()
+            .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), NAMES[1]);
 
-        return false;
-    };
+        MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(btn), NAMES](ToolManager &mgr) {
+            if (!inst) {
+                return true;
+            }
 
-    toolButtons()
-        .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), "Eraser")
-        .sigClick += []() {
+            inst->getLabel().setText(NAMES[mgr.isBasicToolActive(mgr.BTT_BRUSH)]);
 
-        MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_ERASER);
+            return false;
+        };
 
-        return false;
-    };
+        btn.sigClick += []() {
+            MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_BRUSH);
 
-    toolButtons()
-        .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), "Picker")
-        .sigClick += []() {
+            return false;
+        };
+    }
 
-        MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_COLOR_PICKER);
+    {
+        constexpr const char *NAMES[] = {"Eraser",
+                                        "*Eraser"};
 
-        return false;
-    };
+        abel::gui::widgets::Button &btn = toolButtons()
+            .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), NAMES[0]);
 
+        MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(btn), NAMES](ToolManager &mgr) {
+            if (!inst) {
+                return true;
+            }
+
+            inst->getLabel().setText(NAMES[mgr.isBasicToolActive(mgr.BTT_ERASER)]);
+
+            return false;
+        };
+
+        btn.sigClick += []() {
+            MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_ERASER);
+
+            return false;
+        };
+    }
+
+    {
+        constexpr const char *NAMES[] = {"Picker",
+                                        "*Picker"};
+
+        abel::gui::widgets::Button &btn = toolButtons()
+            .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), NAMES[0]);
+
+        MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(btn), NAMES](ToolManager &mgr) {
+            if (!inst) {
+                return true;
+            }
+
+            inst->getLabel().setText(NAMES[mgr.isBasicToolActive(mgr.BTT_COLOR_PICKER)]);
+
+            return false;
+        };
+
+        btn.sigClick += []() {
+            MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_COLOR_PICKER);
+
+            return false;
+        };
+    }
 
     MyApp::getInstance().toolMgr.sigConfigChanged += [this](ToolManager &mgr) {
         sizePicker().setSize(mgr.getRadius() * 2);
