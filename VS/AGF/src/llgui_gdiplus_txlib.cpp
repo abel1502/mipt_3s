@@ -341,8 +341,9 @@ void Texture::drawLine(Vector2d from, Vector2d to) {
 }
 
 void Texture::drawLineInf(Vector2d from, Vector2d to) {
-    from -= offset();
-    to   -= offset();
+    // Unnecessary, because it will be subtracted in the underlying call to drawLine
+    // from -= offset();
+    // to   -= offset();
 
     if (to == from) {
         throw llgui_error("Can't draw a line through just one point");
@@ -351,6 +352,7 @@ void Texture::drawLineInf(Vector2d from, Vector2d to) {
     Vector2d delta{to - from};
     delta.normalize();
 
+    // TODO: Point can be outside our texture, should account for that as well
     from -= delta * (width() + height());
     to   += delta * (width() + height());
 
