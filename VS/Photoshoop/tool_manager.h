@@ -7,6 +7,7 @@
 #include <AGF/widget.h>
 #include <AGF/widgets/all.h>
 #include "tool.h"
+#include "canvas.h"
 
 
 using abel::gui::Rect;
@@ -65,6 +66,18 @@ public:
 
     inline bool isBasicToolActive(BasicToolType type);
 
+    inline void resetActiveCanvas() {
+        setActiveCanvas(nullptr);
+    }
+
+    inline void setActiveCanvas(Canvas *canvas) {
+        activeCanvas = canvas;
+    }
+
+    inline Canvas *getActiveCanvas() {
+        return activeCanvas.get();
+    }
+
     constexpr double getRadius() const {
         return radius;
     }
@@ -107,6 +120,7 @@ public:
 protected:
     abel::vector<abel::unique_ptr<Tool>> tools;
     unsigned activeToolIdx;
+    abel::gui::WidgetRefTo<Canvas> activeCanvas = nullptr;
     double radius = 2.5;
     Color color{};
     double alpha{};

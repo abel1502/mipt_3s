@@ -99,3 +99,21 @@ bool Canvas::onDragStateChange(abel::gui::MouseBtn btn,
 
     return false;
 }
+
+void Canvas::addLayer(bool switchTo) {
+    layers.appendEmplace(activeLayer().getSize());
+
+    if (switchTo) {
+        selectLayer(getLayersCnt() - 1);
+    }
+}
+
+void Canvas::selectLayer(unsigned idx) {
+    assert(idx < getLayersCnt());
+
+    activeLayerIdx = idx;
+}
+
+void Canvas::becomeActive() {
+    MyApp::getInstance().toolMgr.setActiveCanvas(this);
+}

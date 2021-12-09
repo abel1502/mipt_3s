@@ -27,8 +27,20 @@ public:
 
     EVENT_HANDLER_OVERRIDE(abel::gui::MouseMove);
 
+    EVENT_HANDLER_OVERRIDE(abel::gui::FocusUpdate);
+
     inline const Layer &activeLayer() const { return layers[activeLayerIdx]; }
     inline       Layer &activeLayer()       { return layers[activeLayerIdx]; }
+
+    void addLayer(bool switchTo = true);
+
+    void selectLayer(unsigned idx);
+    inline unsigned getLayersCnt() { return layers.getSize(); }
+
+    inline void nextLayer() { selectLayer((activeLayerIdx + 1                 ) % getLayersCnt()); }
+    inline void prevLayer() { selectLayer((activeLayerIdx - 1 + getLayersCnt()) % getLayersCnt()); }
+
+    inline unsigned getActiveLayerIdx() const { return activeLayerIdx; }
 
 protected:
     abel::gui::MouseTracker mt{this};
