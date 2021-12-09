@@ -573,12 +573,19 @@ void Texture::embedTransformedPart(Rect<double> at, const Texture &other,
     // Just to tidy up the matrix expression
     const auto &cc = colorCoeffs;
 
+    abel::math::Vector4f cn{
+        (float)(cc.x() < 0),
+        (float)(cc.y() < 0),
+        (float)(cc.z() < 0),
+        (float)(cc.w() < 0),
+    };
+
     Gdiplus::ColorMatrix matrix = {
         cc.x(),    0.f,    0.f,    0.f,    0.f,
            0.f, cc.y(),    0.f,    0.f,    0.f,
            0.f,    0.f, cc.z(),    0.f,    0.f,
            0.f,    0.f,    0.f, cc.w(),    0.f,
-           0.f,    0.f,    0.f,    0.f,    1.f,
+        cn.x(), cn.y(), cn.z(), cn.w(),    1.f,
     };
 
     Gdiplus::ImageAttributes attrs{};
