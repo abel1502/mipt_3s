@@ -12,7 +12,7 @@ using abel::math::Vector2d;
 
 class Layer {
 public:
-    explicit Layer(const Vector2d &size, const Color &defaultColor = Color::WHITE, double defaultAlpha = 1);
+    explicit Layer(const Vector2d &size, const Color &defaultColor = Color::WHITE, double defaultAlpha = 0);
 
     const abel::gui::Texture &getTexture() const { return *texture; }
           abel::gui::Texture &getTexture()       { return *texture; }
