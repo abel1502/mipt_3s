@@ -180,8 +180,18 @@ void Window::captureMouse() {
 }
 
 void Window::releaseMouse() {
-    if (!ReleaseCapture())
+    if (!ReleaseCapture()) {
         throw llgui_error("ReleaseCapture failed");
+    }
+}
+
+void Window::close() noexcept {
+    if (!DestroyWindow(window)) {
+        // Shouldn't throw, as most other destruction functions
+        // throw llgui_error("DestroyWindow failed");
+
+        ERR("DestroyWindow faied");
+    }
 }
 #pragma endregion Window
 

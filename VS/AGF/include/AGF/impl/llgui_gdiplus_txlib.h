@@ -120,6 +120,8 @@ public:
     void releaseMouse();
 
     static inline Window &getInstance() {
+        // Window isn't really a singleton - while it stores a pointer to its instance, it doesn't own it
+
         if (!instance) {
             throw llgui_error("Window absent");
         }
@@ -222,6 +224,8 @@ public:
 
         return abel::math::Vector3d{h, s, v};
     }
+
+    void close() noexcept;
 
 protected:
     friend class Texture;
