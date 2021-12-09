@@ -25,6 +25,9 @@ public:
     using child_type = Item;
 
 
+    bool suppressRefocus = false;
+
+
     GroupOf(Widget *parent_, const Rect<double> &region_) :
         Widget(parent_, region_) {
 
@@ -77,6 +80,10 @@ public:
         }
 
         return false;
+    }
+
+    void focusChild(const child_type &child) {
+        focusChild(children.findByValue(&child));
     }
 
 protected:
@@ -161,6 +168,9 @@ protected:
     }
 
     void focusChild(const typename decltype(children)::iterator &child)  {
+        if (suppressRefocus)
+            return;
+
         if (child == children.end() || child == children.begin())
             return;
 
