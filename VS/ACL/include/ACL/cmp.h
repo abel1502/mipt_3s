@@ -212,33 +212,30 @@ constexpr std::enable_if_t<
 operator<(const T1 &a, const T2 &b) {
     if constexpr (is_valid_tpl_v<_impl::cmp_my, T1, T2>) {
         return a.__cmp__(b) < 0;
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_my, T2, T1>) {
         return b.__cmp__(a) > 0;
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_lt, T1, T2>) {
         return a.operator<(b);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_ge, T1, T2>) {
         return !a.operator>=(b);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_gt, T2, T1>) {
         return b.operator>(a);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_le, T2, T1>) {
         return !b.operator<=(a);
-    }
-
+    } else
     if constexpr (_impl::have_dir_le<T1, T2>) {
         return abel::operator!=(a, b) && abel::operator<=(a, b);
+    } else
+    if constexpr (_impl::have_dir_gt<T1, T2>) {
+        return abel::operator!=(a, b) && !abel::operator>(a, b);
+    } else {
+        static_assert(delay_tpl<T1>(false));
     }
-
-    return abel::operator!=(a, b) && !abel::operator>(a, b);
 }
 
 template <typename T1, typename T2>
@@ -254,33 +251,30 @@ constexpr std::enable_if_t<
 operator>(const T1 &a, const T2 &b) {
     if constexpr (is_valid_tpl_v<_impl::cmp_my, T1, T2>) {
         return a.__cmp__(b) > 0;
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_my, T2, T1>) {
         return b.__cmp__(a) < 0;
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_gt, T1, T2>) {
         return a.operator>(b);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_le, T1, T2>) {
         return !a.operator<=(b);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_lt, T2, T1>) {
         return b.operator<(a);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_ge, T2, T1>) {
         return !b.operator>=(a);
-    }
-
+    } else
     if constexpr (_impl::have_dir_ge<T1, T2>) {
         return abel::operator!=(a, b) && abel::operator>=(a, b);
+    } else
+    if constexpr (_impl::have_dir_lt<T1, T2>) {
+        return abel::operator!=(a, b) && !abel::operator<(a, b);
+    } else {
+        static_assert(delay_tpl<T1>(false));
     }
-
-    return abel::operator!=(a, b) && !abel::operator<(a, b);
 }
 
 template <typename T1, typename T2>
@@ -296,33 +290,30 @@ constexpr std::enable_if_t<
 operator<=(const T1 &a, const T2 &b) {
     if constexpr (is_valid_tpl_v<_impl::cmp_my, T1, T2>) {
         return a.__cmp__(b) <= 0;
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_my, T2, T1>) {
         return b.__cmp__(a) >= 0;
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_le, T1, T2>) {
         return a.operator<=(b);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_gt, T1, T2>) {
         return !a.operator>(b);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_ge, T2, T1>) {
         return b.operator>=(a);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_lt, T2, T1>) {
         return !b.operator<(a);
-    }
-
+    } else
     if constexpr (_impl::have_dir_lt<T1, T2>) {
         return abel::operator!=(a, b) && abel::operator<(a, b);
+    } else
+    if constexpr (_impl::have_dir_ge<T1, T2>) {
+        return abel::operator!=(a, b) && !abel::operator>=(a, b);
+    } else {
+        static_assert(delay_tpl<T1>(false));
     }
-
-    return abel::operator!=(a, b) && !abel::operator>=(a, b);
 }
 
 template <typename T1, typename T2>
@@ -338,33 +329,30 @@ constexpr std::enable_if_t<
 operator>=(const T1 &a, const T2 &b) {
     if constexpr (is_valid_tpl_v<_impl::cmp_my, T1, T2>) {
         return a.__cmp__(b) >= 0;
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_my, T2, T1>) {
         return b.__cmp__(a) <= 0;
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_ge, T1, T2>) {
         return a.operator>=(b);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_lt, T1, T2>) {
         return !a.operator<(b);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_le, T2, T1>) {
         return b.operator<=(a);
-    }
-
+    } else
     if constexpr (is_valid_tpl_v<_impl::cmp_gt, T2, T1>) {
         return !b.operator>(a);
-    }
-
+    } else
     if constexpr (_impl::have_dir_gt<T1, T2>) {
         return abel::operator!=(a, b) && abel::operator>(a, b);
+    } else
+    if constexpr (_impl::have_dir_le<T1, T2>) {
+        return abel::operator!=(a, b) && !abel::operator<=(a, b);
+    } else {
+        static_assert(delay_tpl<T1>(false));
     }
-
-    return abel::operator!=(a, b) && !abel::operator<=(a, b);
 }
 
 
