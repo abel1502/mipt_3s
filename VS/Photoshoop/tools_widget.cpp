@@ -1,7 +1,7 @@
 #include <AGF/llgui.h>
 #include <ACL/unique_ptr.h>
 #include <AGF/helpers/widget_ref.h>
-#include "color_picker.h"
+#include "tools_widget.h"
 #include "app.h"
 
 
@@ -9,6 +9,7 @@ using namespace abel;
 using namespace abel::gui;
 
 
+#pragma region ColorPicker
 namespace _myimpl {
 
 void ColorSliderThumb::renderThumb(abel::gui::Texture &target, const Rect<double> &at) {
@@ -140,7 +141,7 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
     const double height = region.h();
     const double width  = region.w();
 
-    const double sliderHeight = abel::gui::widgets::Thumb::DEFAULT_SIZE * 1.25;
+    const double sliderHeight = widgets::Thumb::DEFAULT_SIZE * 1.25;
 
     REQUIRE(height >= sliderHeight * 5);
 
@@ -233,14 +234,116 @@ void ColorPicker::setColorS(double value) {
 void ColorPicker::setColorV(double value) {
     sliderSV().setValue({sliderSV().getValue().x(), value});
 }
+#pragma endregion ColorPicker
 
 
+#pragma region SizePicker
 SizePicker::SizePicker(Widget *parent_, const Rect<double> &region_) :
     Base(parent_, region_, MIN_SIZE, MAX_SIZE, DEFAULT_SIZE) {}
+#pragma endregion SizePicker
 
 
+#pragma region ToolButton
+_myimpl::ToolButton::ToolButton(Widget *parent_, const Rect<double> &region_,
+                                ToolManager::tool_handle_t handle_, const char *name_) :
+    Base(parent_, region_, nullptr),
+    handle{handle_}, name{name_} {
+
+    button(new widgets::Button(this, region.padded(2), name.data()));
+
+    changeActiveState(MyApp::getInstance().toolMgr.getActiveToolHandle() == handle);
+
+    MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(this)](ToolManager &mgr) {
+        if (!inst) {
+            return true;
+        }
+
+        inst->changeActiveState(mgr.getActiveToolHandle() == inst->handle);
+
+        return false;
+    };
+
+    button().sigClick += [inst = WidgetRefTo(this)]() {
+        if (!inst) {
+            return true;
+        }
+
+        MyApp::getInstance().toolMgr.selectTool(inst->handle);
+
+        return false;
+    };
+}
+
+
+void _myimpl::ToolButton::changeActiveState(bool active) {
+    if (active == isNameActive) {
+        return;
+    }
+
+    isNameActive = active;
+
+    button().getLabel().setText(isNameActive ?
+                                nameActive.data() :
+                                name.data());
+}
+#pragma endregion ToolButton
+
+
+#pragma region EffectButton
+_myimpl::EffectButton::EffectButton(Widget *parent_, const Rect<double> &region_,
+                                    ToolManager::effect_handle_t handle_, const char *name_) :
+    Base(parent_, region_, nullptr, nullptr),
+    handle{handle_}, name{name_} {
+
+    const Rect<double> childrenRect = region.padded(2);
+    Rect<double>   buttonRect = childrenRect;
+    Rect<double> settingsRect = childrenRect;
+
+    buttonRect.w(childrenRect.w() * 0.7);
+
+    // Setting it this wat ensures that the right corner stays in place
+    settingsRect.x0(settingsRect.x0() + childrenRect.w() * 0.75);
+
+    button(new widgets::Button(this, buttonRect, name));
+    settingsButton(new widgets::Button(this, settingsRect, "#"));
+
+    button().sigClick += [inst = WidgetRefTo(this)]() {
+        if (!inst) {
+            return true;
+        }
+
+        Effect &effect = MyApp::getInstance().toolMgr.getEffect(inst->handle);
+
+        Canvas *canvas = MyApp::getInstance().toolMgr.getActiveCanvas();
+
+        if (!canvas) {
+            DBG("No active canvas, skipping");
+            return false;
+        }
+
+        // TODO: Move to canvas?
+        effect.apply(canvas->activeLayer());
+
+        return false;
+    };
+
+    settingsButton().sigClick += [inst = WidgetRefTo(this)]() {
+        if (!inst) {
+            return true;
+        }
+
+        // TODO: Finish as well
+        DBG("Not implemented yet");
+
+        return false;
+    };
+}
+#pragma endregion EffectButton
+
+
+#pragma region ToolsWidget
 ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
-    Base(parent_, region_, nullptr, nullptr, nullptr) {
+    Base(parent_, region_, nullptr, nullptr, nullptr, nullptr) {
 
     const double height = region.h();
     const double width = region.w();
@@ -248,92 +351,32 @@ ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
     const double colW[2] = {width * 0.4, width * 0.6};
     const double colX[2] = {0, colW[0]};
 
-    const double sliderHeight = abel::gui::widgets::Thumb::DEFAULT_SIZE * 1.15;
+    const double sliderHeight = widgets::Thumb::DEFAULT_SIZE * 1.15;
     const double paletteHeight = colW[0] + 2 * sliderHeight;
 
     const Rect<double> regionColorPicker = Rect<double>::wh(colX[0], 0,             colW[0], paletteHeight);
     const Rect<double> regionSizePicker  = Rect<double>::wh(colX[0], paletteHeight, colW[0], sliderHeight);
-    const Rect<double> regionTools       = Rect<double>::wh(colX[1], 0,             colW[1], height);
+    const Rect<double> regionTools       = Rect<double>::wh(colX[1], 0,             colW[1], height / 2);
+    const Rect<double> regionEffects     = Rect<double>::wh(colX[1], height / 2,    colW[1], height / 2);
 
     colorPicker(new ColorPicker(nullptr, regionColorPicker));
     sizePicker(new SizePicker(nullptr, regionSizePicker));
-    toolButtons(new _tool_buttons_type(nullptr, regionTools, abel::gui::widgets::LAD_VERTICAL));
+    toolButtons(new _tool_buttons_type(nullptr, regionTools, widgets::LAD_VERTICAL, 0));
+    effectButtons(new _effect_buttons_type(nullptr, regionEffects, widgets::LAD_VERTICAL, 0));
 
-    const double btnX = 0;
-    const double btnW = colW[1] * 0.9;
-    const double btnH = 30;
+    buttonSize = Rect<double>::wh(0, 0, colW[1] * 0.9, 26);
 
-    {
-        constexpr const char *NAMES[] = {"Brush",
-                                        "*Brush"};
+    addToolButton(MyApp::getInstance().toolMgr
+                      .getBasicToolHandle(ToolManager::BTT_BRUSH),
+                  "Brush");
 
-        abel::gui::widgets::Button &btn = toolButtons()
-            .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), NAMES[1]);
+    addToolButton(MyApp::getInstance().toolMgr
+                      .getBasicToolHandle(ToolManager::BTT_ERASER),
+                  "Eraser");
 
-        MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(btn), NAMES](ToolManager &mgr) {
-            if (!inst) {
-                return true;
-            }
-
-            inst->getLabel().setText(NAMES[mgr.isBasicToolActive(mgr.BTT_BRUSH)]);
-
-            return false;
-        };
-
-        btn.sigClick += []() {
-            MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_BRUSH);
-
-            return false;
-        };
-    }
-
-    {
-        constexpr const char *NAMES[] = {"Eraser",
-                                        "*Eraser"};
-
-        abel::gui::widgets::Button &btn = toolButtons()
-            .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), NAMES[0]);
-
-        MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(btn), NAMES](ToolManager &mgr) {
-            if (!inst) {
-                return true;
-            }
-
-            inst->getLabel().setText(NAMES[mgr.isBasicToolActive(mgr.BTT_ERASER)]);
-
-            return false;
-        };
-
-        btn.sigClick += []() {
-            MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_ERASER);
-
-            return false;
-        };
-    }
-
-    {
-        constexpr const char *NAMES[] = {"Picker",
-                                        "*Picker"};
-
-        abel::gui::widgets::Button &btn = toolButtons()
-            .createChild(Rect<double>::wh(btnX, 0, btnW, btnH), NAMES[0]);
-
-        MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(btn), NAMES](ToolManager &mgr) {
-            if (!inst) {
-                return true;
-            }
-
-            inst->getLabel().setText(NAMES[mgr.isBasicToolActive(mgr.BTT_COLOR_PICKER)]);
-
-            return false;
-        };
-
-        btn.sigClick += []() {
-            MyApp::getInstance().toolMgr.selectBasicTool(ToolManager::BTT_COLOR_PICKER);
-
-            return false;
-        };
-    }
+    addToolButton(MyApp::getInstance().toolMgr
+                      .getBasicToolHandle(ToolManager::BTT_COLOR_PICKER),
+                  "Picker");
 
     MyApp::getInstance().toolMgr.sigConfigChanged += [this](ToolManager &mgr) {
         sizePicker().setSize(mgr.getRadius() * 2);
@@ -347,3 +390,12 @@ ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
         return false;
     };
 }
+
+void ToolsWidget::addToolButton(ToolManager::tool_handle_t toolIdx, const char *name) {
+    toolButtons().createChild(buttonSize, toolIdx, name);
+}
+
+void ToolsWidget::addEffectButton(ToolManager::effect_handle_t effectIdx, const char *name) {
+    effectButtons().createChild(buttonSize, effectIdx, name);
+}
+#pragma endregion ToolsWidget

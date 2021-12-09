@@ -3,11 +3,14 @@
 #include <ACL/general.h>
 #include <AGF/widget.h>
 #include <AGF/widgets/all.h>
+#include "tool.h"
+#include <string>
 
 
 using abel::gui::Rect;
 using abel::gui::Color;
 using abel::math::Vector2d;
+namespace widgets = abel::gui::widgets;
 
 
 class ColorPicker;
@@ -16,9 +19,9 @@ class ColorPicker;
 // Not simply _impl to be more friendly towards VS's intellisense
 namespace _myimpl {
 
-class ColorSliderThumb : public abel::gui::widgets::Thumb {
+class ColorSliderThumb : public widgets::Thumb {
 public:
-    using Base = abel::gui::widgets::Thumb;
+    using Base = widgets::Thumb;
     EVENT_HANDLER_USING(Base);
 
 
@@ -28,9 +31,9 @@ protected:
     virtual void renderThumb(abel::gui::Texture &target, const Rect<double> &at) override;
 };
 
-class ColorSliderSV : public abel::gui::widgets::Slider2D {
+class ColorSliderSV : public widgets::Slider2D {
 public:
-    using Base = abel::gui::widgets::Slider2D;
+    using Base = widgets::Slider2D;
     EVENT_HANDLER_USING(Base);
 
 
@@ -50,9 +53,9 @@ protected:
 };
 
 
-class ColorSliderH : public abel::gui::widgets::SliderH {
+class ColorSliderH : public widgets::SliderH {
 public:
-    using Base = abel::gui::widgets::SliderH;
+    using Base = widgets::SliderH;
     EVENT_HANDLER_USING(Base);
 
 
@@ -71,9 +74,9 @@ protected:
 };
 
 
-class ColorSliderA : public abel::gui::widgets::SliderH {
+class ColorSliderA : public widgets::SliderH {
 public:
-    using Base = abel::gui::widgets::SliderH;
+    using Base = widgets::SliderH;
     EVENT_HANDLER_USING(Base);
 
 
@@ -94,13 +97,13 @@ protected:
 }  // namespace _myimpl
 
 
-class ColorPicker : public abel::gui::widgets::StaticGroup<
+class ColorPicker : public widgets::StaticGroup<
                                _myimpl::ColorSliderSV,
                                _myimpl::ColorSliderH,
                                _myimpl::ColorSliderA
                            > {
 public:
-    using Base = abel::gui::widgets::StaticGroup<
+    using Base = widgets::StaticGroup<
                      _myimpl::ColorSliderSV,
                      _myimpl::ColorSliderH,
                      _myimpl::ColorSliderA
@@ -135,9 +138,9 @@ protected:
 };
 
 
-class SizePicker : public abel::gui::widgets::SliderH {
+class SizePicker : public widgets::SliderH {
 public:
-    using Base = abel::gui::widgets::SliderH;
+    using Base = widgets::SliderH;
     EVENT_HANDLER_USING(Base);
 
     static constexpr double
@@ -159,16 +162,73 @@ protected:
 
 namespace _myimpl {
 
-
-using _ToolsWidgetBase =
-    abel::gui::widgets::StaticGroup<
-        ColorPicker,
-        SizePicker,
-        abel::gui::widgets::LayoutOf<
-            abel::gui::widgets::Button
-        >
+#pragma region ToolButton
+using _ToolButtonBase =
+    widgets::StaticGroup<
+        widgets::Button
     >;
 
+class ToolButton : public _ToolButtonBase {
+public:
+    using Base = _ToolButtonBase;
+    EVENT_HANDLER_USING(Base);
+
+    ToolButton(Widget *parent_, const Rect<double> &region_,
+               ToolManager::tool_handle_t handle_, const char *name_);
+
+protected:
+    ToolManager::tool_handle_t handle;
+    const std::string_view name;
+    const std::string nameActive = std::string("* ") + name.data();
+    bool isNameActive = false;
+
+
+    SGRP_DECLARE_BINDING_I(button, 0);
+
+
+    void changeActiveState(bool active);
+
+};
+#pragma endregion ToolButton
+
+#pragma region EffectButton
+using _EffectButtonBase =
+    widgets::StaticGroup<
+        widgets::Button,
+        widgets::Button
+    >;
+
+class EffectButton : public _EffectButtonBase {
+public:
+    using Base = _EffectButtonBase;
+    EVENT_HANDLER_USING(Base);
+
+    EffectButton(Widget *parent_, const Rect<double> &region_,
+                 ToolManager::effect_handle_t handle_, const char *name_);
+
+protected:
+    ToolManager::effect_handle_t handle;
+    const char *name;
+
+
+    SGRP_DECLARE_BINDING_I(button, 0);
+    SGRP_DECLARE_BINDING_I(settingsButton, 1);
+
+};
+#pragma endregion EffectButton
+
+
+using _ToolsWidgetBase =
+    widgets::StaticGroup<
+        ColorPicker,
+        SizePicker,
+        widgets::LayoutOf<
+            ToolButton
+        >,
+        widgets::LayoutOf<
+            EffectButton
+        >
+    >;
 
 }
 
@@ -181,12 +241,20 @@ public:
 
     ToolsWidget(Widget *parent_, const Rect<double> &region_);
 
+    void   addToolButton(ToolManager::  tool_handle_t   toolIdx, const char *name);
+    void addEffectButton(ToolManager::effect_handle_t effectIdx, const char *name);
+
 protected:
-    using _tool_buttons_type = Base::Types::item<2>; // The type name is too long
+    using   _tool_buttons_type = Base::Types::item<2>; // The type name is too long
+    using _effect_buttons_type = Base::Types::item<3>; // Same
 
     SGRP_DECLARE_BINDING_T(colorPicker, ColorPicker);
     SGRP_DECLARE_BINDING_T( sizePicker,  SizePicker);
-    SGRP_DECLARE_BINDING_T(toolButtons, _tool_buttons_type);
+    SGRP_DECLARE_BINDING_T(  toolButtons,   _tool_buttons_type);
+    SGRP_DECLARE_BINDING_T(effectButtons, _effect_buttons_type);
+
+
+    Rect<double> buttonSize{};
 
 };
 
