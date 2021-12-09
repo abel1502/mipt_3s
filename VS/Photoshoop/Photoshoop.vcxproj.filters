@@ -69,6 +69,9 @@
     <ClInclude Include="spline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tools\invert_eff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp">
@@ -125,8 +128,12 @@
     <ClCompile Include="spline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tools\invert_eff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\default.style" />
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ ToolManager::ToolManager(double radius_, const Color &color_, double alpha_) :
     tools.appendEmplace(new PickerTool(this));
 }
 
-Tool &ToolManager::selectTool(unsigned idx) {
+Tool &ToolManager::selectTool(tool_handle_t idx) {
     REQUIRE(idx < tools.getSize());
 
     activeToolIdx = idx;
@@ -24,23 +24,18 @@ Tool &ToolManager::selectTool(unsigned idx) {
 }
 
 Tool &ToolManager::selectBasicTool(BasicToolType type) {
-    unsigned idx = -1u;
-
-    switch (type) {
-    case BTT_BRUSH:
-        idx = 0;
-        break;
-
-    case BTT_ERASER:
-        idx = 1;
-        break;
-
-    case BTT_COLOR_PICKER:
-        idx = 2;
-        break;
-
-    NODEFAULT
-    }
-
-    return selectTool(idx);
+    return selectTool(getBasicToolHandle(type));
 }
+
+ToolManager::tool_handle_t ToolManager::addTool(Tool *tool) {
+    tools.appendEmplace(tool);
+
+    return (tool_handle_t)(tools.getSize() - 1);
+}
+
+ToolManager::effect_handle_t ToolManager::addEffect(Effect *effect) {
+    effects.appendEmplace(effect);
+
+    return (effect_handle_t)(effects.getSize() - 1);
+}
+

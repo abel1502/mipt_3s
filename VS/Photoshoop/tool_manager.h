@@ -20,6 +20,8 @@ class Tool;
 class BrushTool;
 class EraserTool;
 class PickerTool;
+class Effect;
+
 
 class ToolManager {
 public:
@@ -29,16 +31,31 @@ public:
         BTT_COLOR_PICKER,
     };
 
+    using tool_handle_t = unsigned;
+    using effect_handle_t = unsigned;
+
 
     abel::Signal<bool (ToolManager &)> sigConfigChanged{};
 
 
     ToolManager(double radius_ = 2.5, const Color &color_ = {}, double alpha_ = 1);
 
-    inline const Tool &getActiveTool() const { return *tools[activeToolIdx]; }
-    inline       Tool &getActiveTool()       { return *tools[activeToolIdx]; }
+    inline const Tool &getTool(tool_handle_t handle) const { return *tools[handle]; }
+    inline       Tool &getTool(tool_handle_t handle)       { return *tools[handle]; }
 
-    Tool &selectTool(unsigned idx);
+    inline const Effect &getEffect(effect_handle_t handle) const { return *effects[handle]; }
+    inline       Effect &getEffect(effect_handle_t handle)       { return *effects[handle]; }
+
+    inline const Tool &getActiveTool() const { return getTool(activeToolIdx); }
+    inline       Tool &getActiveTool()       { return getTool(activeToolIdx); }
+
+    inline tool_handle_t getActiveToolHandle() const { return activeToolIdx; }
+
+    tool_handle_t addTool(Tool *tool);
+
+    effect_handle_t addEffect(Effect *effect);
+
+    Tool &selectTool(tool_handle_t handle);
 
     Tool &selectBasicTool(BasicToolType type);
 
@@ -66,6 +83,11 @@ public:
     }
 
     inline bool isBasicToolActive(BasicToolType type);
+
+    constexpr tool_handle_t getBasicToolHandle(BasicToolType type) {
+        // A trivial conversion in this case, but doesn't have to be
+        return (tool_handle_t)type;
+    }
 
     inline void resetActiveCanvas() {
         setActiveCanvas(nullptr);
@@ -120,6 +142,7 @@ public:
 
 protected:
     abel::vector<abel::unique_ptr<Tool>> tools;
+    abel::vector<abel::unique_ptr<Effect>> effects;
     unsigned activeToolIdx;
     abel::gui::WidgetRefTo<Canvas> activeCanvas = nullptr;
     double radius = 2.5;
@@ -141,17 +164,6 @@ protected:
 
 
 inline bool ToolManager::isBasicToolActive(BasicToolType type) {
-    switch (type) {
-    case BTT_BRUSH:
-        return activeToolIdx == 0;
-
-    case BTT_ERASER:
-        return activeToolIdx == 1;
-
-    case BTT_COLOR_PICKER:
-        return activeToolIdx == 2;
-
-    NODEFAULT
-    }
+    return activeToolIdx == getBasicToolHandle(type);
 }
 

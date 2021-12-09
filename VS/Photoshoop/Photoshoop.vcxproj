@@ -213,6 +213,7 @@
     <ClInclude Include="tool.h" />
     <ClInclude Include="tools\eraser.h" />
     <ClInclude Include="layer.h" />
+    <ClInclude Include="tools\invert_eff.h" />
     <ClInclude Include="tools\picker.h" />
     <ClInclude Include="tool_manager.h" />
   </ItemGroup>
@@ -233,6 +234,7 @@
     <ClCompile Include="tool.cpp" />
     <ClCompile Include="tools\eraser.cpp" />
     <ClCompile Include="layer.cpp" />
+    <ClCompile Include="tools\invert_eff.cpp" />
     <ClCompile Include="tools\picker.cpp" />
     <ClCompile Include="tool_manager.cpp" />
   </ItemGroup>
