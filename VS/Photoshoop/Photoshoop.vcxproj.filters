@@ -21,7 +21,7 @@
     <ClInclude Include="canvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="color_picker.h">
+    <ClInclude Include="tools_widget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tool_manager.h">
@@ -77,7 +77,7 @@
     <ClCompile Include="canvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="color_picker.cpp">
+    <ClCompile Include="tools_widget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tool_manager.cpp">
