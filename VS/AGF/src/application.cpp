@@ -96,23 +96,30 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
 }
 
 void Application::run() {
-    wnd->update();
+    try {
+        wnd->update();
 
-    double lastTime = getTime();
+        double lastTime = getTime();
 
-    while (!finished) {
-        if (hasQueuedActions()) {
-            executeQueuedAction();
+        while (!finished) {
+            if (hasQueuedActions()) {
+                executeQueuedAction();
+            }
+
+            double curTime = getTime();
+            actionExecMutex.lock();
+            sigTick(curTime - lastTime);
+            actionExecMutex.unlock();
+            lastTime = curTime;
+
+            // asm volatile ("pause");
+            YieldProcessor();
         }
+    } catch (const abel::error &e) {
+        ERR("Uncaught abel error: \"%s\"\n"
+            "Shutting down", e.what());
 
-        double curTime = getTime();
-        actionExecMutex.lock();
-        sigTick(curTime - lastTime);
-        actionExecMutex.unlock();
-        lastTime = curTime;
-
-        // asm volatile ("pause");
-        YieldProcessor();
+        wnd->close();
     }
 }
 
@@ -211,10 +218,18 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         texture.setFillColor(Color::WHITE);
         texture.clear();  // TODO: Remove, or maybe move to WM_ERASEBKGND?
 
-        // Render event must be synchronous due to WINAPI's limitations
-        enqueueEvent(RenderEvent{texture}, P_IMMEDIATE);
+        try {
+            // Render event must be synchronous due to WINAPI's limitations
+            enqueueEvent(RenderEvent{texture}, P_IMMEDIATE);
 
-        wnd->render(texture);
+            wnd->render(texture);
+        } catch (const llgui_error &e) {
+            ERR("Uncaught llgui error guring rendering: \"%s\".\n"
+                "Shutting down.", e.what());
+
+            wnd->close();
+            finished = true;
+        }
 
         // Missing intentionally, to avoid recursive WM_PAINTs
         // wnd->update();

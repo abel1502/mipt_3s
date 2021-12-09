@@ -59,7 +59,7 @@ public:
     inline Rect<double> getBounds() const {
         assert(parent);
 
-        Rect<double> bounds =  parent->getRegion().padded(region.w() / 2, region.h() / 2);
+        Rect<double> bounds = parent->getRegion().padded(region.w() / 2, region.h() / 2);
 
         constexpr double EXTRA_LOCKED_PAD = Visual ? 3 : 0;
 

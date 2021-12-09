@@ -21,5 +21,5 @@ extern "C" int main(int argc, const char **argv) {
         app.teardown();
 
         return 0;
-    )
+    );
 }
