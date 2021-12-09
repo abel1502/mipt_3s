@@ -11,6 +11,7 @@
 using abel::gui::Rect;
 using abel::gui::Color;
 using abel::math::Vector2d;
+namespace widgets = abel::gui::widgets;
 
 
 class Canvas : public abel::gui::Widget {
@@ -54,5 +55,8 @@ protected:
     bool onDrag(abel::gui::MouseBtn btn, const abel::gui::MouseMoveEvent &event);
     bool onDown(const abel::gui::MouseClickEvent &event);
     bool onDragStateChange(abel::gui::MouseBtn btn, abel::gui::MouseAttrs attrs, bool state);
+
+
+    void becomeActive();
 
 };

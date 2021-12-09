@@ -21,6 +21,8 @@ Canvas::Canvas(Widget *parent_, const Rect<double> &region_) :
     mt.sigDrag += std::bind(&Canvas::onDrag,  this, _1, _2);
     mt.sigDown += std::bind(&Canvas::onDown, this, _1);
     mt.sigDragStateChange += std::bind(&Canvas::onDragStateChange, this, _1, _2, _3);
+
+    becomeActive();
 }
 
 
@@ -50,6 +52,17 @@ EVENT_HANDLER_IMPL(Canvas, MouseClick) {
 
 EVENT_HANDLER_IMPL(Canvas, MouseMove) {
     return mt.processEvent(event, Base::dispatchEvent(event));
+}
+
+EVENT_HANDLER_IMPL(Canvas, FocusUpdate) {
+    EventStatus status = Base::dispatchEvent(event);
+
+    if (status.shouldHandle(status.NODE) && event.focus) {
+        // TODO: ?
+        becomeActive();
+    }
+
+    return status;
 }
 
 bool Canvas::onDrag(MouseBtn btn, const MouseMoveEvent &event) {
@@ -87,6 +100,8 @@ bool Canvas::onDragStateChange(abel::gui::MouseBtn btn,
     if (btn != MouseBtn::Left) {
         return false;
     }
+
+    becomeActive();
 
     // TODO: Perhaps clear after flush only?
     if (state) {
