@@ -332,7 +332,7 @@ public:
             newIdx++;
         }
 
-        size = newIdx;
+        resize(newIdx);
     }
 
     /// Same as filter, at the cost of possibly messing up the order, this one performs less moves on T
@@ -347,6 +347,18 @@ public:
 
             swapPop(i);
         }
+    }
+
+    bool resize(unsigned new_size) {
+        if (new_size > size) {
+            return extend(new_size - size);
+        }
+
+        while (new_size < size) {
+            pop();
+        }
+
+        return false;
     }
 
 protected:
