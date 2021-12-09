@@ -658,6 +658,48 @@ PackedColor Texture::getPixelColor(Vector2d pos) const {
                        gdiColor.GetB(),
                        gdiColor.GetA());
 }
+
+void Texture::clipPush(Rect<double> rect, bool overwrite) {
+    // TODO: Perhaps offset?
+
+    if (!overwrite) {
+        rect.clamp(getClipRect());
+    }
+
+    clipStack.append(rect);
+
+    applyClipStack();
+}
+
+void Texture::clipPop() {
+    if (clipStack.isEmpty()) {
+        throw llgui_error("Cannot pop clip from empty stack");
+    }
+
+    clipStack.pop();
+
+    applyClipStack();
+}
+
+void Texture::applyClipStack() {
+    Rect<double> clipRect = getClipRect();
+    clipRect -= offset();
+
+    Gdiplus::RectF gdiClipRect{(float)clipRect.x(),
+                               (float)clipRect.y(),
+                               (float)clipRect.w(),
+                               (float)clipRect.h()};
+
+    graphics.SetClip(gdiClipRect);
+}
+
+Rect<double> Texture::getClipRect() const {
+    if (clipStack.isEmpty()) {
+        return getRect();
+    }
+
+    return clipStack[-1];
+}
 #pragma endregion Texture
 
 

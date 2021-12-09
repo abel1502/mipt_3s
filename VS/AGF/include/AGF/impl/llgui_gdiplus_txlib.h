@@ -29,6 +29,7 @@
 
 #include <AGF/llgui_pre.h>
 #include <AGF/impl/llgui_wintheme.h>
+#include <ACL/vector.h>
 
 
 namespace abel::gui {
@@ -371,6 +372,10 @@ public:
 
     // void update();
 
+    void clipPush(Rect<double> rect, bool overwrite = false);
+    void clipPop();
+    Rect<double> getClipRect() const;
+
 protected:
     friend class Window;
 
@@ -385,12 +390,17 @@ protected:
          bufWrite = false;
     Gdiplus::BitmapData bitmapData{};
 
+    vector<Rect<double>> clipStack{};
+
+
     Gdiplus::Color getGdiplusLineColor() const;
     Gdiplus::Color getGdiplusFillColor() const;
 
     static unsigned convertTextFmt(TextAlign hAlign, TextAlign vAlign, TextTrimming trimming, unsigned format);
 
     void setup(bool shouldClear = true);
+
+    void applyClipStack();
 
 };
 
