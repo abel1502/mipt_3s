@@ -18,8 +18,7 @@ public:
     using Vector2T = typename abel::math::Vector2<signed_type>;
 
 
-    constexpr Rect() noexcept :
-        x_{0}, y_{0}, w_{0}, h_{0} {}
+    constexpr Rect() noexcept {}
 
     /// Width-height
     static constexpr Rect wh(T x, T y, T w, T h) noexcept {
@@ -239,7 +238,10 @@ public:
     }
 
 protected:
-    T x_, y_, w_, h_;
+    T x_{},
+      y_{},
+      w_{},
+      h_{};
 
 
     /// Width-height
