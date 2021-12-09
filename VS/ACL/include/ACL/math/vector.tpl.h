@@ -26,7 +26,7 @@ public:
 
     // Because for N == 1 this is equivalent to the complete constructor
     #if N_ > 1
-    constexpr NAME_(const_arg_type val) noexcept :
+    explicit constexpr NAME_(const_arg_type val) noexcept :
         values{} {
 
         for (unsigned i = 0; i < DIM; ++i) {
@@ -53,28 +53,6 @@ public:
         return *this;
     }
 
-    template <typename U>
-    constexpr NAME_ &operator*=(U other) noexcept {
-        static_assert(std::is_arithmetic_v<U>);
-
-        for (unsigned i = 0; i < DIM; ++i) {
-            values[i] = (T)(values[i] * other);
-        }
-
-        return *this;
-    }
-
-    template <typename U>
-    constexpr NAME_ &operator/=(U other) noexcept {
-        static_assert(std::is_arithmetic_v<U>);
-
-        for (unsigned i = 0; i < DIM; ++i) {
-            values[i] = (T)(values[i] / other);
-        }
-
-        return *this;
-    }
-
     constexpr NAME_ &operator*=(const_arg_type other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
             values[i] *= other;
@@ -82,7 +60,6 @@ public:
 
         return *this;
     }
-
 
     constexpr NAME_ &operator/=(const_arg_type other) noexcept {
         for (unsigned i = 0; i < DIM; ++i) {
