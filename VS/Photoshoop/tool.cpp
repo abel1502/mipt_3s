@@ -16,3 +16,7 @@ void Tool::applyLine(Layer &layer, const Vector2d &pos0, const Vector2d &pos1) {
         applyPoint(layer, cur);
     }
 }
+
+
+Effect::Effect(ToolManager *manager_) :
+    manager{manager_} {}
