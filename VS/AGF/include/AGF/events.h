@@ -21,22 +21,11 @@ namespace abel::gui {
 
 
 EVENT_CLS_DECL_(Render) {
-    EVENT_CLS_DEMANDS_MODIFICATION_
-
-    Rect<double> region;  // The (suggested) limiting bounds, by default, the borders of the parent widget
     Texture &target;
 
 
-    constexpr RenderEvent(const Rect<double> &region_, Texture &target_) noexcept :
-        region{region_}, target{target_} {}
-
-    constexpr RenderEvent createSubEvent(const Rect<double> &region_) const noexcept {
-        RenderEvent subEvent{*this};
-
-        subEvent.region = region_;
-
-        return subEvent;
-    }
+    constexpr RenderEvent(Texture &target_) noexcept :
+        target{target_} {}
 };
 
 EVENT_CLS_DECL_(Move) {

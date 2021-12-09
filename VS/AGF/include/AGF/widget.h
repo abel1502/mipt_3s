@@ -122,7 +122,6 @@ protected:
     static constexpr enum {
         DRB_NONE,
         DRB_OBJECT,
-        DRB_EVENT,
     } DEBUG_RENDER_BOXES = DRB_NONE;
 
 
@@ -148,6 +147,8 @@ protected:
 
     template <typename T>
     EventStatus dispatchToChild(Widget &child, const T &event) {
+        static_assert(std::is_base_of_v<WidgetEvent, T>);
+
         assert(!child.isDead());
 
         if constexpr (!T::demands_modification) {
@@ -166,11 +167,6 @@ protected:
     EventStatus handleMouseOpaque(const MouseClickEvent &event, EventStatus baseStatus);
 
 };
-
-template <>
-inline RenderEvent Widget::translateEvent(const RenderEvent &event) {
-    return event.createSubEvent(region);
-}
 
 }
 

@@ -212,7 +212,7 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         texture.clear();  // TODO: Remove, or maybe move to WM_ERASEBKGND?
 
         // Render event must be synchronous due to WINAPI's limitations
-        enqueueEvent(RenderEvent{texture.getRect(), texture}, P_IMMEDIATE);
+        enqueueEvent(RenderEvent{texture}, P_IMMEDIATE);
 
         wnd->render(texture);
 

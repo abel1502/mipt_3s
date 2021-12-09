@@ -18,9 +18,6 @@ EVENT_HANDLER_IMPL(Widget, Render) {
     if constexpr (DEBUG_RENDER_BOXES == DRB_OBJECT) {
         event.target.setLineColor(Color::ORANGE);
         event.target.drawFrame(region);
-    } else if constexpr (DEBUG_RENDER_BOXES == DRB_EVENT) {
-        event.target.setLineColor(Color::GREEN);
-        event.target.drawFrame(event.region);
     }
 
     return EventStatus::skip();

@@ -154,7 +154,7 @@ EVENT_HANDLER_IMPL(Window, Render) {
             cachedTexture->setFillColor(Color::WHITE, 0.f);
             cachedTexture->clear();
 
-            Base::dispatchEvent(RenderEvent{cachedTexture->getRect(), *cachedTexture});
+            Base::dispatchEvent(RenderEvent{*cachedTexture});
 
             // abel::gui::Window::getInstance().getRect()
             // cachedTexture->clear(Color{0.8f});

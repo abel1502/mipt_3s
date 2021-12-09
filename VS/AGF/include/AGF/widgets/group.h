@@ -96,14 +96,11 @@ protected:
         if (!status.shouldHandle(status.NODE))
             return status;
 
-        static_assert(RenderEvent::demands_modification);
-        RenderEvent subEvent = event.createSubEvent(region);
-
         auto childrenEnd = children.end();  // We rely on our loop being cyclic
         for (auto iter = --children.end(); iter != childrenEnd; --iter) {
             auto &child = *iter;
 
-            status = child->dispatchEvent(subEvent);
+            status = dispatchToChild(*child, event);
 
             if (status.update())
                 break;
