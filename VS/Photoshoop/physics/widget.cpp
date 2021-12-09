@@ -1,4 +1,5 @@
 #include <AGF/llgui.h>
+#include <AGF/helpers/widget_ref.h>
 #include "widget.h"
 
 
@@ -39,8 +40,12 @@ MoleculesWidget::MoleculesWidget(Widget *parent_, const Rect<double> &region_) :
     /*manager.addMolecule(Vector2d{0, 0}, 1.d, Molecule::P_BALL);
     manager.addMolecule(Vector2d{0, 0.9}, 1.d, Molecule::P_BALL);*/
 
-    MyApp::getInstance().sigTick += [this](double deltaT) {
-        manager.tick(deltaT);
+    MyApp::getInstance().sigTick += [inst = abel::gui::WidgetRefTo(this)](double deltaT) {
+        if (!inst) {
+            return true;
+        }
+
+        inst->manager.tick(deltaT);
 
         return false;
     };

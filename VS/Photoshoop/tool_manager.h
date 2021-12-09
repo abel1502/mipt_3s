@@ -6,6 +6,7 @@
 #include <ACL/signal.h>
 #include <AGF/widget.h>
 #include <AGF/widgets/all.h>
+#include <AGF/helpers/widget_ref.h>
 #include "tool.h"
 #include "canvas.h"
 
