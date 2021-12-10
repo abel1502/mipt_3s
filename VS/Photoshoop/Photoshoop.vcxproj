@@ -200,6 +200,7 @@
     <ClInclude Include="app.h" />
     <ClInclude Include="canvas.h" />
     <ClInclude Include="tools_widget.h" />
+    <ClInclude Include="donut.h" />
     <ClInclude Include="physics\borders.h" />
     <ClInclude Include="physics\components\chemistry.h" />
     <ClInclude Include="physics\components\component.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="app.cpp" />
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="tools_widget.cpp" />
+    <ClCompile Include="donut.cpp" />
     <ClCompile Include="physics\borders.cpp" />
     <ClCompile Include="physics\components\chemistry.cpp" />
     <ClCompile Include="physics\components\component.cpp" />
