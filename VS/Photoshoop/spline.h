@@ -7,6 +7,7 @@
 #include <ACL/gui/coords.h>
 #include <AGF/helpers/mouse_tracker.h>
 #include <ACL/cmp.h>
+#include <ACL/signal.h>
 
 
 using abel::gui::Rect;
@@ -54,6 +55,10 @@ public:
     };
 
 
+    // WARNING: Called OFTEN
+    abel::Signal<bool (Spline &spline)> sigChanged{};
+
+
     Spline(Widget *parent_, const Rect<double> &region_);
 
     EVENT_HANDLER_OVERRIDE(abel::gui::Render);
@@ -98,6 +103,8 @@ protected:
     inline void invalidateSamplesCache() {
         _cachedSamplesValid = false;
         _cachedTextureValid = false;
+
+        sigChanged(*this);
     }
 
     constexpr Rect<double> getBounds() const {
