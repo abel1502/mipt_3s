@@ -48,6 +48,14 @@ public:
         return lastState;
     }
 
+    constexpr bool isMouseCaptured() const {
+        return captureDegree > 0;
+    }
+
+    void captureMouse();
+
+    void releaseMouse();
+
 protected:
     static constexpr unsigned MOUSE_BTN_CNT = 3;
     static_assert((unsigned)MouseBtn::Left   < MOUSE_BTN_CNT &&
@@ -58,6 +66,7 @@ protected:
     Widget *widget;
     bool isDown_[MOUSE_BTN_CNT] = {};
     mutable Style::ElementState lastState = Style::ELS_NORMAL;
+    unsigned captureDegree = 0;
 
 
     constexpr void isDown(MouseBtn btn, bool value) {

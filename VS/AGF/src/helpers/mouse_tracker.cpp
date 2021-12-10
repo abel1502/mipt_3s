@@ -8,7 +8,6 @@ namespace abel::gui {
 
 Widget::EventStatus MouseClickTracker::processEvent(const MouseClickEvent &event,
                                                     Widget::EventStatus baseStatus) {
-    // TODO: Finish this and the rest
     if (!baseStatus.shouldHandle(baseStatus.NODE)) {
         return baseStatus;
     }
@@ -29,10 +28,7 @@ Widget::EventStatus MouseClickTracker::processEvent(const MouseClickEvent &event
             return Widget::EventStatus::stop(baseStatus.TREE);
         }
 
-        // I guess I should only capture upon left click
-        if (event.button == MouseBtn::Left) {
-            Application::getInstance().captureMouse(widget);
-        }
+        captureMouse();
 
         isDown(event.button, true);
 
@@ -40,9 +36,7 @@ Widget::EventStatus MouseClickTracker::processEvent(const MouseClickEvent &event
     } else if (isDown(event.button)) {
         // DBG("Up   %s", event.button == MouseBtn::Left ? "Left" : "Right");
 
-        if (event.button == MouseBtn::Left) {
-            Application::getInstance().releaseMouse(widget);
-        }
+        releaseMouse();
 
         isDown(event.button, false);
 
@@ -55,6 +49,28 @@ Widget::EventStatus MouseClickTracker::processEvent(const MouseClickEvent &event
 
     return Widget::EventStatus::stop(baseStatus.TREE);
 }
+
+void MouseClickTracker::captureMouse() {
+    if (captureDegree == 0) {
+        Application::getInstance().captureMouse(widget);
+    }
+
+    ++captureDegree;
+}
+
+void MouseClickTracker::releaseMouse() {
+    if (captureDegree == 0) {
+        // TODO: Warn
+        return;
+    }
+
+    if (captureDegree == 1) {
+        Application::getInstance().releaseMouse(widget);
+    }
+
+    --captureDegree;
+}
+
 
 
 Widget::EventStatus MouseTracker::processEvent(const MouseClickEvent &event,
