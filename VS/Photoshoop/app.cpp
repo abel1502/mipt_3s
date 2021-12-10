@@ -3,8 +3,12 @@
 #include <AGF/helpers/widget_ref.h>
 #include "app.h"
 #include "canvas.h"
-#include "color_picker.h"
+#include "tools_widget.h"
+#include "donut.h"
+#include "spline.h"
 #include "physics/widget.h"
+#include "tools/invert_eff.h"
+#include <ACL/debug.h>
 
 
 abel::gui::Application::app_ptr_t abel::gui::Application::create() {
@@ -27,6 +31,8 @@ void MyApp::init(int argc, const char **argv) {
 
     Application::init(argc, argv);
 
+    constexpr bool USE_MOLECULES = false;
+
     using namespace abel::gui::widgets;
     using abel::gui::Rect;
     using abel::gui::WidgetRef;
@@ -47,6 +53,18 @@ void MyApp::init(int argc, const char **argv) {
         return !(--cnt);
     };
 
+    #if 0
+    Donut &donut = grp->createChild<Donut>(Rect<double>::wh(5, -10, 150, 190));
+    donut.sigClick += []() {
+        DBG("You just clicked a donut");
+
+        return false;
+    };
+
+    grp->focusChild(donut);
+    #endif
+    grp->suppressRefocus = true;
+
     // mainWidget = grp;
 
     Canvas *canvas = new Canvas(nullptr, Rect<double>::se(0, 0, 300, 200).pad(10));
@@ -62,7 +80,11 @@ void MyApp::init(int argc, const char **argv) {
 
     // ColorPicker *palette = new ColorPicker(nullptr, Rect<double>::wh(0, 0, 120, 175));
 
-    // btn2.sigClick += [palette]() {
+    // btn2.sigClick += [palette = WidgetRefTo(palette)]() {
+    //     if (!palette) {
+    //         return true;
+    //     }
+    //
     //     // TODO: Very bad, because palette could have been destroyed
     //     Color color = palette->getColor();
     //
@@ -74,34 +96,87 @@ void MyApp::init(int argc, const char **argv) {
 
     ToolsWidget *palette = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 250, 175));
 
-    MoleculesWidget *molecules = new MoleculesWidget(nullptr, Rect<double>::wh(0, 0, 400, 300));
+    ToolManager::effect_handle_t hInvertEffect = toolMgr.addEffect(new InvertEffect(&toolMgr));
+
+    palette->addEffectButton(hInvertEffect, "Invert");
+
+    MoleculesWidget *molecules = nullptr;
+
+    if constexpr (USE_MOLECULES) {
+        molecules = new MoleculesWidget(nullptr, Rect<double>::wh(0, 0, 400, 300));
+    }
 
     {
         Layout &lay = grp->createChild<Layout>(Rect<double>::wh(140, 0, 150, 170));
-        lay.createChild<Button>(Rect<double>::wh(0, 0, 140, 30), "Spawn a molecule")
-            .sigClick += [molecules = WidgetRefTo/*<decltype(molecules)>*/(molecules)]() {
 
-            if (!molecules) {
-                DBG("No more molecules, unhooking");
+        if constexpr (USE_MOLECULES) {
+            lay.createChild<Button>(Rect<double>::wh(0, 0, 140, 30), "Spawn a molecule")
+                .sigClick += [molecules = WidgetRefTo/*<decltype(molecules)>*/(molecules)]() {
 
+                if (!molecules) {
+                    DBG("No more molecules, unhooking");
+
+                    return true;
+                }
+
+                molecules->getManager().addRandomMolecule(Molecule::P_BALL);
+
+                return false;
+            };
+        }
+
+        lay.createChild<Button>(Rect<double>::wh(0, 0, 140, 30), "Create layer")
+            .sigClick += [canvas = WidgetRefTo(canvas)]() {
+            if (!canvas) {
                 return true;
             }
 
-            molecules->getManager().addRandomMolecule(Molecule::P_BALL);
+            canvas->addLayer();
+            DBG("Now on layer %u", canvas->getActiveLayerIdx());
+
+            return false;
+        };
+
+        lay.createChild<Button>(Rect<double>::wh(0, 0, 140, 30), "Next layer")
+            .sigClick += [canvas = WidgetRefTo(canvas)]() {
+            if (!canvas) {
+                return true;
+            }
+
+            canvas->nextLayer();
+            DBG("Now on layer %u", canvas->getActiveLayerIdx());
+
+            return false;
+        };
+
+        lay.createChild<Button>(Rect<double>::wh(0, 0, 140, 30), "Prev layer")
+            .sigClick += [canvas = WidgetRefTo(canvas)]() {
+            if (!canvas) {
+                return true;
+            }
+
+            canvas->nextLayer();
+            DBG("Now on layer %u", canvas->getActiveLayerIdx());
 
             return false;
         };
     }
 
+    Spline *spline = new Spline(nullptr, Rect<double>::wh(0, 0, 175, 150));
+
     WindowManager *mgr = new WindowManager(nullptr, Rect<double>::wh(0, 0, 800, 600));
-    mgr->createWindow(Rect<double>::wh(140,  50, 300, 200), "Some buttons", grp)
-        .markEssential();
+    mgr->createWindow(Rect<double>::wh(140,  50, 300, 200), "Some buttons", grp);
     mgr->createWindow(Rect<double>::wh(240,  70, 300, 200), "A drawing canvas", canvas);
+    mgr->createWindow(Rect<double>::wh(240, 170, 300, 200), "Another canvas",
+                      new Canvas(nullptr, Rect<double>::se(0, 0, 300, 200).pad(10)));
     mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A slider", slider /*new Window::EmptyBody()*/);
     mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette)
         .markEssential();
-    mgr->createWindow(Rect<double>::wh(400,  50, 400, 300), "These molecules look familiar", molecules)
-        /*.markEssential() */ ;
+    if constexpr (USE_MOLECULES) {
+        mgr->createWindow(Rect<double>::wh(400,  50, 400, 300), "These molecules look familiar", molecules)
+            /*.markEssential() */ ;
+    }
+    mgr->createWindow(Rect<double>::wh(50, 120, 300, 200), "Spline test", spline);
 
     // palette->setColor(Color::BLACK);
     // palette->setAlpha(1);
