@@ -62,7 +62,7 @@ Spline::Spline(Widget *parent_, const Rect<double> &region_) :
             activePointIdx = addPointAt(event.pos);
         }
 
-        if (remove) {
+        if (remove || closestIdx == BAD_IDX) {
             return false;
         }
 
@@ -98,8 +98,6 @@ Spline::Spline(Widget *parent_, const Rect<double> &region_) :
 
         return false;
     };
-
-    // TODO: Finish
 }
 
 EVENT_HANDLER_IMPL(Spline, abel::gui::MouseClick) {
@@ -277,7 +275,8 @@ void Spline::accumulateSegmentSamples(const Point *neighborL,
     const double dy = y3 - y0;
 
     if (abel::sgnDbl(dx) <= 0) {
-        _cachedSamples.append(Vector2d{x0, y3});
+        _cachedSamples.append(Vector2d{x0, y0});
+        _cachedSamples.append(Vector2d{x3, y3});
 
         return;
     }
@@ -398,7 +397,20 @@ void Spline::moveActivePoint(const Vector2d &valueTo) {
     }
 
     activePoint.value = valueTo - dragOffset;
-    activePoint.value.clamp(Vector2d{0, 0}, Vector2d{1, 1});
+
+    Vector2d pad[2] = {Vector2d{0, 0},
+                       Vector2d{1, 1}};
+    const Vector2d valueHorizMargin = getCoords().scale_s2v(Vector2d{1, 0});
+
+    if (activePointIdx > 0) {
+        pad[0] -= valueHorizMargin;
+    }
+
+    if (activePointIdx < points.getSize() - 1) {
+        pad[1] += valueHorizMargin;
+    }
+
+    activePoint.value.clamp(pad[0], pad[1]);
 
     invalidateSamplesCache();
 }

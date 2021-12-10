@@ -95,7 +95,7 @@ protected:
         return getCoords().screen2virt(pos);
     }
 
-    inline void invalidateSamplesCache() const {
+    inline void invalidateSamplesCache() {
         _cachedSamplesValid = false;
         _cachedTextureValid = false;
     }
@@ -121,7 +121,7 @@ protected:
     }
 
     inline void forgetActivePoint() {
-        if (activePointIdx) {
+        if (activePointIdx != BAD_IDX) {
             points[activePointIdx].active = false;
         }
 
@@ -141,7 +141,7 @@ protected:
     void moveActivePoint(const Vector2d &by);
 
     inline bool isActivePointMisplaced() const {
-        return isPointMisplaced(activePointIdx);
+        return activePointIdx != BAD_IDX && isPointMisplaced(activePointIdx);
     }
 
     bool isPointMisplaced(unsigned idx) const;
