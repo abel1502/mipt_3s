@@ -334,6 +334,11 @@ void Texture::drawLine(Vector2d from, Vector2d to) {
     from -= offset();
     to   -= offset();
 
+    if ((from - to).isZero()) {
+        // Trivial draw
+        return;
+    }
+
     if (graphics.DrawLine(&pen, (float)from.x(), (float)from.y(),
                                 (float)to.x(), (float)to.y()) != Gdiplus::Ok) {
         throw llgui_error("GDI+ DrawLine failed");
