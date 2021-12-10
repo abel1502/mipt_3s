@@ -23,7 +23,7 @@ public:
     using SampleArr = abel::vector<Vector2d>;
 
     static constexpr Vector2d THUMB_SIZE{6, 6};
-    static constexpr double THUMB_GRAB_RADIUS = 7.5;
+    static constexpr double THUMB_GRAB_RADIUS = 7;
 
 
     struct Point {
@@ -65,13 +65,16 @@ public:
     const SampleArr &getSamples() const;
 
 protected:
+    static constexpr bool DEBUG_DRAW_SAMPLES = false;
     static constexpr Rect<double> limits{Rect<double>::wh(0, 1, 1, -1)};
     static constexpr unsigned BAD_IDX = -1u;
 
 
     abel::gui::MouseTracker mt{this};
     abel::vector<Point> points{};
+    abel::gui::MouseBtn draggingButton{};
     unsigned activePointIdx = BAD_IDX;
+    Vector2d dragOffset{};
 
     mutable bool _cachedSamplesValid = false;
     mutable SampleArr _cachedSamples{};
@@ -80,16 +83,16 @@ protected:
     mutable abel::unique_ptr<abel::gui::Texture> _cachedTexture = nullptr;
 
 
-    constexpr Vector2d valueToPos(const Vector2d &value) const {
-        abel::gui::Coords coords{getBounds(), limits};
+    constexpr abel::gui::Coords getCoords() const {
+        return abel::gui::Coords{getBounds(), limits};
+    }
 
-        return coords.virt2screen(value);
+    constexpr Vector2d valueToPos(const Vector2d &value) const {
+        return getCoords().virt2screen(value);
     }
 
     Vector2d posToValue(const Vector2d &pos) const {
-        abel::gui::Coords coords{getBounds(), limits};
-
-        return coords.screen2virt(pos);
+        return getCoords().screen2virt(pos);
     }
 
     inline void invalidateSamplesCache() const {
@@ -107,7 +110,41 @@ protected:
 
     virtual void renderThumb(abel::gui::Texture &target, const Point &point);
 
-    unsigned getClosestPointIdx(const Vector2d &pos) const;
+    inline Point &getActivePoint() {
+        assert(activePointIdx != BAD_IDX);
+
+        return points[activePointIdx];
+    }
+
+    inline const Point &getActivePoint() const {
+        return const_cast<Spline *>(this)->getActivePoint();
+    }
+
+    inline void forgetActivePoint() {
+        if (activePointIdx) {
+            points[activePointIdx].active = false;
+        }
+
+        activePointIdx = BAD_IDX;
+    }
+
+    unsigned getClosestFreePointIdx(const Vector2d &pos) const;
+
+    inline unsigned addPointAt(const Vector2d &pos) {
+        return addPoint(posToValue(pos).clamped({0, 0}, {1, 1}));
+    }
+
+    unsigned addPoint(const Vector2d &value);
+
+    void removePoint(unsigned idx);
+
+    void moveActivePoint(const Vector2d &by);
+
+    inline bool isActivePointMisplaced() const {
+        return isPointMisplaced(activePointIdx);
+    }
+
+    bool isPointMisplaced(unsigned idx) const;
 
 private:
     void accumulateSegmentSamples(const Point *neighborL,

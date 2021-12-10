@@ -1,47 +1,101 @@
 #include <AGF/llgui.h>
 #include "spline.h"
+#include <algorithm>
 
 
 Spline::Spline(Widget *parent_, const Rect<double> &region_) :
     Base(parent_, region_) {
 
     points.append(Point{Vector2d{0, 0}});
-    points.append(Point{Vector2d{0.6, 0.4}});
     points.append(Point{Vector2d{1, 1}});
 
     mt.sigDown += [this](const abel::gui::MouseClickEvent &event) {
+        if (activePointIdx != BAD_IDX) {
+            // It's already being handled
+            return false;
+        }
+
+        // Just in case
+        invalidateSamplesCache();
+
+        bool smooth = true;
+        bool remove = false;
+
+        switch (event.button) {
+        case abel::gui::MouseBtn::Left:
+            smooth = true;
+            break;
+
+        case abel::gui::MouseBtn::Right:
+            smooth = false;
+            break;
+
+        case abel::gui::MouseBtn::Middle:
+            remove = true;
+            break;
+
+        default:
+            break;
+        }
+
         assert(activePointIdx == BAD_IDX);
 
-        unsigned closestIdx = getClosestPointIdx(event.pos);
-
-        Point &point = points[closestIdx];
-        Vector2d pointPos = valueToPos(point.value);
-
-        if (abel::cmpDbl((pointPos - event.pos).magnitude(),
-                         THUMB_GRAB_RADIUS) <= 0) {
+        unsigned closestIdx = getClosestFreePointIdx(event.pos);
+        if (closestIdx != BAD_IDX &&
+            abel::cmpDbl((valueToPos(points[closestIdx].value)
+                          - event.pos).magnitude(),
+                         THUMB_GRAB_RADIUS * THUMB_GRAB_RADIUS) <= 0) {
             // It's close enough, we grab the point
+            if (remove) {
+                removePoint(closestIdx);
+
+                return false;
+            }
+
+            dragOffset = posToValue(event.pos) - points[closestIdx].value;
 
             activePointIdx = closestIdx;
-        } else {
-            // It's too far, we create another
+        } else if (!remove) {
+            // It's too far, we create another point
 
-            Point newPoint{posToValue(event.pos).clamped({0, 0}, {1, 1})};
-
-            // TODO: Finish
+            // closestIdx is invalid after this point!
+            activePointIdx = addPointAt(event.pos);
         }
+
+        if (remove) {
+            return false;
+        }
+
+        draggingButton = event.button;
+
+        getActivePoint().active = true;
+        getActivePoint().smooth = smooth;
 
         return false;
     };
 
     mt.sigUp += [this](const abel::gui::MouseClickEvent &event) {
-        return false;
-    };
+        if (event.button == draggingButton) {
+            if (isActivePointMisplaced()) {
+                removePoint(activePointIdx);
+            }
 
-    mt.sigDragStateChange += [this](abel::gui::MouseBtn btn, abel::gui::MouseAttrs attrs, bool state) {
+            forgetActivePoint();
+
+            // Just in case
+            invalidateSamplesCache();
+        }
+
         return false;
     };
 
     mt.sigDrag += [this](abel::gui::MouseBtn btn, const abel::gui::MouseMoveEvent &event) {
+        if (btn != draggingButton) {
+            return false;
+        }
+
+        moveActivePoint(posToValue(event.pos1));
+
         return false;
     };
 
@@ -54,11 +108,6 @@ EVENT_HANDLER_IMPL(Spline, abel::gui::MouseClick) {
 
 EVENT_HANDLER_IMPL(Spline, abel::gui::MouseMove) {
     return mt.processEvent(event, Base::dispatchEvent(event));
-}
-
-unsigned Spline::getClosestPointIdx(const Vector2d &pos) const {
-    // TODO: Finish
-    return BAD_IDX;
 }
 
 #pragma region Rendering
@@ -119,11 +168,17 @@ void Spline::renderSpline(abel::gui::Texture &target) {
 
     target.setLineColor(Color::RED * 0.8f);
     target.setLineWidth(1.f);
-    target.clipPush(getBounds().padded(-1, 0, -1, 0));
+    target.clipPush(getBounds().padded(-1, -1, -1, -1));
 
-    for (unsigned i = 1; i < samples.getSize(); ++i) {
-        target.drawLine(valueToPos(samples[i - 1]),
-                        valueToPos(samples[i    ]));
+    if constexpr (DEBUG_DRAW_SAMPLES) {
+        for (unsigned i = 0; i < samples.getSize(); ++i) {
+            target.drawCircle(valueToPos(samples[i]), 2, false);
+        }
+    } else {
+        for (unsigned i = 1; i < samples.getSize(); ++i) {
+            target.drawLine(valueToPos(samples[i - 1]),
+                            valueToPos(samples[i    ]));
+        }
     }
 
     target.clipPop();
@@ -134,9 +189,18 @@ void Spline::renderThumb(abel::gui::Texture &target, const Point &point) {
         return;
     }
 
-    target.setLineColor(Color::WHITE * 0.3f);
-    target.setLineWidth(1.2f);
-    target.drawEllipse(valueToPos(point.value), THUMB_SIZE / 2, false);
+    if (point.active) {
+        if (isActivePointMisplaced()) {
+            return;
+        }
+
+        target.setFillColor(Color::WHITE * 0.3f);
+        target.drawEllipse(valueToPos(point.value), THUMB_SIZE / 2);
+    } else {
+        target.setLineColor(Color::WHITE * 0.3f);
+        target.setLineWidth(1.2f);
+        target.drawEllipse(valueToPos(point.value), THUMB_SIZE / 2, false);
+    }
 }
 #pragma endregion Rendering
 
@@ -145,24 +209,13 @@ const Spline::SampleArr &Spline::getSamples() const {
     if (!_cachedSamplesValid) {
         _cachedSamples.clear();
 
-        abel::vector<Point> pointsCopy = points;
-        bool foundActive = false;
-        for (unsigned i = 0; i < pointsCopy.getSize(); ++i) {
-            if (foundActive) {
-                assert(i > 0);
-
-                pointsCopy[i - 1] = pointsCopy[i];
+        abel::vector<Point> pointsCopy{};
+        for (unsigned i = 0; i < points.getSize(); ++i) {
+            if (points[i].active && isActivePointMisplaced()) {
+                continue;
             }
 
-            if (pointsCopy[i].active) {
-                if ((i > 0                        && pointsCopy[i - 1] > pointsCopy[i]) ||
-                    (i < pointsCopy.getSize() - 1 && pointsCopy[i] > pointsCopy[i + 1])) {
-                    foundActive = true;
-                }
-            }
-        }
-        if (foundActive) {
-            pointsCopy.pop();
+            pointsCopy.append(points[i]);
         }
 
         assert(!pointsCopy.isEmpty());
@@ -256,10 +309,10 @@ void Spline::accumulateSegmentSamples(const Point *neighborL,
         }
     }
 
-    constexpr double STATE_STEP = 1. / NUM_SAMPLES;
+    constexpr double STATE_STEP = 1. / (NUM_SAMPLES - 1);
     double state = 0;
     double x = x0;
-    const double stepX = dx / NUM_SAMPLES;
+    const double stepX = dx / (NUM_SAMPLES - 1);
     for (unsigned i = 0; i < NUM_SAMPLES; ++i,
          state += STATE_STEP,
          x += stepX) {
@@ -289,3 +342,81 @@ void Spline::cleanupDuplicateSamples() const {
     _cachedSamples.resize(target);
 }
 #pragma endregion Sampling
+
+#pragma region Points Control
+unsigned Spline::getClosestFreePointIdx(const Vector2d &pos) const {
+    unsigned result = BAD_IDX;
+    double bestMagnitude = 100.;  // Singificantly greater than 1, is what matters
+
+    Vector2d value = posToValue(pos);
+
+    for (unsigned i = 0; i < points.getSize(); ++i) {
+        const Point &point = points[i];
+
+        double curMagnitude = (point.value - value).magnitude();
+
+        if (curMagnitude < bestMagnitude &&
+            !point.hidden && !point.locked) {
+
+            result = i;
+            bestMagnitude = curMagnitude;
+        }
+    }
+
+    return result;
+}
+
+unsigned Spline::addPoint(const Vector2d &value) {
+    points.appendEmplace(value);
+
+    unsigned i = points.getSize() - 1;
+    for (; i > 0 && points[i - 1] > points[i]; --i) {
+        std::swap(points[i - 1], points[i]);
+    }
+
+    return i;
+}
+
+void Spline::removePoint(unsigned idx) {
+    if (points.getSize() <= 1) {
+        // We don't allow removal of the last point
+        return;
+    }
+
+    std::move(points.begin() + idx + 1, points.end(), points.begin() + idx);
+
+    points.pop();
+}
+
+void Spline::moveActivePoint(const Vector2d &valueTo) {
+    Point &activePoint = getActivePoint();
+
+    assert(activePoint.active && !activePoint.hidden && !activePoint.locked);
+
+    if (valueTo == activePoint.value) {
+        return;
+    }
+
+    activePoint.value = valueTo - dragOffset;
+    activePoint.value.clamp(Vector2d{0, 0}, Vector2d{1, 1});
+
+    invalidateSamplesCache();
+}
+
+bool Spline::isPointMisplaced(unsigned idx) const {
+    assert(idx < points.getSize());
+
+    const Point &point = points[idx];
+
+    if (idx > 0 && points[idx - 1] > point) {
+        return true;
+    }
+
+    if (idx + 1 < points.getSize() && points[idx + 1] < point) {
+        return true;
+    }
+
+    return false;
+}
+#pragma endregion Points Control
+
