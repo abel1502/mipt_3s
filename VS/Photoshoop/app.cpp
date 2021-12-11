@@ -70,7 +70,8 @@ void MyApp::init(int argc, const char **argv) {
     Canvas *canvas = new Canvas(nullptr, Rect<double>::se(0, 0, 300, 200).pad(10));
 
     // Slider2D *slider = new Slider2D(nullptr, Rect<double>::wh(20, 20, 100, 100), Rect<double>::se(-25, -25, 25, 25));
-    SliderH *slider = new SliderH(nullptr, Rect<double>::wh(20, 20, 100, 15), -25, 25);
+    // SliderH *slider = new SliderH(nullptr, Rect<double>::wh(20, 20, 100, 15), -25, 25);
+    ScrollbarH *scrollbar = new ScrollbarH(nullptr, Rect<double>::wh(20, 20, 100, 15));
 
     // slider->sigChanged += [](Vector2d value) {
     //     DBG("Slider set to %lg", value.x());
@@ -169,7 +170,7 @@ void MyApp::init(int argc, const char **argv) {
     mgr->createWindow(Rect<double>::wh(240,  70, 300, 200), "A drawing canvas", canvas);
     mgr->createWindow(Rect<double>::wh(240, 170, 300, 200), "Another canvas",
                       new Canvas(nullptr, Rect<double>::se(0, 0, 300, 200).pad(10)));
-    mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A slider", slider /*new Window::EmptyBody()*/);
+    mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A scrollbar", scrollbar);
     mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette)
         .markEssential();
     if constexpr (USE_MOLECULES) {
