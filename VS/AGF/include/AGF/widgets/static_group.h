@@ -9,12 +9,12 @@
 #include <tuple>
 
 
-#define SGRP_DECLARE_BINDING_I(NAME, IDX)                               \
-    inline const auto &NAME()      const { return child   <IDX>(); }    \
-    inline       auto &NAME()            { return child   <IDX>(); }    \
-    inline const auto &NAME##Ptr() const { return childPtr<IDX>(); }    \
-    inline       auto &NAME##Ptr()       { return childPtr<IDX>(); }    \
-    inline void NAME(typename Types::type<IDX> *ptr) { setChild<IDX>(ptr);  }
+#define SGRP_DECLARE_BINDING_I(NAME, IDX)                                   \
+    inline const auto &NAME()      const { return this->child   <IDX>(); }  \
+    inline       auto &NAME()            { return this->child   <IDX>(); }  \
+    inline const auto &NAME##Ptr() const { return this->childPtr<IDX>(); }  \
+    inline       auto &NAME##Ptr()       { return this->childPtr<IDX>(); }  \
+    inline void NAME(typename Types::template type<IDX> *ptr) { this->setChild<IDX>(ptr);  }
 
 #define SGRP_DECLARE_BINDING_T(NAME, TYPE) \
     SGRP_DECLARE_BINDING_I(NAME, Types::idx<TYPE>)

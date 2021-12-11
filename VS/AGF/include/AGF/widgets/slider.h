@@ -156,6 +156,10 @@ public:
         setValue(initial);
     }
 
+    inline const Rect<double> &getLimits() const {
+        return limits;
+    }
+
 protected:
     SGRP_DECLARE_BINDING_T(thumb, Thumb);
 
@@ -296,6 +300,10 @@ protected:
 
 
 using Slider2D = Slider<false, false>;
+
+
+template <bool Vertical>
+using Slider1D = std::conditional_t<Vertical, SliderV, SliderH>;
 
 
 }
