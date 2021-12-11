@@ -218,11 +218,15 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
                            Element element, ElementState state) const {
     unsigned sysState = 0;
     unsigned sysElem  = 0;
+    unsigned scrollbarArrowDir = 0;
+    unsigned scrollbarGripperElem = 0;
 
     switch (element) {
     case EL_WND_HEADER: {
         switch (state) {
         case ELS_NORMAL:
+        case ELS_HOVERED:
+        case ELS_PRESSED:
             sysState = CS_ACTIVE;
             break;
 
@@ -262,6 +266,9 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
             sysState = PBS_PRESSED;
             break;
 
+        case ELS_INACTIVE:
+            sysState = PBS_DISABLED;
+
         NODEFAULT
         }
 
@@ -291,6 +298,10 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
 
         case ELS_PRESSED:
             sysState = CBS_PUSHED;
+            break;
+
+        case ELS_INACTIVE:
+            sysState = CBS_DISABLED;
             break;
 
         NODEFAULT
@@ -338,6 +349,13 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
             sysState = TUS_PRESSED;
             break;
 
+        case ELS_INACTIVE:
+            static_assert(TUS_DISABLED ==   TUS_DISABLED &&
+                          TUS_DISABLED ==  TUTS_DISABLED &&
+                          TUS_DISABLED == TUVRS_DISABLED);
+            sysState = TUS_DISABLED;
+            break;
+
         NODEFAULT
         }
 
@@ -358,6 +376,130 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
     case EL_SLIDER_BODY_2D: {
         target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_TRACKBAR>(),
                                  TKP_TRACK, TRS_NORMAL);
+    } break;
+
+    case EL_SCROLLBAR_ARR_UP: {
+        scrollbarArrowDir = ABS_UPNORMAL;
+        goto caseScrollbarArrow;
+    } break;
+
+    case EL_SCROLLBAR_ARR_DOWN: {
+        scrollbarArrowDir = ABS_DOWNNORMAL;
+        goto caseScrollbarArrow;
+    } break;
+
+    case EL_SCROLLBAR_ARR_LEFT: {
+        scrollbarArrowDir = ABS_LEFTNORMAL;
+        goto caseScrollbarArrow;
+    } break;
+
+    case EL_SCROLLBAR_ARR_RIGHT: {
+        scrollbarArrowDir = ABS_RIGHTNORMAL;
+        goto caseScrollbarArrow;
+    } break;
+
+    caseScrollbarArrow: {
+        static_assert(ABS_UPNORMAL ==
+                      ABS_DOWNNORMAL - 4 ==
+                      ABS_LEFTNORMAL - 8 ==
+                      ABS_RIGHTNORMAL - 12, "Assumption about slider arrows was wrong");
+
+        switch (state) {
+        case ELS_NORMAL:
+            sysState = ABS_UPNORMAL;
+            break;
+
+        case ELS_HOVERED:
+            sysState = ABS_UPHOT;
+            break;
+
+        case ELS_PRESSED:
+            sysState = ABS_UPPRESSED;
+            break;
+
+        case ELS_INACTIVE:
+            sysState = ABS_UPDISABLED;
+            break;
+
+        NODEFAULT
+        }
+
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+                                 SBP_ARROWBTN, scrollbarArrowDir + sysState - ABS_UPNORMAL);
+    } break;
+
+    case EL_SCROLLBAR_HTHUMB: {
+        sysElem = SBP_THUMBBTNHORZ;
+        scrollbarGripperElem = SBP_GRIPPERHORZ;
+        goto caseScrollbarThumb;
+    } break;
+
+    case EL_SCROLLBAR_VTHUMB: {
+        sysElem = SBP_THUMBBTNVERT;
+        scrollbarGripperElem = SBP_GRIPPERVERT;
+        goto caseScrollbarThumb;
+    } break;
+
+    caseScrollbarThumb: {
+        switch (state) {
+        case ELS_NORMAL:
+            sysState = SCRBS_NORMAL;
+            break;
+
+        case ELS_HOVERED:
+            sysState = SCRBS_HOT;
+            break;
+
+        case ELS_PRESSED:
+            sysState = SCRBS_PRESSED;
+            break;
+
+        case ELS_INACTIVE:
+            sysState = SCRBS_DISABLED;
+            break;
+
+        NODEFAULT
+        }
+
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+                                 sysElem, sysState);
+
+        const Vector2d center = dest.getCenter();
+        const double size = std::min(dest.w(), dest.h());
+        target.drawThemedControl(Rect<double>::se(center - Vector2d{size / 2},
+                                                  center + Vector2d{size / 2}),
+                                 Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+                                 scrollbarGripperElem, sysState);
+    } break;
+
+    case EL_SCROLLBAR_HTRACK: {
+        // Rect<double> lower = dest;
+        // Rect<double> upper = dest;
+        // lower.h (lower.h () / 2);
+        // upper.y0(lower.y1());
+        //
+        // target.drawThemedControl(lower, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+        //                          SBP_LOWERTRACKHORZ, SCRBS_NORMAL);
+        // target.drawThemedControl(upper, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+        //                          SBP_UPPERTRACKHORZ, SCRBS_NORMAL);
+
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+                                 SBP_UPPERTRACKHORZ, SCRBS_NORMAL);
+    } break;
+
+    case EL_SCROLLBAR_VTRACK: {
+        // Rect<double> lower = dest;
+        // Rect<double> upper = dest;
+        // lower.w (lower.w () / 2);
+        // upper.x0(lower.x1());
+        //
+        // target.drawThemedControl(lower, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+        //                          SBP_LOWERTRACKVERT, SCRBS_NORMAL);
+        // target.drawThemedControl(upper, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+        //                          SBP_UPPERTRACKVERT, SCRBS_NORMAL);
+
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
+                                 SBP_UPPERTRACKVERT, SCRBS_NORMAL);
     } break;
 
     NODEFAULT

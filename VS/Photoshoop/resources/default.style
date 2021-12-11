@@ -21,5 +21,14 @@
 # "SLIDER_BODY_2D"  "NORMAL" "resources/slider_body.png"    [0, 0, 15, 15]  [2, 2, 11, 11];
 # "SLIDER_BODY_2D"  "NORMAL" "resources/slider_body_2.png"  [0, 0, 31, 31]  [9, 9, 13, 13];
 "SLIDER_BODY_2D"  "NORMAL" "resources/slider_body_3.png"  [0, 0, 31, 31]  [4, 4, 23, 23];
-"SLIDER_HBODY"     "*";
-"SLIDER_VBODY"     "*";
+"SLIDER_HBODY"    "*";
+"SLIDER_VBODY"    "*";
+
+"SB_ARR_UP"		  "*";
+"SB_ARR_DOWN"	  "*";
+"SB_ARR_LEFT"	  "*";
+"SB_ARR_RIGHT"	  "*";
+"SB_HTHUMB"		  "*";
+"SB_VTHUMB"		  "*";
+"SB_HTRACK"	      "*";
+"SB_VTRACK"	      "*";
