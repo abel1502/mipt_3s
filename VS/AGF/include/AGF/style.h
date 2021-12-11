@@ -38,7 +38,7 @@ public:
 
 
     Color textColor{};
-    double textSize = 12;
+    double textSize = 13;
     // TODO: Some text formatting attributes
     double wndHeaderHeight = 30;
     double wndBorderWidth  = 5;
