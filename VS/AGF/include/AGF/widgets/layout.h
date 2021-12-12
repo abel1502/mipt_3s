@@ -32,7 +32,7 @@ public:
         // child->dispatchEvent(MoveEvent(nextPos));
         child->staticShift(nextPos);
 
-        incPos(child->getRegion());
+        incPos(child->getRegion().getDiag());
 
         return Base::addChild(child);
     }
@@ -47,11 +47,11 @@ public:
 
     constexpr double getCurSize() const {
         switch (dir) {
-        case LAD_HORIZONTAL:
-            return nextPos.x();
-
         case LAD_VERTICAL:
             return nextPos.y();
+
+        case LAD_HORIZONTAL:
+            return nextPos.x();
 
         NODEFAULT
         }
@@ -63,14 +63,14 @@ protected:
     Vector2d nextPos{padding, padding};
 
 
-    void incPos(const Rect<double> &childRegion) {
+    void incPos(const Vector2d &childSize) {
         switch (dir) {
         case LAD_VERTICAL:
-            nextPos.y() += childRegion.h() + padding;
+            nextPos.y() += childSize.y() + padding;
             break;
 
         case LAD_HORIZONTAL:
-            nextPos.x() += childRegion.w() + padding;
+            nextPos.x() += childSize.x() + padding;
             break;
 
         NODEFAULT
