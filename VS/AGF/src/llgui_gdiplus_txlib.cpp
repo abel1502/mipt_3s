@@ -457,8 +457,13 @@ void Texture::drawThemedControl(Rect<double> at, const WinTheme &theme, unsigned
     RECT rect{(LONG)at.x0(), (LONG)at.y0(),
               (LONG)at.x1(), (LONG)at.y1()};
 
+    Rect<double> clipRect = getClipRect() - offset();
+
+    RECT sysClipRect{(LONG)clipRect.x0(), (LONG)clipRect.y0(),
+                     (LONG)clipRect.x1(), (LONG)clipRect.y1()};
+
     HDC hdc = graphics.GetHDC();
-    HRESULT result = txGDI(DrawThemeBackground(theme.getHandle(), hdc, type, state, &rect, nullptr), hdc);
+    HRESULT result = txGDI(DrawThemeBackground(theme.getHandle(), hdc, type, state, &rect, &sysClipRect), hdc);
     graphics.ReleaseHDC(hdc);
 
     if (result != S_OK) {
