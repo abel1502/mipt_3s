@@ -86,8 +86,17 @@ public:
         focusChild(children.findByValue(&child));
     }
 
+    constexpr bool getClip() const {
+        return clip;
+    }
+
+    constexpr void setClip(bool value) {
+        clip = value;
+    }
+
 protected:
     list<unique_ptr<child_type>> children{};
+    bool clip = false;
 
 
     void cleanupDeadChildren() {
@@ -103,6 +112,12 @@ protected:
         if (!status.shouldHandle(status.NODE))
             return status;
 
+        bool shouldPopClip = clip;  // Caching it, in case the clip value
+                                    // is changed during children dispatch
+        if (clip) {
+            event.target.clipPush(region);
+        }
+
         auto childrenEnd = children.end();  // We rely on our loop being cyclic
         for (auto iter = --children.end(); iter != childrenEnd; --iter) {
             auto &child = *iter;
@@ -111,6 +126,10 @@ protected:
 
             if (status.update())
                 break;
+        }
+
+        if (shouldPopClip) {
+            event.target.clipPop();
         }
 
         static_assert(!eventCapturesFocus<RenderEvent>);

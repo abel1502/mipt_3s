@@ -74,8 +74,17 @@ public:
         return false;
     }
 
+    constexpr bool getClip() const {
+        return clip;
+    }
+
+    constexpr void setClip(bool value) {
+        clip = value;
+    }
+
 protected:
     std::tuple<unique_ptr<Ts>...> children{};
+    bool clip = false;
 
     template <typename ... As>
     StaticGroup(Widget *parent_, const Rect<double> &region_, As &&... args) :
@@ -177,10 +186,25 @@ protected:
 
     template <unsigned I = 0>
     EventStatus _dispatchToChildren(const RenderEvent &event) {
+        bool shouldPopClip = false;
+
+        if constexpr (I == 0) {
+            if (clip) {
+                event.target.clipPush(region);
+                shouldPopClip = true;
+            }
+        }
+
         if constexpr (I + 1 < Types::size) {
             EventStatus status = _dispatchToChildren<I + 1>(event);
 
             if (status.update()) {
+                if constexpr (I == 0) {
+                    if (shouldPopClip) {
+                        event.target.clipPop();
+                    }
+                }
+
                 return status;
             }
         }
@@ -189,6 +213,10 @@ protected:
 
         if constexpr (I == 0) {
             status.update();
+
+            if (shouldPopClip) {
+                event.target.clipPop();
+            }
         }
 
         return status;
