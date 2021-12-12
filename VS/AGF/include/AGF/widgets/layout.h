@@ -45,6 +45,18 @@ public:
         return padding;
     }
 
+    constexpr double getCurSize() const {
+        switch (dir) {
+        case LAD_HORIZONTAL:
+            return nextPos.x();
+
+        case LAD_VERTICAL:
+            return nextPos.y();
+
+        NODEFAULT
+        }
+    }
+
 protected:
     LayoutDirection dir;
     double padding = 5;
