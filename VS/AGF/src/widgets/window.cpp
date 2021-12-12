@@ -117,8 +117,7 @@ Window::Window(WindowManager *parent_, const Rect<double> &region_,
 
     header().minimizeBtn().sigClick += [this]() {
         Application::getInstance().enqueueAction([&manager = getParent(), this](Application &app) {
-            // hidden = true;  // TODO: ?
-            hidden = !hidden;
+            setHidden(!isHidden());
         });
 
         return false;
