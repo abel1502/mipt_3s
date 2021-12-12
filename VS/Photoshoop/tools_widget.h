@@ -222,10 +222,10 @@ using _ToolsWidgetBase =
     widgets::StaticGroup<
         ColorPicker,
         SizePicker,
-        widgets::LayoutOf<
+        widgets::ScrollableLayoutOf<
             ToolButton
         >,
-        widgets::LayoutOf<
+        widgets::ScrollableLayoutOf<
             EffectButton
         >
     >;

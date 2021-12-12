@@ -96,7 +96,7 @@ void MyApp::init(int argc, const char **argv) {
     //     return false;
     // };
 
-    ToolsWidget *palette = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 250, 175));
+    ToolsWidget *palette = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 300, 175));
 
     ToolManager::effect_handle_t hInvertEffect = toolMgr.addEffect(new InvertEffect(&toolMgr));
 

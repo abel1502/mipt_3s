@@ -361,8 +361,8 @@ ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
 
     colorPicker(new ColorPicker(nullptr, regionColorPicker));
     sizePicker(new SizePicker(nullptr, regionSizePicker));
-    toolButtons(new _tool_buttons_type(nullptr, regionTools, widgets::LAD_VERTICAL, 0));
-    effectButtons(new _effect_buttons_type(nullptr, regionEffects, widgets::LAD_VERTICAL, 0));
+    toolButtons(new _tool_buttons_type(nullptr, regionTools, 0));
+    effectButtons(new _effect_buttons_type(nullptr, regionEffects, 0));
 
     buttonSize = Rect<double>::wh(0, 0, colW[1] * 0.9, 26);
 
