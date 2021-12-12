@@ -17,7 +17,7 @@
     inline void NAME(typename Types::template type<IDX> *ptr) { this->setChild<IDX>(ptr);  }
 
 #define SGRP_DECLARE_BINDING_T(NAME, TYPE) \
-    SGRP_DECLARE_BINDING_I(NAME, Types::idx<TYPE>)
+    SGRP_DECLARE_BINDING_I(NAME, Types::template idx<TYPE>)
 
 
 namespace abel::gui::widgets {
