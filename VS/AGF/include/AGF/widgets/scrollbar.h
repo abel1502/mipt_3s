@@ -42,8 +42,14 @@ public:
     inline ScrollbarThumb(Widget *parent_, const Rect<double> &region_, bool vertical = false) :
         Base(parent_, region_, !vertical, vertical) {}
 
-    inline void setWidth(double width) {
-        region.w(width);
+    inline void setLength(double length) {
+        if (!lockedV()) {
+            region.y(region.getCenter().y() - length / 2);
+            region.h(length);
+        } else {
+            region.x(region.getCenter().x() - length / 2);
+            region.w(length);
+        }
     }
 
 protected:
@@ -72,12 +78,20 @@ public:
     }
 
     inline void setThumbScale(double scale) {
-        scale = math::clamp(scale, 0., 1.);
+        scale = math::clamp(scale, 0.1, 0.99);
 
         double oldVal = getValue();
 
         thumbScale = scale;
-        dynamic_cast<ScrollbarThumb &>(this->thumb()).setWidth(this->region.w() * thumbScale);
+
+        double totalLength = 0;
+        if constexpr (Vertical) {
+            totalLength = this->region.h();
+        } else {
+            totalLength = this->region.w();
+        }
+
+        dynamic_cast<ScrollbarThumb &>(this->thumb()).setLength(totalLength * thumbScale);
 
         setValue(oldVal);
     }
@@ -176,9 +190,7 @@ public:
         };
 
         slider().sigChanged += [this](Vector2d value) {
-            if (!isBeingSet) {
-                sigChanged(*this);
-            }
+            sigChanged(*this);
 
             return false;
         };
@@ -189,21 +201,17 @@ public:
     }
 
     inline void setValue(double value) {
-        isBeingSet = true;
         slider().setValue(value);
-        isBeingSet = false;
     }
 
     inline void resetValue() {
-        isBeingSet = true;
         slider().resetValue();
-        isBeingSet = false;
     }
 
     inline double getStep() const {
         const Rect<double> &limits = slider().getLimits();
 
-        constexpr double STEP_FRACTION = 1. / 10;
+        constexpr double STEP_FRACTION = 1. / 5;
 
         double limit = 0;
 
@@ -225,9 +233,6 @@ public:
     }
 
 protected:
-    bool isBeingSet = false;
-
-
     using typename Base::Types;
 
     SGRP_DECLARE_BINDING_I(slider, 0);
