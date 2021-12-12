@@ -6,6 +6,7 @@
 #include <AGF/widgets/button.h>
 #include <AGF/widgets/static_group.h>
 #include <AGF/helpers/widget_ref.h>
+#include <ACL/math/cmath.h>
 
 
 namespace abel::gui::widgets {
@@ -41,6 +42,10 @@ public:
     inline ScrollbarThumb(Widget *parent_, const Rect<double> &region_, bool vertical = false) :
         Base(parent_, region_, !vertical, vertical) {}
 
+    inline void setWidth(double width) {
+        region.w(width);
+    }
+
 protected:
     virtual void renderThumb(Texture &target, const Rect<double> &at) override;
 
@@ -62,7 +67,26 @@ public:
     using Base::getValue;
     using Base::setValue;
 
+    inline double getThumbScale() const {
+        return thumbScale;
+    }
+
+    inline void setThumbScale(double scale) {
+        scale = math::clamp(scale, 0., 1.);
+
+        double oldVal = getValue();
+
+        thumbScale = scale;
+        dynamic_cast<ScrollbarThumb &>(this->thumb()).setWidth(this->region.w() * thumbScale);
+
+        setValue(oldVal);
+    }
+
 protected:
+    static constexpr double DEFAULT_THUMB_SCALE = 0.2;
+    double thumbScale = DEFAULT_THUMB_SCALE;
+
+
     virtual void renderBackground(Texture &target, const Rect<double> &) override {
         this->getStyle().drawElement(target, this->region, Vertical ?
                                Style::EL_SCROLLBAR_VTRACK :
@@ -74,12 +98,10 @@ private:
     static ScrollbarThumb *createThumb(ScrollbarSlider *inst, const Rect<double> &region) {
         Rect<double> thumbPos = region;
 
-        constexpr double THUMB_SIZE_MODIFIER = 0.2;
-
         if constexpr (Vertical) {
-            thumbPos.h(thumbPos.h() * THUMB_SIZE_MODIFIER);
+            thumbPos.h(thumbPos.h() * DEFAULT_THUMB_SCALE);
         } else {
-            thumbPos.w(thumbPos.w() * THUMB_SIZE_MODIFIER);
+            thumbPos.w(thumbPos.w() * DEFAULT_THUMB_SCALE);
         }
 
         return new ScrollbarThumb(inst, thumbPos, Vertical);
@@ -99,6 +121,9 @@ public:
                              _impl::ScrollbarArrow,
                              _impl::ScrollbarArrow>;
     EVENT_HANDLER_USING(Base);
+
+
+    Signal<bool (Scrollbar &scrollbar)> sigChanged{};
 
 
     Scrollbar(Widget *parent_, const Rect<double> &region_, double min = 0, double max = 1, double initial = 0) :
@@ -149,6 +174,14 @@ public:
 
             return false;
         };
+
+        slider().sigChanged += [this](Vector2d value) {
+            if (!isBeingSet) {
+                sigChanged(*this);
+            }
+
+            return false;
+        };
     }
 
     inline double getValue() const {
@@ -156,11 +189,15 @@ public:
     }
 
     inline void setValue(double value) {
+        isBeingSet = true;
         slider().setValue(value);
+        isBeingSet = false;
     }
 
     inline void resetValue() {
+        isBeingSet = true;
         slider().resetValue();
+        isBeingSet = false;
     }
 
     inline double getStep() const {
@@ -179,7 +216,18 @@ public:
         return std::abs(limit * STEP_FRACTION);
     }
 
+    inline double getThumbScale() const {
+        return slider().getThumbScale();
+    }
+
+    inline void setThumbScale(double scale) {
+        slider().setThumbScale(scale);
+    }
+
 protected:
+    bool isBeingSet = false;
+
+
     using typename Base::Types;
 
     SGRP_DECLARE_BINDING_I(slider, 0);
