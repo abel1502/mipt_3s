@@ -11,5 +11,6 @@
 #include <AGF/widgets/slider.h>
 #include <AGF/widgets/layout.h>
 #include <AGF/widgets/scrollbar.h>
+#include <AGF/widgets/scrollable_layout.h>
 
 #endif // AGF_WIDGETS_ALL_H
