@@ -108,6 +108,8 @@ public:
 
     constexpr bool isDead() const { return dead; }
 
+    constexpr bool isHidden() const { return hidden; }
+
     void die();
 
     virtual bool updateParent(Widget *parent_);
@@ -115,6 +117,8 @@ public:
     virtual bool staticShift(const Vector2d &by);
 
     virtual bool setStyle(StyleManager::StyleHandle newHandle);
+
+    virtual bool setHidden(bool hidden_);
 
     virtual bool hitTest(const Vector2d &pos) const;
 

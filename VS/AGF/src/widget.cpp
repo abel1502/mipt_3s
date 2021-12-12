@@ -133,6 +133,14 @@ Style &Widget::getStyle() {
     return Application::getInstance().getStyleManager().getStyle(styleHandle);
 }
 
+bool Widget::setHidden(bool hidden_) {
+    bool result = (hidden == hidden_);
+
+    hidden = hidden_;
+
+    return result;
+}
+
 bool Widget::hitTest(const Vector2d &pos) const {
     return region.contains(pos);
 }
