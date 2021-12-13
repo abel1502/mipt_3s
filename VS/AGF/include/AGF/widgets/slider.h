@@ -63,7 +63,7 @@ public:
 
         Rect<double> bounds = parent->getRegion().padded(region.w() / 2, region.h() / 2);
 
-        constexpr double EXTRA_LOCKED_PAD = Visual ? 3 : 0;
+        constexpr double EXTRA_LOCKED_PAD = Visual ? 3 : 1;
 
         if (lockedV()) {
             double val = bounds.getCenter().y();
@@ -168,7 +168,7 @@ protected:
 
     Rect<double> limits;  // TODO: Store coords here instead
     Vector2d initial;
-    Vector2d lastValue{NAN};  // To make sure it doesn't collide with any valid value
+    Vector2d lastValue{initial};
 
 
     Slider(Widget *parent_, const Rect<double> &region_,
