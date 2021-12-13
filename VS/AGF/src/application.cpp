@@ -69,10 +69,16 @@ void Application::teardown() {
 }
 
 double Application::getTime() const {
-    return std::chrono::duration<double>(
+    double time = std::chrono::duration<double>(
         std::chrono::steady_clock::now()
         .time_since_epoch()
     ).count();
+
+    if (isnan(startTime)) {
+        startTime = time;
+    }
+
+    return time - startTime;
 }
 
 void Application::init(int /*argc*/, const char **/*argv*/) {
@@ -93,6 +99,8 @@ void Application::init(int /*argc*/, const char **/*argv*/) {
 
         styleMgr.getStyle(styleMgr.ROOT_STYLE_HANDLE).markAllSysDrawn();
     }
+
+    getTime();
 }
 
 void Application::run() {

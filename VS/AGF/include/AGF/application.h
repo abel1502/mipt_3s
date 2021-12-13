@@ -153,6 +153,8 @@ protected:
     // TODO: Adapt more generally...?
     StyleManager styleMgr{};
 
+    mutable double startTime = NAN;
+
 
     static LRESULT CALLBACK _wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
