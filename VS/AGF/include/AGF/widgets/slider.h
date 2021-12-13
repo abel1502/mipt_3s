@@ -279,7 +279,7 @@ public:
     inline SliderH(Widget *parent_, const Rect<double> &region_,
                    double min, double max, double initial_ = 0) :
         Base(parent_, region_,
-             Rect<double>::se<false>(-1, min, 1, max),
+             Rect<double>::se<false>(min, -1, max, 1),
              Vector2d{initial_, 0}) {}
 
     inline double getValue() const {
