@@ -199,6 +199,11 @@
   <ItemGroup>
     <ClInclude Include="app.h" />
     <ClInclude Include="canvas.h" />
+    <ClInclude Include="plugin\impl\loader_v1.h" />
+    <ClInclude Include="plugin\impl\loader_v2.h" />
+    <ClInclude Include="plugin\impl\plugin_tool.h" />
+    <ClInclude Include="plugin\impl\v1\plugin_std.hpp" />
+    <ClInclude Include="plugin\loader.h" />
     <ClInclude Include="tools_widget.h" />
     <ClInclude Include="donut.h" />
     <ClInclude Include="physics\borders.h" />
@@ -221,6 +226,9 @@
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="canvas.cpp" />
+    <ClCompile Include="plugin\impl\loader_v1.cpp" />
+    <ClCompile Include="plugin\impl\loader_v2.cpp" />
+    <ClCompile Include="plugin\impl\plugin_tool.cpp" />
     <ClCompile Include="tools_widget.cpp" />
     <ClCompile Include="donut.cpp" />
     <ClCompile Include="physics\borders.cpp" />

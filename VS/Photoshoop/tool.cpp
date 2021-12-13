@@ -17,6 +17,10 @@ void Tool::applyLine(Layer &layer, const Vector2d &pos0, const Vector2d &pos1) {
     }
 }
 
+void Tool::onBegin(const Vector2d &pos) {}
+
+void Tool::onEnd(const Vector2d &pos) {}
+
 
 Effect::Effect(ToolManager *manager_) :
     manager{manager_} {}

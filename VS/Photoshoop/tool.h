@@ -21,6 +21,10 @@ public:
 
     virtual void applyPoint(Layer &layer, const Vector2d &pos) = 0;
 
+    virtual void onBegin(const Vector2d &pos);
+
+    virtual void onEnd(const Vector2d &pos);
+
     inline const ToolManager &getManager() const { return *manager; }
     inline       ToolManager &getManager()       { return *manager; }
 

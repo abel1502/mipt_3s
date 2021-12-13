@@ -22,6 +22,26 @@ Canvas::Canvas(Widget *parent_, const Rect<double> &region_) :
     mt.sigDown += std::bind(&Canvas::onDown, this, _1);
     mt.sigDragStateChange += std::bind(&Canvas::onDragStateChange, this, _1, _2, _3);
 
+    mt.sigDown += [this](const abel::gui::MouseClickEvent &event) {
+        MyApp::getInstance().enqueueAction([this, event, &myApp = MyApp::getInstance()](Application &) {
+            myApp.toolMgr.getActiveTool().onBegin(event.pos - region.getPos());
+
+            myApp.demandRedraw();
+        });
+
+        return false;
+    };
+
+    mt.sigUp += [this](const abel::gui::MouseClickEvent &event) {
+        MyApp::getInstance().enqueueAction([this, event, &myApp = MyApp::getInstance()](Application &) {
+            myApp.toolMgr.getActiveTool().onEnd(event.pos - region.getPos());
+
+            myApp.demandRedraw();
+        });
+
+        return false;
+    };
+
     becomeActive();
 }
 
