@@ -61,7 +61,7 @@ public:
         mt.sigScroll += [this](const MouseScrollEvent &event) {
             double containerSize = layout().getRegion().h();
 
-            scrollbar().setValue(scrollbar().getValue() - (double)event.delta / 120. * containerSize / 5.);
+            scrollbar().setValue(scrollbar().getValue() - (double)event.delta / 120. / 5.);
 
             return false;
         };
