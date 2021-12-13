@@ -445,6 +445,28 @@ void Texture::drawRect(Rect<double> at, bool fill) {
     }
 }
 
+void Texture::drawTriangle(Vector2d p1, Vector2d p2, Vector2d p3, bool fill) {
+    p1 -= offset();
+    p2 -= offset();
+    p3 -= offset();
+
+    Gdiplus::PointF points[3] = {
+        {(float)p1.x(), (float)p1.y()},
+        {(float)p2.x(), (float)p2.y()},
+        {(float)p3.x(), (float)p3.y()},
+    };
+
+    if (fill) {
+        if (graphics.FillPolygon(&brush, points, 3) != Gdiplus::Ok) {
+            throw llgui_error("GDI+ FillRectangle failed");
+        }
+    } else {
+        if (graphics.DrawPolygon(&pen, points, 3) != Gdiplus::Ok) {
+            throw llgui_error("GDI+ DrawRectangle failed");
+        }
+    }
+}
+
 void Texture::drawText(Rect<double> at, const char *text, TextAlign hAlign, TextAlign vAlign,
                        TextTrimming trimming, unsigned format) {
     at -= offset();

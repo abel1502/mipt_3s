@@ -332,6 +332,8 @@ public:
 
     void drawRect(Rect<double> at, bool fill = true);
 
+    void drawTriangle(Vector2d p1, Vector2d p2, Vector2d p3, bool fill = true);
+
     inline void drawFrame(Rect<double> at) {
         return drawRect(at, false);
     }
