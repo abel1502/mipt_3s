@@ -93,9 +93,9 @@ public:
         double containerSize = layout().getRegion().h();
 
         if (cmpDbl(contentsSize, containerSize) > 0) {
-            layout().dispatchEvent(MoveEvent{
+            layout().moveAllChildren(
                 Vector2d{0, (shift - shift_) * (contentsSize - containerSize)}
-            });
+            );
         }
 
         shift = shift_;

@@ -57,6 +57,14 @@ public:
         }
     }
 
+    void moveAllChildren(const Vector2d &offset) {
+        MoveEvent event{offset};
+
+        for (auto &child : this->children) {
+            child->dispatchEvent(event);
+        }
+    }
+
 protected:
     LayoutDirection dir;
     double padding = 5;
