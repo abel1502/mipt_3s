@@ -3,7 +3,6 @@
 #include <AGF/helpers/widget_ref.h>
 #include "app.h"
 #include "canvas.h"
-#include "tools_widget.h"
 #include "donut.h"
 #include "spline.h"
 #include "physics/widget.h"
@@ -96,11 +95,12 @@ void MyApp::init(int argc, const char **argv) {
     //     return false;
     // };
 
-    ToolsWidget *palette = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 300, 175));
+    toolsWidget = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 300, 175));
 
     ToolManager::effect_handle_t hInvertEffect = toolMgr.addEffect(new InvertEffect(&toolMgr));
-
-    palette->addEffectButton(hInvertEffect, "Invert");
+    toolsWidget->addEffectButton(hInvertEffect, "Invert");
+    // toolsWidget->addToolButton(0, "Brush 2: Again");
+    // toolsWidget->addToolButton(0, "Brush 3: Yup");
 
     MoleculesWidget *molecules = nullptr;
 
@@ -172,13 +172,15 @@ void MyApp::init(int argc, const char **argv) {
     mgr->createWindow(Rect<double>::wh(240, 170, 300, 200), "Another canvas",
                       new Canvas(nullptr, Rect<double>::se(0, 0, 300, 200).pad(10)));
     mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A scrollable box", box);
-    mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "A color picker, woah!", palette)
+    mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "Tools for all!", toolsWidget)
         .markEssential();
     if constexpr (USE_MOLECULES) {
         mgr->createWindow(Rect<double>::wh(400,  50, 400, 300), "These molecules look familiar", molecules)
             /*.markEssential() */ ;
     }
     mgr->createWindow(Rect<double>::wh(50, 120, 300, 200), "Spline test", spline);
+
+    pluginMgr.loadAll();
 
     // palette->setColor(Color::BLACK);
     // palette->setAlpha(1);
@@ -193,4 +195,6 @@ void MyApp::deinit() {
         return;
 
     Application::deinit();
+
+    pluginMgr.deinitAll();
 }

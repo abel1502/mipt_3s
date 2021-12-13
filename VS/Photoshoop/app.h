@@ -4,11 +4,14 @@
 #include <ACL/general.h>
 #include <AGF/application.h>
 #include "tool_manager.h"
+#include "tools_widget.h"
+#include "plugin/loader.h"
 
 
 class MyApp final : public abel::gui::Application {
 public:
     ToolManager toolMgr{};
+    PluginMgr pluginMgr{};
 
 
     MyApp();
@@ -23,7 +26,12 @@ public:
         return dynamic_cast<MyApp &>(abel::gui::Application::getInstance());
     }
 
+    ToolsWidget &getToolsWidget() {
+        assert(toolsWidget);
+        return *toolsWidget;
+    }
+
 protected:
-    //
+    ToolsWidget *toolsWidget = nullptr;
 
 };
