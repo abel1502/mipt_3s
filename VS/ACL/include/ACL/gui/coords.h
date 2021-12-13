@@ -28,15 +28,33 @@ public:
     }
 
     constexpr Vector2d scale_v2s(Vector2d virt) const {
-        virt.x() *= screenPlane.w() / virtualPlane.w();
-        virt.y() *= screenPlane.h() / virtualPlane.h();
+        if (virtualPlane.w()) {
+            virt.x() *= screenPlane.w() / virtualPlane.w();
+        } else {
+            virt.x() = screenPlane.x0();
+        }
+
+        if (virtualPlane.h()) {
+            virt.y() *= screenPlane.h() / virtualPlane.h();
+        } else {
+            virt.y() = screenPlane.y0();
+        }
 
         return virt;
     }
 
     constexpr Vector2d scale_s2v(Vector2d screen) const {
-        screen.x() *= virtualPlane.w() / screenPlane.w();
-        screen.y() *= virtualPlane.h() / screenPlane.h();
+        if (screenPlane.w()) {
+            screen.x() *= virtualPlane.w() / screenPlane.w();
+        } else {
+            screen.x() = virtualPlane.x0();
+        }
+
+        if (screenPlane.h()) {
+            screen.y() *= virtualPlane.h() / screenPlane.h();
+        } else {
+            screen.y() = virtualPlane.y0();
+        }
 
         return screen;
     }
