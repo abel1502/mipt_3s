@@ -231,7 +231,7 @@ Texture::Texture(const char *srcFileName) :
 }
 
 Texture::~Texture() noexcept {
-    if (bitmapData.Scan0) {
+    while (bufRefCnt > 0) {
         flushBuf();
     }
 
@@ -371,7 +371,7 @@ void Texture::drawLineInf(Vector2d from, Vector2d to) {
 
 if (fill) {
     if (graphics.Fill/**/(&brush, (float)/**/.x(), (float)/**/.y(),
-                                    (float)/**/.x(), (float)/**/.y()) != Gdiplus::Ok) {
+                                  (float)/**/.x(), (float)/**/.y()) != Gdiplus::Ok) {
         throw llgui_error("GDI+ Fill/**/ failed");
     }
 } else {
@@ -620,36 +620,69 @@ void Texture::embedTransformedPart(Rect<double> at, const Texture &other,
     }
 }
 
-PackedColor *Texture::getBuf(bool read, bool write) {
-    if (bitmapData.Scan0) {
-        throw llgui_error("Previous buf not yet flushed");
+static void swapBufBytes(uint32_t *buf, size_t size) {
+    for (size_t i = 0; i < size; ++i) {
+        std::swap(((uint8_t *)buf)[4 * i + 0],
+                  ((uint8_t *)buf)[4 * i + 2]);
+    }
+}
+
+PackedColor *Texture::getBuf(bool read, bool write, bool rgba) {
+    if (!bufRefCnt) {
+        Gdiplus::Rect gdiRect{0, 0, (int)width_, (int)height_};
+
+        unsigned flags = 0;
+        if (read) {
+            flags |= Gdiplus::ImageLockModeRead;
+        }
+        if (write) {
+            flags |= Gdiplus::ImageLockModeWrite;
+        }
+
+        bufRead = read;
+        bufWrite = write;
+
+
+        if (bitmap.LockBits(&gdiRect, flags, PixelFormat32bppARGB, &bitmapData) != Gdiplus::Ok) {
+            throw llgui_error("GDI+ LockBits failed");
+        }
+
+        if (bitmapData.Stride != width() * sizeof(PackedColor)) {
+            throw llgui_error("GDI+ Bitmap has extra alignment");
+        }
+
+        bufRGBA = rgba;
+        if (bufRGBA) {
+            swapBufBytes((uint32_t *)bitmapData.Scan0, (size_t)bitmapData.Height * (size_t)bitmapData.Width);
+        }
     }
 
-    Gdiplus::Rect gdiRect{0, 0, (int)width_, (int)height_};
-
-    unsigned flags = 0;
-    if (read) {
-        flags |= Gdiplus::ImageLockModeRead;
-    }
-    if (write) {
-        flags |= Gdiplus::ImageLockModeWrite;
+    if (!(read <= bufRead && write <= bufWrite && rgba == bufRGBA)) {
+        throw llgui_error("Demanded another buffer with incompatible properties");
     }
 
-
-    if (bitmap.LockBits(&gdiRect, flags, PixelFormat32bppARGB, &bitmapData) != Gdiplus::Ok) {
-        throw llgui_error("GDI+ LockBits failed");
-    }
-
-    if (bitmapData.Stride != width() * sizeof(PackedColor)) {
-        throw llgui_error("GDI+ Bitmap has extra alignment");
-    }
+    ++bufRefCnt;
 
     return (PackedColor *)bitmapData.Scan0;
 }
 
+uint32_t *Texture::getBufRGBA(bool read, bool write) {
+    return (uint32_t *)getBuf(read, write, true);
+}
+
 void Texture::flushBuf() {
-    bitmap.UnlockBits(&bitmapData);
-    bitmapData = {};
+    REQUIRE(bufRefCnt > 0);
+
+    --bufRefCnt;
+
+    if (bufRefCnt == 0) {
+        if (bufRGBA) {
+            swapBufBytes((uint32_t *)bitmapData.Scan0, bitmapData.Height * bitmapData.Width);
+        }
+
+        bitmap.UnlockBits(&bitmapData);
+        bitmapData = {};
+    }
 }
 
 PackedColor Texture::getPixelColor(Vector2d pos) const {

@@ -18,6 +18,7 @@
 #include <TXLib.h>
 #include <Uxtheme.h>
 #include <algorithm>
+#include <cstdint>
 
 #include <AGF/llgui_pre.h>
 #include <AGF/impl/llgui_wintheme.h>
@@ -353,8 +354,11 @@ public:
     void embedTransformedPart(Rect<double> at, const Texture &other,
                               const abel::math::Vector4f &colorCoeffs, Rect<double> part);
 
-    /// Remember to call applyBuf to have the changes take effect
-    [[nodiscard]] PackedColor *getBuf(bool read = true, bool write = true);
+    /// Remember to call flushBuf to have the changes take effect
+    [[nodiscard]] PackedColor *getBuf(bool read = true, bool write = true, bool rgba = false);
+
+    // Just an extra cast added to getBuf
+    [[nodiscard]] uint32_t *getBufRGBA(bool read = true, bool write = true);
 
     void flushBuf();
 
@@ -379,7 +383,9 @@ protected:
     double              fontSize = 14;
 
     bool bufRead  = false,
-         bufWrite = false;
+         bufWrite = false,
+         bufRGBA  = false;
+    unsigned bufRefCnt = 0;
     Gdiplus::BitmapData bitmapData{};
 
     vector<Rect<double>> clipStack{};
