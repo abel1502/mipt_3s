@@ -219,6 +219,10 @@ public:
         return abel::math::Vector3d{h, s, v};
     }
 
+    Vector2d screenToClient(const Vector2d &screen) const;
+
+    Vector2d clientToScreen(const Vector2d &client) const;
+
     void close() noexcept;
 
 protected:

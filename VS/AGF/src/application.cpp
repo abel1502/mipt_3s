@@ -319,6 +319,8 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         Vector2d pos{(double)GET_X_LPARAM(lParam),
                      (double)GET_Y_LPARAM(lParam)};
 
+        pos = wnd->screenToClient(pos);
+
         int delta = GET_WHEEL_DELTA_WPARAM(wParam);
 
         enqueueEvent(MouseScrollEvent{pos, MouseAttrs{GET_KEYSTATE_WPARAM(wParam)}, delta});

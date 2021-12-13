@@ -185,6 +185,34 @@ void Window::releaseMouse() {
     }
 }
 
+Vector2d Window::screenToClient(const Vector2d &screen) const {
+    POINT sysPoint{
+        (LONG)screen.x(),
+        (LONG)screen.y(),
+    };
+
+    if (!ScreenToClient(window, &sysPoint)) {
+        throw llgui_error("ScreenToClient failed");
+    }
+
+    return Vector2d{(double)sysPoint.x,
+                    (double)sysPoint.y};
+}
+
+Vector2d Window::clientToScreen(const Vector2d &client) const {
+    POINT sysPoint{
+        (LONG)client.x(),
+        (LONG)client.y(),
+    };
+
+    if (!ClientToScreen(window, &sysPoint)) {
+        throw llgui_error("CientToScreen failed");
+    }
+
+    return Vector2d{(double)sysPoint.x,
+                    (double)sysPoint.y};
+}
+
 void Window::close() noexcept {
     if (!DestroyWindow(window)) {
         // Shouldn't throw, as most other destruction functions
