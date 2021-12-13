@@ -191,15 +191,24 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         return 0;
     }
 
+    // To prevent some annoying messages from the very beginning
+    static bool gotFirstEvent = false;
+
     if (!mainWidget) {
-        ERR("Main widget absent; ignoring event");
+        if (gotFirstEvent) {
+            ERR("Main widget absent; ignoring event");
+        }
         return 0;
     }
 
     if (!wnd) {
-        ERR("Window absent; ignoring event");
+        if (gotFirstEvent) {
+            ERR("Window absent; ignoring event");
+        }
         return 0;
     }
+
+    gotFirstEvent = true;
 
     (void)hWnd, (void)uMsg, (void)wParam, (void)lParam;
 
