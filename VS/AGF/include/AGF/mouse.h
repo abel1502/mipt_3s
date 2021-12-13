@@ -2,9 +2,10 @@
 #define AGF_MOUSE_H
 
 #include <ACL/general.h>
-#include <windef.h>
+#include <AGF/impl/windows.h>
+//#include <windef.h>
 #include <windowsx.h>
-#include <winuser.h>
+//#include <winuser.h>
 
 
 namespace abel::gui {

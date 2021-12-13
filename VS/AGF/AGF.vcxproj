@@ -50,6 +50,7 @@
     <ClInclude Include="include\AGF\impl\llgui_gdiplus_txlib.h" />
     <ClInclude Include="include\AGF\impl\llgui_txlib.h" />
     <ClInclude Include="include\AGF\impl\llgui_wintheme.h" />
+    <ClInclude Include="include\AGF\impl\windows.h" />
     <ClInclude Include="include\AGF\widgets\layout.h" />
     <ClInclude Include="include\AGF\llgui.h" />
     <ClInclude Include="include\AGF\llgui_pre.h" />

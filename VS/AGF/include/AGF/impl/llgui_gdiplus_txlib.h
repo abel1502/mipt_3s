@@ -13,15 +13,7 @@
 
 // Has to be included before everything else
 #define TX_CONSOLE_MODE SW_SHOW
-// #define WIN32_LEAN_AND_MEAN
-#define _WIN32_WINNT _WIN32_WINNT_WIN8
-#define GDIPVER 0x110
-
-#if defined(UNICODE) || defined(_UNICODE)
-#error "This project requires unicode to be disabled"
-#endif
-
-#include <Windows.h>
+#include <AGF/impl/windows.h>
 #include <gdiplus.h>
 #include <TXLib.h>
 #include <Uxtheme.h>
