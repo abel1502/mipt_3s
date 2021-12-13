@@ -38,6 +38,8 @@ public:
 
     EVENT_HANDLER_OVERRIDE(MouseMove);
 
+    EVENT_HANDLER_OVERRIDE(MouseScroll);
+
     EVENT_HANDLER_OVERRIDE(Move);
 
     // Warning: cannot and doesn't check for bounds

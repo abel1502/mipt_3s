@@ -41,7 +41,12 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
 
 
 EVENT_HANDLER_IMPL(Button, MouseMove) {
-    return mt.processEvent(event, StaticGroup::dispatchEvent(event));
+    return mt.processEvent(event, Base::dispatchEvent(event));
+}
+
+
+EVENT_HANDLER_IMPL(Button, MouseScroll) {
+    return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
 

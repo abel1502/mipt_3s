@@ -12,9 +12,10 @@ namespace abel::gui {
 
 class MouseClickTracker {
 public:
-    Signal<bool (const MouseClickEvent &event)> sigDown  {};
-    Signal<bool (const MouseClickEvent &event)> sigUp    {};
-    Signal<bool (const MouseClickEvent &event)> sigClick {};
+    Signal<bool (const MouseClickEvent  &event)> sigDown  {};
+    Signal<bool (const MouseClickEvent  &event)> sigUp    {};
+    Signal<bool (const MouseClickEvent  &event)> sigClick {};
+    Signal<bool (const MouseScrollEvent &event)> sigScroll{};
     // TODO: Implement
     // Signal<bool (const MouseClickEvent &event)> sigDoubleClick{};
 
@@ -26,6 +27,9 @@ public:
     }
 
     Widget::EventStatus processEvent(const MouseClickEvent &event,
+                                     Widget::EventStatus baseStatus);
+
+    Widget::EventStatus processEvent(const MouseScrollEvent &event,
                                      Widget::EventStatus baseStatus);
 
     constexpr bool isDown(MouseBtn btn) const {
@@ -48,13 +52,19 @@ public:
         return lastState;
     }
 
-    constexpr bool isMouseCaptured() const {
-        return captureDegree > 0;
-    }
+    bool isMouseCaptured() const;
 
     void captureMouse();
 
     void releaseMouse();
+
+    constexpr bool isScrollable() const {
+        return scrollable;
+    }
+
+    constexpr void setScrollable(bool value = true) {
+        scrollable = value;
+    }
 
 protected:
     static constexpr unsigned MOUSE_BTN_CNT = 3;
@@ -66,7 +76,7 @@ protected:
     Widget *widget;
     bool isDown_[MOUSE_BTN_CNT] = {};
     mutable Style::ElementState lastState = Style::ELS_NORMAL;
-    unsigned captureDegree = 0;
+    bool scrollable = false;
 
 
     constexpr void isDown(MouseBtn btn, bool value) {
@@ -86,7 +96,16 @@ public:
 
 
     inline MouseTracker(Widget *widget_) :
-        MouseClickTracker(widget_) {}
+        MouseClickTracker(widget_) {
+
+        sigScroll += [this](const MouseScrollEvent &event) {
+            updateHovered();
+
+            return false;
+        };
+    }
+
+    using MouseClickTracker::processEvent;
 
     Widget::EventStatus processEvent(const MouseClickEvent &event,
                                      Widget::EventStatus baseStatus);

@@ -6,6 +6,7 @@
 #include <AGF/widgets/layout.h>
 #include <AGF/widgets/scrollbar.h>
 #include <AGF/helpers/widget_ref.h>
+#include <AGF/helpers/mouse_tracker.h>
 #include <AGF/application.h>
 #include <ACL/math/cmath.h>
 
@@ -27,6 +28,7 @@ public:
     using Base = StaticGroup<LayoutOf<Item>,
                              ScrollbarV>;
     EVENT_HANDLER_USING(Base);
+    using Widget::EventStatus;
 
 
     using child_type = typename Base::Types::template type<0>::child_type;
@@ -55,7 +57,15 @@ public:
             return false;
         };
 
-        // TODO: Hook signals
+        mt.setScrollable();
+        mt.sigScroll += [this](const MouseScrollEvent &event) {
+            double containerSize = layout().getRegion().h();
+
+            scrollbar().setValue(scrollbar().getValue() - (double)event.delta / 120. * containerSize / 5.);
+
+            return false;
+        };
+
         onSizeChanged();
     }
 
@@ -93,7 +103,20 @@ public:
         Application::getInstance().demandRedraw();
     }
 
+    EVENT_HANDLER_OVERRIDE(MouseClick) {
+        return mt.processEvent(event, Base::dispatchEvent(event));
+    }
+
+    EVENT_HANDLER_OVERRIDE(MouseMove) {
+        return mt.processEvent(event, Base::dispatchEvent(event));
+    }
+
+    EVENT_HANDLER_OVERRIDE(MouseScroll) {
+        return mt.processEvent(event, Base::dispatchEvent(event));
+    }
+
 protected:
+    MouseTracker mt{this};
     // [0-1], not pixels
     double shift = 0;
 
@@ -113,7 +136,6 @@ protected:
         }
 
         scrollbar().setHidden(false);
-        DBG("Thumb scale = %lg", containerSize / contentsSize);
         scrollbar().setThumbScale(math::clamp(containerSize / contentsSize, 0., 1.));
     }
 

@@ -50,25 +50,40 @@ Widget::EventStatus MouseClickTracker::processEvent(const MouseClickEvent &event
     return Widget::EventStatus::stop(baseStatus.TREE);
 }
 
-void MouseClickTracker::captureMouse() {
-    if (captureDegree == 0) {
-        Application::getInstance().captureMouse(widget);
+Widget::EventStatus MouseClickTracker::processEvent(const MouseScrollEvent &event,
+                                                    Widget::EventStatus baseStatus) {
+    if (!baseStatus.shouldHandle(baseStatus.NODE)) {
+        return baseStatus;
     }
 
-    ++captureDegree;
+    bool hit = widget->hitTest(event.pos);
+
+    if (!hit && !Application::getInstance().isMouseCaptured(widget)) {
+        return Widget::EventStatus::skip();
+    }
+
+    sigScroll(event);
+
+    return scrollable ?
+        Widget::EventStatus::stop(baseStatus.TREE) :
+        Widget::EventStatus::skip();
+}
+
+bool MouseClickTracker::isMouseCaptured() const {
+    return Application::getInstance().isMouseCaptured(widget);
+}
+
+void MouseClickTracker::captureMouse() {
+    Application::getInstance().captureMouse(widget);
 }
 
 void MouseClickTracker::releaseMouse() {
-    if (captureDegree == 0) {
+    if (!isMouseCaptured()) {
         // TODO: Warn
         return;
     }
 
-    if (captureDegree == 1) {
-        Application::getInstance().releaseMouse(widget);
-    }
-
-    --captureDegree;
+    Application::getInstance().releaseMouse(widget);
 }
 
 
@@ -139,7 +154,7 @@ Widget::EventStatus MouseTracker::processEvent(const MouseMoveEvent &event,
 void MouseTracker::updateHovered() const {
     // If we didn't receive a move-to event, this means it was screened by another widget, so
     // we aren't hovered anymore
-    if (!lastMoveType) {
+    if (!lastMoveType || !widget->getRegion().contains(Window::getInstance().getMousePos())) {
         isHovered_ = false;
     }
 }

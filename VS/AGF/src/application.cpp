@@ -313,6 +313,17 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         lastPos = curPos;
     } return 0;
 
+    case WM_MOUSEWHEEL: {
+        _updateSysMouseCapture();
+
+        Vector2d pos{(double)GET_X_LPARAM(lParam),
+                     (double)GET_Y_LPARAM(lParam)};
+
+        int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+
+        enqueueEvent(MouseScrollEvent{pos, MouseAttrs{GET_KEYSTATE_WPARAM(wParam)}, delta});
+    } return 0;
+
     case WM_CLOSE: {
         DBG("Closing");
         finished = true;

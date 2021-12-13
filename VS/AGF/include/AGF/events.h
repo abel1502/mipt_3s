@@ -117,6 +117,16 @@ EVENT_CLS_DECL_(MouseMove) {
 
 };
 
+EVENT_CLS_DECL_(MouseScroll) {
+    Vector2d pos;
+    MouseAttrs attrs;
+    int delta;
+
+
+    constexpr MouseScrollEvent(const Vector2d &pos_, MouseAttrs attrs_, int delta_) noexcept :
+        pos{pos_}, attrs{attrs_}, delta{delta_} {}
+};
+
 EVENT_CLS_DECL_(KeyPress) {};
 
 EVENT_CLS_DECL_(KeyboardInput) {};

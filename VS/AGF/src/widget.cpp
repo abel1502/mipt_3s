@@ -69,6 +69,16 @@ EVENT_HANDLER_IMPL(Widget, MouseMove) {
     return EventStatus::stop(EventStatus::NODE);
 }
 
+EVENT_HANDLER_IMPL(Widget, MouseScroll) {
+    // TODO: Same
+    if (!hidden && (Application::getInstance().isMouseCaptured(this) ||
+                    hitTest(event.pos))) {
+        return EventStatus::skip();
+    }
+
+    return EventStatus::stop(EventStatus::NODE);
+}
+
 EVENT_HANDLER_IMPL(Widget, KeyPress) {
     return EventStatus::skip();
 }
@@ -158,6 +168,18 @@ Widget::EventStatus Widget::handleMouseOpaque(const MouseMoveEvent  &event, Even
 }
 
 Widget::EventStatus Widget::handleMouseOpaque(const MouseClickEvent &event, EventStatus baseStatus) {
+    if (!baseStatus.shouldHandle(baseStatus.NODE)) {
+        return baseStatus;
+    }
+
+    if (hitTest(event.pos)) {
+        return EventStatus::stop(EventStatus::TREE);
+    }
+
+    return baseStatus;
+}
+
+Widget::EventStatus Widget::handleMouseOpaque(const MouseScrollEvent &event, EventStatus baseStatus) {
     if (!baseStatus.shouldHandle(baseStatus.NODE)) {
         return baseStatus;
     }

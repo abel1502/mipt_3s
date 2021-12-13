@@ -38,6 +38,10 @@ EVENT_HANDLER_IMPL(Thumb, MouseMove) {
     return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
+EVENT_HANDLER_IMPL(Thumb, MouseScroll) {
+    return mt.processEvent(event, Base::dispatchEvent(event));
+}
+
 EVENT_HANDLER_IMPL(Thumb, Move) {
     Vector2d newPos = clampPos(pos + event.delta);
 

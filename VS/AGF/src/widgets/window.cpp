@@ -34,6 +34,10 @@ EVENT_HANDLER_IMPL(Header, MouseClick) {
     return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
+EVENT_HANDLER_IMPL(Header, MouseScroll) {
+    return mt.processEvent(event, Base::dispatchEvent(event));
+}
+
 EVENT_HANDLER_IMPL(Header, Render) {
     EventStatus status = Widget::dispatchEvent(event);
 
@@ -65,6 +69,10 @@ EVENT_HANDLER_IMPL(Borders, MouseClick) {
 }
 
 EVENT_HANDLER_IMPL(Borders, MouseMove) {
+    return handleMouseOpaque(event, Base::dispatchEvent(event));
+}
+
+EVENT_HANDLER_IMPL(Borders, MouseScroll) {
     return handleMouseOpaque(event, Base::dispatchEvent(event));
 }
 
