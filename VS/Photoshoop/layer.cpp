@@ -15,6 +15,7 @@ Layer::Layer(const Vector2d &size, const Color &defaultColor, double defaultAlph
 
 void Layer::flushPreview() {
     getTexture().embed(getTexture().getRect(), getPreview());
+    getTexture().resetOverwrite();
     clearPreview();
 }
 
