@@ -4,6 +4,7 @@
 #include <AGF/llgui_pre.h>
 #include <ACL/unique_ptr.h>
 #include <ACL/vector.h>
+#include <ACL/signal.h>
 #include <AGF/helpers/mouse_tracker.h>
 #include "layer.h"
 #include <filesystem>
@@ -22,6 +23,8 @@ class Canvas : public abel::gui::Widget {
 public:
     using Base = abel::gui::Widget;
     EVENT_HANDLER_USING(Base);
+
+    abel::Signal<bool (Canvas &canvas)> sigLayerChanged{};
 
 
     Canvas(Widget *parent_, const Rect<double> &region_);
@@ -70,3 +73,15 @@ protected:
     void setupPreview(bool isEntry);
 
 };
+
+
+#if 0
+class CanvasWnd : public widgets::StaticGroup<Canvas, widgets::ScrollableLayoutOf<widgets::Button>> {
+public:
+    //
+
+protected:
+    //
+
+};
+#endif

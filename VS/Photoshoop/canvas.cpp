@@ -140,6 +140,10 @@ void Canvas::selectLayer(unsigned idx) {
     assert(idx < getLayersCnt());
 
     activeLayerIdx = idx;
+
+    if (!sigLayerChanged.isBeingInvoked()) {
+        sigLayerChanged(*this);
+    }
 }
 
 void Canvas::applyEffect(Effect &effect) {
