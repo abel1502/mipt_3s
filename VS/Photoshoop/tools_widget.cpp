@@ -169,7 +169,7 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
             return true;
         }
 
-        MyApp::getInstance().toolMgr.setColor<true>(inst->getColor());
+        MyApp::getInstance().toolMgr.setColor(inst->getColor());
 
         return false;
     };
@@ -179,7 +179,7 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
             return true;
         }
 
-        MyApp::getInstance().toolMgr.setColor<true>(inst->getColor());
+        MyApp::getInstance().toolMgr.setColor(inst->getColor());
 
         return false;
     };
@@ -189,7 +189,7 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
             return true;
         }
 
-        MyApp::getInstance().toolMgr.setAlpha<true>(inst->getAlpha());
+        MyApp::getInstance().toolMgr.setAlpha(inst->getAlpha());
 
         return false;
     };
@@ -385,7 +385,7 @@ ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
     };
 
     sizePicker().sigChanged += [](Vector2d value) {
-        MyApp::getInstance().toolMgr.setRadius<true>(value.x() / 2);
+        MyApp::getInstance().toolMgr.setRadius(value.x() / 2);
 
         return false;
     };

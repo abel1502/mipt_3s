@@ -94,7 +94,12 @@ public:
     }
 
     inline void setActiveCanvas(Canvas *canvas) {
+        Canvas *oldActiveCanvas = activeCanvas.get();
         activeCanvas = canvas;
+
+        if (activeCanvas.get() != oldActiveCanvas) {
+            syncBack();
+        }
     }
 
     inline Canvas *getActiveCanvas() {
@@ -105,11 +110,11 @@ public:
         return radius;
     }
 
-    template <bool Silent = false>
     constexpr void setRadius(double radius_) {
+        double oldRadius = radius;
         radius = radius_;
 
-        if constexpr (!Silent) {
+        if (abel::cmpDbl(radius, oldRadius) != 0) {
             syncBack();
         }
     }
@@ -118,11 +123,11 @@ public:
         return color;
     }
 
-    template <bool Silent = false>
     constexpr void setColor(const Color &color_) {
+        Color oldColor = color;
         color = color_;
 
-        if constexpr (!Silent) {
+        if (color != oldColor) {
             syncBack();
         }
     }
@@ -131,11 +136,11 @@ public:
         return alpha;
     }
 
-    template <bool Silent = false>
     constexpr void setAlpha(double alpha_) {
+        double oldAlpha = alpha;
         alpha = alpha_;
 
-        if constexpr (!Silent) {
+        if (abel::cmpDbl(alpha, oldAlpha) != 0) {
             syncBack();
         }
     }
@@ -148,16 +153,14 @@ protected:
     double radius = 2.5;
     Color color{};
     double alpha{};
-    mutable bool isBeingSet = false;
 
 
     inline void syncBack() {
-        if (isBeingSet)
+        if (sigConfigChanged.isBeingInvoked()) {
             return;
+        }
 
-        isBeingSet = true;
         sigConfigChanged(*this);
-        isBeingSet = false;
     }
 
 };
