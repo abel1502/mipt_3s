@@ -275,6 +275,8 @@ public:
 
     explicit Texture(const char *srcFileName);
 
+    explicit Texture(const wchar_t *srcFileName);
+
     // Can't have those, Gdiplus stuff has no move ctors(
     Texture(Texture &&other) = delete;
     Texture &operator=(Texture &&other) = delete;

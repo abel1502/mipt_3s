@@ -245,8 +245,11 @@ Texture::Texture(const Window &wnd) :
     Texture(wnd.width(), wnd.height()) {}
 
 Texture::Texture(const char *srcFileName) :
+    Texture(strToWstr(srcFileName).data()) {}
+
+Texture::Texture(const wchar_t *srcFileName):
     TextureBase(/* width and height will be set later */),
-    bitmap{strToWstr(srcFileName).data()},
+    bitmap{srcFileName},
     graphics{&bitmap} {
 
     width_  = bitmap.GetWidth ();
