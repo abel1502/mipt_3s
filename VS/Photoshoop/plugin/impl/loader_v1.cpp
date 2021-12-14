@@ -436,6 +436,15 @@ void Plugin::init(const plugin::PAppInterface *nativeApp) {
         info->description);
 }
 
+void Plugin::applyFlushPolicy(abel::gui::Texture &texture) const {
+    assert(nativePlugin);
+    REQUIRE(nativePlugin->general.get_flush_policy);
+
+    if (nativePlugin->general.get_flush_policy() == plugin::PPLP_COPY) {
+        texture.setOverwrite();
+    }
+}
+
 void Plugin::deinit() {
     if (!nativePlugin) {
         return;

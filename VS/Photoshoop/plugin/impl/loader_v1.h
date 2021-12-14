@@ -65,6 +65,8 @@ public:
 
     void onEffectApply() const;
 
+    void applyFlushPolicy(abel::gui::Texture &texture) const;
+
     void deinit();
 
 protected:

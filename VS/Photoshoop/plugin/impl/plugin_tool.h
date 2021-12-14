@@ -21,6 +21,8 @@ public:
 protected:
     const Plugin &plugin;
 
+    void applyFlushPolicy(abel::gui::Texture &texture);
+
 };
 
 
@@ -33,5 +35,7 @@ public:
 
 protected:
     const Plugin &plugin;
+
+    void applyFlushPolicy(abel::gui::Texture &texture);
 
 };
