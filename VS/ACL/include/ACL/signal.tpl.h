@@ -103,6 +103,10 @@ public:
         return findCallback(cb) != BAD_IDX;
     }
 
+    inline bool isBeingInvoked() const {
+        return beingInvoked;
+    }
+
 protected:
     static constexpr unsigned BAD_IDX = -1u;
     struct UnsubRequest {
