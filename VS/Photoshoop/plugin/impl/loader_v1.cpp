@@ -139,7 +139,7 @@ plugin::PRGBA *target_get_pixels() {
         return nullptr;
     }
 
-    memcpy(copy, buf, size);
+    memcpy(copy, buf, size * sizeof(uint32_t));
 
     texture.flushBuf();
 
@@ -244,7 +244,7 @@ void render_pixels(plugin::PVec2f position, const plugin::PRGBA *data,
     }
 
     abel::gui::Texture tmp{(unsigned)width, (unsigned)height};
-    memcpy(tmp.getBufRGBA(false, true), data, 4 * width * height);
+    memcpy(tmp.getBufRGBA(false, true), data, width * height * sizeof(uint32_t));
     tmp.flushBuf();
 
     target.embed(Rect<double>::wh((double)position.x, (double)position.y,
@@ -489,7 +489,12 @@ void PluginMgr::loadAll() {
             continue;
         }
 
-        load(entry.path());
+        try {
+            load(entry.path());
+        } catch (const std::exception &e) {
+            ERR("Failed to load plugin \'%ls\' - error '%s'", entry.path().c_str(), e.what());
+        }
+
     }
 }
 
