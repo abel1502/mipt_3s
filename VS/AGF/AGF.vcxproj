@@ -24,6 +24,7 @@
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\helpers\mouse_tracker.cpp" />
     <ClCompile Include="src\helpers\wiget_ref.cpp" />
+    <ClCompile Include="src\widgets\icon.cpp" />
     <ClCompile Include="src\widgets\layout.cpp" />
     <ClCompile Include="src\llgui_gdiplus_txlib.cpp" />
     <ClCompile Include="src\llgui_txlib.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="include\AGF\impl\llgui_txlib.h" />
     <ClInclude Include="include\AGF\impl\llgui_wintheme.h" />
     <ClInclude Include="include\AGF\impl\windows.h" />
+    <ClInclude Include="include\AGF\widgets\icon.h" />
     <ClInclude Include="include\AGF\widgets\layout.h" />
     <ClInclude Include="include\AGF\llgui.h" />
     <ClInclude Include="include\AGF\llgui_pre.h" />
