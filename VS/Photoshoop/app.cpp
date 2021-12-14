@@ -162,6 +162,32 @@ void MyApp::init(int argc, const char **argv) {
 
             return false;
         };
+
+        lay.createChild<Button>(Rect<double>::wh(0, 0, 140, 30), "Load image")
+            .sigClick += [canvas = WidgetRefTo(canvas)]() {
+            if (!canvas) {
+                return true;
+            }
+
+            char path[MAX_PATH + 1] = "";
+            printf("img > ");
+            fgets(path, MAX_PATH, stdin);
+            size_t len = strlen(path);
+            if (len > 0) {
+                path[len - 1] = 0;
+            }
+
+            std::fs::path imgPath{path};
+
+            try {
+                canvas->loadImage(imgPath);
+            } catch (const abel::error &e) {
+                ERR("Failed to load image from '%ls': \"%s\"",
+                    imgPath.c_str(), e.what());
+            }
+
+            return false;
+        };
     }
 
     Spline *spline = new Spline(nullptr, Rect<double>::wh(0, 0, 175, 150));
