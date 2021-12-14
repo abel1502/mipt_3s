@@ -321,8 +321,7 @@ _myimpl::EffectButton::EffectButton(Widget *parent_, const Rect<double> &region_
             return false;
         }
 
-        // TODO: Move to canvas?
-        effect.apply(canvas->activeLayer());
+        canvas->applyEffect(effect);
 
         return false;
     };

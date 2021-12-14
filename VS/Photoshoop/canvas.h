@@ -6,6 +6,7 @@
 #include <ACL/vector.h>
 #include <AGF/helpers/mouse_tracker.h>
 #include "layer.h"
+#include <filesystem>
 
 
 using abel::gui::Rect;
@@ -13,6 +14,9 @@ using abel::gui::Color;
 using abel::math::Vector2d;
 namespace widgets = abel::gui::widgets;
 
+
+class Tool;
+class Effect;
 
 class Canvas : public abel::gui::Widget {
 public:
@@ -43,6 +47,10 @@ public:
 
     inline unsigned getActiveLayerIdx() const { return activeLayerIdx; }
 
+    void applyEffect(Effect &effect);
+
+    void loadImage(const std::filesystem::path &path);
+
 protected:
     abel::gui::MouseTracker mt{this};
 
@@ -58,5 +66,7 @@ protected:
 
 
     void becomeActive();
+
+    void setupPreview(bool isEntry);
 
 };

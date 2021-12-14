@@ -1,6 +1,7 @@
 #include <AGF/llgui.h>
 #include "canvas.h"
 #include "app.h"
+#include "tool.h"
 
 
 using namespace abel;
@@ -44,7 +45,6 @@ Canvas::Canvas(Widget *parent_, const Rect<double> &region_) :
 
     becomeActive();
 }
-
 
 EVENT_HANDLER_IMPL(Canvas, Render) {
     EventStatus status = Base::dispatchEvent(event);
@@ -123,14 +123,7 @@ bool Canvas::onDragStateChange(abel::gui::MouseBtn btn,
 
     becomeActive();
 
-    // TODO: Perhaps clear after flush only?
-    if (state) {
-        activeLayer().clearPreview();
-    } else {
-        MyApp::getInstance().enqueueAction([this](Application &) {
-            activeLayer().flushPreview();
-        });
-    }
+    setupPreview(state);
 
     return false;
 }
@@ -149,6 +142,29 @@ void Canvas::selectLayer(unsigned idx) {
     activeLayerIdx = idx;
 }
 
+void Canvas::applyEffect(Effect &effect) {
+    setupPreview(true);
+    effect.apply(activeLayer());
+    setupPreview(false);
+}
+
+void Canvas::loadImage(const std::filesystem::path &path) {
+    abel::gui::Texture image{path.c_str()};
+
+    activeLayer().getTexture().embed(activeLayer().getTexture().getRect(), image);
+}
+
 void Canvas::becomeActive() {
     MyApp::getInstance().toolMgr.setActiveCanvas(this);
+}
+
+void Canvas::setupPreview(bool isEntry) {
+    // TODO: Perhaps clear after flush only?
+    if (isEntry) {
+        activeLayer().clearPreview();
+    } else {
+        MyApp::getInstance().enqueueAction([this](Application &) {
+            activeLayer().flushPreview();
+        });
+    }
 }
