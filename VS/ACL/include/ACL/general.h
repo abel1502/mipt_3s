@@ -118,7 +118,7 @@ inline double randDouble(double min, double max) {
 // #pragma GCC diagnostic push
 // #pragma GCC diagnostic ignored "-Wfloat-equal"
 
-constexpr double EPSILON = 1e-30;
+constexpr double EPSILON = 1e-8;
 
 constexpr bool isZero(double val) {
     return val <  EPSILON &&

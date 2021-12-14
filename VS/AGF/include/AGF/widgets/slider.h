@@ -63,7 +63,7 @@ public:
 
         Rect<double> bounds = parent->getRegion().padded(region.w() / 2, region.h() / 2);
 
-        constexpr double EXTRA_LOCKED_PAD = Visual ? 3 : 1;
+        constexpr double EXTRA_LOCKED_PAD = Visual ? 3 : 0;
 
         if (lockedV()) {
             double val = bounds.getCenter().y();
@@ -151,6 +151,16 @@ public:
     }
 
     inline void setValue(const Vector2d &value) {
+        if (sigChanged.isBeingInvoked()) {
+            // constexpr double NORM = 1e-7;
+            // if (value * NORM != getValue() * NORM) {
+            //     DBG("(%lg %lg) (%lg %lg)", value.x(), value.y(), getValue().x(), getValue().y());
+            //     ERR("Non-trivial recursive setValue!");
+            // }
+
+            return;
+        }
+
         setThumbPos(valueToPos(value));
     }
 
