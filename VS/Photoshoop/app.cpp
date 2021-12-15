@@ -95,7 +95,7 @@ void MyApp::init(int argc, const char **argv) {
     //     return false;
     // };
 
-    toolsWidget = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 300, 175));
+    toolsWidget = new ToolsWidget(nullptr, Rect<double>::wh(0, 0, 350, 225));
 
     ToolManager::effect_handle_t hInvertEffect = toolMgr.addEffect(new InvertEffect(&toolMgr));
     toolsWidget->addEffectButton(hInvertEffect, "Invert");
