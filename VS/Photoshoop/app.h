@@ -3,6 +3,7 @@
 #include <AGF/llgui.h>
 #include <ACL/general.h>
 #include <AGF/application.h>
+#include <AGF/widgets/window.h>
 #include "tool_manager.h"
 #include "tools_widget.h"
 #include "plugin/loader.h"
@@ -29,6 +30,10 @@ public:
     ToolsWidget &getToolsWidget() {
         assert(toolsWidget);
         return *toolsWidget;
+    }
+
+    widgets::WindowManager &getWindowMgrWidget() {
+        return *dynamic_cast<widgets::WindowManager *>(mainWidget.get());
     }
 
 protected:
