@@ -1,4 +1,5 @@
 #include <AGF/llgui.h>
+#include "app.h"
 #include "tool.h"
 
 
@@ -24,3 +25,42 @@ void Tool::onEnd(const Vector2d &pos) {}
 
 Effect::Effect(ToolManager *manager_) :
     manager{manager_} {}
+
+Effect::~Effect() {
+    if (settingsWnd) {
+        settingsWnd->die();
+    }
+}
+
+bool Effect::supportsSettings() const {
+    return false;
+}
+
+Vector2d Effect::getDesiredSettingsWndSize() const {
+    constexpr double DEFAULT_SIZE = 150;
+
+    return Vector2d{DEFAULT_SIZE};
+}
+
+void Effect::showSettings(bool hidden) {
+    if (!supportsSettings()) {
+        return;
+    }
+
+    if (!settingsWnd) {
+        widgets::WindowManager &windowMgr = MyApp::getInstance().getWindowMgrWidget();
+        Vector2d size = getDesiredSettingsWndSize();
+        Vector2d pos = windowMgr.getRegion().getCenter() - size / 2;
+        settingsWnd = windowMgr.createWindow(Rect<double>::wh(pos, size), nullptr);
+
+        populateSettingsWindow();
+    }
+
+    settingsWnd->setHidden(hidden);
+}
+
+void Effect::populateSettingsWindow() {
+    REQUIRE(settingsWnd);
+}
+
+
