@@ -90,6 +90,9 @@
     <ClInclude Include="plugin\impl\plugin_tool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tools\spline_eff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp">
@@ -159,6 +162,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="plugin\impl\plugin_tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\spline_eff.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
