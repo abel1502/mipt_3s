@@ -54,7 +54,8 @@ EVENT_HANDLER_IMPL(Button, Render) {
     return renderCustomized(event, Style::EL_BUTTON, false);
 }
 
-Widget::EventStatus Button::renderCustomized(const RenderEvent &event, Style::Element elem, bool ignoreLabel) {
+Widget::EventStatus Button::renderCustomized(const RenderEvent &event, Style::Element elem,
+                                             bool ignoreLabel) {
     // Skipping StaticGroup level, because we want to handle stuff manually
     EventStatus status = Widget::dispatchEvent(event);
 

@@ -3,7 +3,6 @@
 
 #include <AGF/widget.h>
 #include <AGF/widgets/static_group.h>
-#include <AGF/widgets/rectangle.h>
 #include <AGF/widgets/label.h>
 #include <AGF/helpers/mouse_tracker.h>
 #include <AGF/helpers/animation.h>
@@ -37,7 +36,7 @@ protected:
 
     SGRP_DECLARE_BINDING_T(label, Label);
 
-    EventStatus renderCustomized(const RenderEvent &event, Style::Element elem, bool ignoreLabel);
+    EventStatus renderCustomized(const RenderEvent &event, Style::Element elem, bool ignoreLabel = false);
 
 };
 
