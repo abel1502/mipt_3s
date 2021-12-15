@@ -3,6 +3,7 @@
 #include <AGF/helpers/widget_ref.h>
 #include "tools_widget.h"
 #include "app.h"
+#include <algorithm>
 
 
 using namespace abel;
@@ -347,7 +348,8 @@ ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
     const double height = region.h();
     const double width = region.w();
 
-    const double colW[2] = {width * 0.4, width * 0.6};
+    const double _col1W = std::min(width * 0.4, 80.);
+    const double colW[2] = {_col1W, width - _col1W};
     const double colX[2] = {0, colW[0]};
 
     const double sliderHeight = widgets::Thumb::DEFAULT_SIZE * 1.15;
