@@ -182,7 +182,7 @@ public:
     constexpr bool isEssential() const { return essential; }
     constexpr void markEssential(bool value = true) { essential = value; }
 
-    SGRP_DECLARE_BINDING_I(contents, 0)
+    SGRP_DECLARE_BINDING_I(contents, 0);
 
     EVENT_HANDLER_OVERRIDE(Render);
 
@@ -193,8 +193,8 @@ protected:
     unique_ptr<Texture> cachedTexture = nullptr;
 
 
-    SGRP_DECLARE_BINDING_I(header, 1)
-    SGRP_DECLARE_BINDING_I(borders, 2)
+    SGRP_DECLARE_BINDING_I(header,  1);
+    SGRP_DECLARE_BINDING_I(borders, 2);
 
     Window(WindowManager *parent_, const Rect<double> &region_,
            const char *title_, Content *contents_);
