@@ -8,10 +8,19 @@
 namespace abel::gui::widgets {
 
 
-Icon::Icon(Widget *parent_, const Rect<double> &region_, const Texture &source) :
-    Base(parent_, region_), texture{new Texture((unsigned)region.w(), (unsigned)region.h())} {
+Icon::Icon(Widget *parent_, const Rect<double> &region_) :
+    Base(parent_, region_) {}
+
+void Icon::setTexture(const Texture &source) {
+    if (!hasTexture()) {
+        texture = new Texture((unsigned)region.w(), (unsigned)region.h());
+    }
 
     texture->embed(texture->getRect(), source);
+}
+
+void Icon::resetTexture() {
+    texture = nullptr;
 }
 
 EVENT_HANDLER_IMPL(Icon, Render) {
@@ -21,7 +30,10 @@ EVENT_HANDLER_IMPL(Icon, Render) {
         return status;
     }
 
-    assert(texture);
+    if (!hasTexture()) {
+        return EventStatus::skip();
+    }
+
     event.target.embed(region, *texture);
 
     return EventStatus::done();
