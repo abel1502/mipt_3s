@@ -121,7 +121,11 @@ public:
         return isDown(btn);
     }
 
-    void updateHovered() const;
+    void updateHovered(bool hidden) const;
+
+    inline void updateHovered() const {
+        return updateHovered(widget->testParentsHidden());
+    }
 
     inline Style::ElementState getElemState() const {
         lastState = Style::ELS_NORMAL;

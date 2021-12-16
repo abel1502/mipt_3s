@@ -173,6 +173,15 @@ protected:
 
 };
 
+template <>
+inline VisibilityUpdateEvent Widget::translateEvent<VisibilityUpdateEvent>(const VisibilityUpdateEvent &event) {
+    VisibilityUpdateEvent newEvent{event};
+
+    newEvent.hidden = newEvent.hidden || hidden;
+
+    return newEvent;
+}
+
 }
 
 

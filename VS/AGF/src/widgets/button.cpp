@@ -20,7 +20,6 @@ Button::Button(Widget *parent_, const Rect<double> &region_, const char *text_) 
     };
 }
 
-
 EVENT_HANDLER_IMPL(Button, MouseClick) {
     // DBG("[%1zu] %4s at (%3lg %3lg)<=((%3lg %3lg))<=(%3lg %3lg) - %s",
     //     ((size_t)this) % 7,
@@ -39,19 +38,29 @@ EVENT_HANDLER_IMPL(Button, MouseClick) {
     return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
-
 EVENT_HANDLER_IMPL(Button, MouseMove) {
     return mt.processEvent(event, Base::dispatchEvent(event));
 }
-
 
 EVENT_HANDLER_IMPL(Button, MouseScroll) {
     return mt.processEvent(event, Base::dispatchEvent(event));
 }
 
-
 EVENT_HANDLER_IMPL(Button, Render) {
     return renderCustomized(event, Style::EL_BUTTON, false);
+}
+
+EVENT_HANDLER_IMPL(Button, VisibilityUpdate) {
+    EventStatus status = Base::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE)) {
+        return status;
+    }
+
+    mt.updateHovered(event.hidden);
+    mt.getElemState();
+
+    return status;
 }
 
 Widget::EventStatus Button::renderCustomized(const RenderEvent &event, Style::Element elem,

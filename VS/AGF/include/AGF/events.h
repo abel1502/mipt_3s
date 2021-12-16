@@ -63,6 +63,17 @@ EVENT_CLS_DECL_(FocusUpdate) {
         focus{focus_} {}
 };
 
+EVENT_CLS_DECL_(VisibilityUpdate) {
+    EVENT_CLS_DEMANDS_MODIFICATION_
+
+    bool hidden;
+
+
+    constexpr VisibilityUpdateEvent(bool hidden_) noexcept :
+        hidden{hidden_} {}
+
+};
+
 EVENT_CLS_DECL_(Start) {};
 
 EVENT_CLS_DECL_(Exit) {};

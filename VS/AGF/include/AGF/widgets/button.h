@@ -26,6 +26,7 @@ public:
     EVENT_HANDLER_OVERRIDE(MouseMove);
     EVENT_HANDLER_OVERRIDE(MouseScroll);
     EVENT_HANDLER_OVERRIDE(Render);
+    EVENT_HANDLER_OVERRIDE(VisibilityUpdate);
 
     inline const Label &getLabel() const;
     inline       Label &getLabel()      ;

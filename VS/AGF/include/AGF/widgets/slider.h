@@ -42,6 +42,8 @@ public:
 
     EVENT_HANDLER_OVERRIDE(Move);
 
+    EVENT_HANDLER_OVERRIDE(VisibilityUpdate);
+
     // Warning: cannot and doesn't check for bounds
     virtual bool staticShift(const Vector2d &by) override;
 

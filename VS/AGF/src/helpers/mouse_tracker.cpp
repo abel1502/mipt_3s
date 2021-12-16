@@ -87,7 +87,6 @@ void MouseClickTracker::releaseMouse() {
 }
 
 
-
 Widget::EventStatus MouseTracker::processEvent(const MouseClickEvent &event,
                                                Widget::EventStatus baseStatus) {
     bool wasDown = isDown(event.button);
@@ -104,11 +103,12 @@ Widget::EventStatus MouseTracker::processEvent(const MouseClickEvent &event,
         // }
 
         // To update the hovered status.
-        // The other type will be enqueued automatically
-        Application::getInstance().enqueueAction([event](Application &app) {
-            app.dispatchEvent(MouseMoveEvent(event.pos, event.pos, event.attrs, false));
-            app.dispatchEvent(MouseMoveEvent(event.pos, event.pos, event.attrs, true ));
-        });
+        if (!widget->isHidden()) {
+            Application::getInstance().enqueueAction([event](Application &app) {
+                app.dispatchEvent(MouseMoveEvent(event.pos, event.pos, event.attrs, false));
+                app.dispatchEvent(MouseMoveEvent(event.pos, event.pos, event.attrs, true ));
+            });
+        }
     }
 
     return baseStatus;
@@ -151,10 +151,13 @@ Widget::EventStatus MouseTracker::processEvent(const MouseMoveEvent &event,
     return Widget::EventStatus::stop(baseStatus.TREE);
 }
 
-void MouseTracker::updateHovered() const {
+void MouseTracker::updateHovered(bool hidden) const {
     // If we didn't receive a move-to event, this means it was screened by another widget, so
     // we aren't hovered anymore
-    if (!lastMoveType || !widget->getRegion().contains(Window::getInstance().getMousePos())) {
+    if (!lastMoveType ||
+        !widget->getRegion().contains(Window::getInstance().getMousePos()) ||
+        hidden) {
+
         isHovered_ = false;
     }
 }

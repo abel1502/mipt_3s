@@ -58,6 +58,19 @@ EVENT_HANDLER_IMPL(Thumb, Move) {
     return status;
 }
 
+EVENT_HANDLER_IMPL(Thumb, VisibilityUpdate) {
+    EventStatus status = Base::dispatchEvent(event);
+
+    if (!status.shouldHandle(status.NODE)) {
+        return status;
+    }
+
+    mt.updateHovered(event.hidden);
+    mt.getElemState();
+
+    return status;
+}
+
 bool Thumb::staticShift(const Vector2d &by) {
     if (Base::staticShift(by)) {
         return true;
