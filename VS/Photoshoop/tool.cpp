@@ -51,12 +51,15 @@ void Effect::showSettings(bool hidden) {
         widgets::WindowManager &windowMgr = MyApp::getInstance().getWindowMgrWidget();
         Vector2d size = getDesiredSettingsWndSize();
         Vector2d pos = windowMgr.getRegion().getCenter() - size / 2;
-        settingsWnd = windowMgr.createWindow(Rect<double>::wh(pos, size), nullptr);
+        settingsWnd = windowMgr.createWindow(Rect<double>::wh(pos, size), "Settings", new widgets::Window::EmptyBody());
 
         populateSettingsWindow();
     }
 
     settingsWnd->setHidden(hidden);
+    if (!hidden) {
+        settingsWnd->bringToFront();
+    }
 }
 
 void Effect::populateSettingsWindow() {
