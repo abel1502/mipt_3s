@@ -185,6 +185,22 @@ EVENT_HANDLER_IMPL(Window, Render) {
     return status;
 }
 
+void Window::setContents(Content *newContents) {
+    if (newContents) {
+        const double borderWidth  = getStyle().wndBorderWidth ;
+        const double headerHeight = getStyle().wndHeaderHeight;
+
+        newContents->staticShift(Vector2d{borderWidth, headerHeight});
+    }
+
+    contents(newContents);
+}
+
+void Window::bringToFront() {
+    getParent().focusChild(*this);
+}
+
+
 Window::EmptyBody::EmptyBody(Window *parent_) :
     Widget(parent_, Rect<double>::wh(0, 0, 0, 0)) {}
 

@@ -179,12 +179,20 @@ public:
     inline const WindowManager &getParent   () const { return *getParentPtr(); }
     inline       WindowManager &getParent   ()       { return *getParentPtr(); }
 
+    inline const Label &getTitleLabel() const;
+    inline       Label &getTitleLabel()      ;
+
     constexpr bool isEssential() const { return essential; }
     constexpr void markEssential(bool value = true) { essential = value; }
 
-    SGRP_DECLARE_BINDING_I(contents, 0);
-
     EVENT_HANDLER_OVERRIDE(Render);
+
+    inline const Content &getContents() const;
+    inline       Content &getContents()      ;
+
+    void setContents(Content *newContents);
+
+    void bringToFront();
 
 protected:
     bool essential = false;
@@ -193,13 +201,30 @@ protected:
     unique_ptr<Texture> cachedTexture = nullptr;
 
 
-    SGRP_DECLARE_BINDING_I(header,  1);
-    SGRP_DECLARE_BINDING_I(borders, 2);
+    SGRP_DECLARE_BINDING_I(contents, 0);
+    SGRP_DECLARE_BINDING_I(header,   1);
+    SGRP_DECLARE_BINDING_I(borders,  2);
 
     Window(WindowManager *parent_, const Rect<double> &region_,
            const char *title_, Content *contents_);
 
 };
+
+
+inline const Label &Window::getTitleLabel() const {
+    return const_cast<Window *>(this)->getTitleLabel();
+}
+
+inline Label &Window::getTitleLabel() {
+    return header().title();
+}
+
+inline const Window::Content &Window::getContents() const {
+    return contents();
+}
+inline Window::Content &Window::getContents() {
+    return contents();
+}
 
 
 }
