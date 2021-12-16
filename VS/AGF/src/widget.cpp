@@ -41,6 +41,10 @@ EVENT_HANDLER_IMPL(Widget, FocusUpdate) {
     return EventStatus::skip();
 }
 
+EVENT_HANDLER_IMPL(Widget, VisibilityUpdate) {
+    return EventStatus::skip();
+}
+
 EVENT_HANDLER_IMPL(Widget, Start) {
     return EventStatus::skip();
 }
@@ -108,6 +112,10 @@ void Widget::die() {
     sigDeath(*this);
 }
 
+bool Widget::testParentsHidden() const {
+    return isHidden() || (parent && parent->testParentsHidden());
+}
+
 bool Widget::updateParent(Widget *parent_) {
     if (parent == parent_)
         return true;
@@ -147,6 +155,10 @@ bool Widget::setHidden(bool hidden_) {
     bool result = (hidden == hidden_);
 
     hidden = hidden_;
+
+    if (!result) {
+        dispatchEvent(VisibilityUpdateEvent{hidden});
+    }
 
     return result;
 }
