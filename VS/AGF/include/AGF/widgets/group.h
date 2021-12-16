@@ -48,7 +48,7 @@ public:
 
     virtual child_type &addChild(child_type *child) {
         assert(child);
-        children.insertBackEmplace(child);
+        children.insertFrontEmplace(child);
         child->updateParent(this);
 
         return *child;
@@ -158,7 +158,8 @@ protected:
     inline EventStatus _processEvent(const T &event) {
         // Sadly, full specializations aren't possible here...
         // I guess I'll at least provide
-        if constexpr (std::is_same_v<T, RenderEvent> || std::is_same_v<T, FocusUpdateEvent>) {
+        if constexpr (std::is_same_v<T, RenderEvent> ||
+                      std::is_same_v<T, FocusUpdateEvent>) {
             return _processEvent(event);  // This is NOT recursion, but delegation to specific overloads!
         }
 
