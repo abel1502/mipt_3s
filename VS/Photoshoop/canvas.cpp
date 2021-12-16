@@ -43,6 +43,20 @@ Canvas::Canvas(Widget *parent_, const Rect<double> &region_) :
         return false;
     };
 
+    MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo{this}](ToolManager &toolMgr) {
+        if (!inst) {
+            return true;
+        }
+
+        if (toolMgr.getActiveCanvas() != inst.get()) {
+            inst->activeLayer().endPreview(false);
+        } else {
+            inst->activeLayer().beginPreview();
+        }
+
+        return false;
+    };
+
     becomeActive();
 }
 
@@ -59,7 +73,9 @@ EVENT_HANDLER_IMPL(Canvas, Render) {
 
     // TODO: Blend in a separate texture instead
     for (const auto &layer : layers) {
-        event.target.embed(region, layer.getTexture());
+        if (!layer.willOverwrite()) {
+            event.target.embed(region, layer.getTexture());
+        }
         event.target.embed(region, layer.getPreview());
     }
 
@@ -78,7 +94,6 @@ EVENT_HANDLER_IMPL(Canvas, FocusUpdate) {
     EventStatus status = Base::dispatchEvent(event);
 
     if (status.shouldHandle(status.NODE) && event.focus) {
-        // TODO: ?
         becomeActive();
     }
 
@@ -123,7 +138,12 @@ bool Canvas::onDragStateChange(abel::gui::MouseBtn btn,
 
     becomeActive();
 
-    setupPreview(state);
+    if (state) {
+        activeLayer().beginPreview();
+    } else {
+        activeLayer().endPreview(true);
+    }
+
 
     return false;
 }
@@ -147,9 +167,7 @@ void Canvas::selectLayer(unsigned idx) {
 }
 
 void Canvas::applyEffect(Effect &effect) {
-    setupPreview(true);
     effect.apply(activeLayer());
-    setupPreview(false);
 }
 
 void Canvas::loadImage(const std::filesystem::path &path) {
@@ -162,13 +180,3 @@ void Canvas::becomeActive() {
     MyApp::getInstance().toolMgr.setActiveCanvas(this);
 }
 
-void Canvas::setupPreview(bool isEntry) {
-    // TODO: Perhaps clear after flush only?
-    if (isEntry) {
-        activeLayer().clearPreview();
-    } else {
-        MyApp::getInstance().enqueueAction([this](Application &) {
-            activeLayer().flushPreview();
-        });
-    }
-}

@@ -14,6 +14,11 @@ Layer::Layer(const Vector2d &size, const Color &defaultColor, double defaultAlph
 
 
 void Layer::flushPreview() {
+    if constexpr (DEBUG_PREVIEW) {
+        DBG("[%2u] Flush preview", (uintptr_t)this % 17);
+    }
+
+    getTexture().setOverwrite(flushPolicyOverwrite);
     getTexture().embed(getTexture().getRect(), getPreview());
     getTexture().resetOverwrite();
     clearPreview();
@@ -21,6 +26,10 @@ void Layer::flushPreview() {
 
 
 void Layer::clearPreview() {
+    if constexpr (DEBUG_PREVIEW) {
+        DBG("[%2u] Clear preview", (uintptr_t)this % 17);
+    }
+
     getPreview().setFillColor(Color::WHITE, 0);
     getPreview().clear();
 }

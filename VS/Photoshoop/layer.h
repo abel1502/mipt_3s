@@ -24,6 +24,20 @@ public:
 
     void clearPreview();
 
+    constexpr void setFlushPolicy(bool overwrite) {
+        flushPolicyOverwrite = overwrite;
+    }
+
+    constexpr bool willOverwrite() const {
+        return flushPolicyOverwrite;
+    }
+
+    inline void beginPreview();
+
+    inline void endPreview(bool apply = false);
+
+    // TODO: Finish
+
     Vector2d getSize() const {
         return texture->getSize();
     }
@@ -31,5 +45,33 @@ public:
 protected:
     abel::unique_ptr<abel::gui::Texture> texture = nullptr;
     abel::unique_ptr<abel::gui::Texture> preview = nullptr;
+    bool flushPolicyOverwrite = false;
+
+
+    static constexpr bool DEBUG_PREVIEW = false;
 
 };
+
+
+inline void Layer::beginPreview() {
+    if constexpr (DEBUG_PREVIEW) {
+        DBG("[%2u] Begin preview", (uintptr_t)this % 17);
+    }
+
+    clearPreview();
+    flushPolicyOverwrite = false;
+}
+
+inline void Layer::endPreview(bool apply) {
+    if constexpr (DEBUG_PREVIEW) {
+        DBG("[%2u] End preview, %s", (uintptr_t)this % 17, apply ? "applying" : "discarding");
+    }
+
+    if (apply) {
+        flushPreview();
+    } else {
+        // clearPreview();
+    }
+
+    flushPolicyOverwrite = false;
+}

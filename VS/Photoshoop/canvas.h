@@ -70,7 +70,7 @@ protected:
 
     void becomeActive();
 
-    void setupPreview(bool isEntry);
+    void setupPreview(bool isEntry, bool flush = true);
 
 };
 
