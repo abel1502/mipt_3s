@@ -110,6 +110,8 @@ public:
 
     constexpr bool isHidden() const { return hidden; }
 
+    bool testParentsHidden() const;
+
     void die();
 
     virtual bool updateParent(Widget *parent_);
