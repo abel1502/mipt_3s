@@ -69,6 +69,8 @@ public:
 
     const SampleArr &getSamples() const;
 
+    void resetPoints();
+
 protected:
     static constexpr bool DEBUG_DRAW_SAMPLES = false;
     static constexpr Rect<double> limits{Rect<double>::wh(0, 1, 1, -1)};

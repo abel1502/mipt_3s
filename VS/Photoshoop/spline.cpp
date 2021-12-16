@@ -6,8 +6,7 @@
 Spline::Spline(Widget *parent_, const Rect<double> &region_) :
     Base(parent_, region_) {
 
-    points.append(Point{Vector2d{0, 0}});
-    points.append(Point{Vector2d{1, 1}});
+    resetPoints();
 
     mt.sigDown += [this](const abel::gui::MouseClickEvent &event) {
         if (activePointIdx != BAD_IDX) {
@@ -429,6 +428,14 @@ bool Spline::isPointMisplaced(unsigned idx) const {
     }
 
     return false;
+}
+
+void Spline::resetPoints() {
+    points.clear();
+    points.append(Point{Vector2d{0, 0}});
+    points.append(Point{Vector2d{1, 1}});
+
+    invalidateSamplesCache();
 }
 #pragma endregion Points Control
 
