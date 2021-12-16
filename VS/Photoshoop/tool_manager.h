@@ -21,6 +21,7 @@ class BrushTool;
 class EraserTool;
 class PickerTool;
 class Effect;
+class Canvas;
 
 
 class ToolManager {
