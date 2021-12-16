@@ -7,6 +7,7 @@
 #include "spline.h"
 #include "physics/widget.h"
 #include "tools/invert_eff.h"
+#include "tools/spline_eff.h"
 #include <ACL/debug.h>
 
 
@@ -71,7 +72,7 @@ void MyApp::init(int argc, const char **argv) {
     // Slider2D *slider = new Slider2D(nullptr, Rect<double>::wh(20, 20, 100, 100), Rect<double>::se(-25, -25, 25, 25));
     // SliderH *slider = new SliderH(nullptr, Rect<double>::wh(20, 20, 100, 15), -25, 25);
     // ScrollbarH *scrollbar = new ScrollbarH(nullptr, Rect<double>::wh(20, 20, 100, 15));
-    ScrollableLayout *box = new ScrollableLayout(nullptr, Rect<double>::wh(20, 20, 100, 150));
+    // ScrollableLayout *box = new ScrollableLayout(nullptr, Rect<double>::wh(20, 20, 100, 150));
 
     // slider->sigChanged += [](Vector2d value) {
     //     DBG("Slider set to %lg", value.x());
@@ -99,6 +100,9 @@ void MyApp::init(int argc, const char **argv) {
 
     ToolManager::effect_handle_t hInvertEffect = toolMgr.addEffect(new InvertEffect(&toolMgr));
     toolsWidget->addEffectButton(hInvertEffect, "Invert");
+
+    ToolManager::effect_handle_t hSplineEffect = toolMgr.addEffect(new SplineEffect(&toolMgr));
+    toolsWidget->addEffectButton(hSplineEffect, "Spline");
     // toolsWidget->addToolButton(0, "Brush 2: Again");
     // toolsWidget->addToolButton(0, "Brush 3: Yup");
 
@@ -190,21 +194,19 @@ void MyApp::init(int argc, const char **argv) {
         };
     }
 
-    Spline *spline = new Spline(nullptr, Rect<double>::wh(0, 0, 175, 150));
+    // Spline *spline = new Spline(nullptr, Rect<double>::wh(0, 0, 175, 150));
 
     WindowManager *mgr = new WindowManager(nullptr, Rect<double>::wh(0, 0, 800, 600));
     mgr->createWindow(Rect<double>::wh(140,  50, 300, 200), "Some buttons", grp);
     mgr->createWindow(Rect<double>::wh(240,  70, 300, 200), "A drawing canvas", canvas);
     mgr->createWindow(Rect<double>::wh(240, 170, 300, 200), "Another canvas",
                       new Canvas(nullptr, Rect<double>::se(0, 0, 300, 200).pad(10)));
-    mgr->createWindow(Rect<double>::wh( 80,  90, 300, 200), "A scrollable box", box);
-    mgr->createWindow(Rect<double>::wh(290, 150, 300, 200), "Tools for all!", toolsWidget)
+    mgr->createWindow(toolsWidget->getRegion() + Vector2d{290, 150}, "Tools for all!", toolsWidget)
         .markEssential();
     if constexpr (USE_MOLECULES) {
         mgr->createWindow(Rect<double>::wh(400,  50, 400, 300), "These molecules look familiar", molecules)
             /*.markEssential() */ ;
     }
-    mgr->createWindow(Rect<double>::wh(50, 120, 300, 200), "Spline test", spline);
 
     pluginMgr.loadAll();
 
