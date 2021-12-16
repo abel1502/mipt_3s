@@ -332,8 +332,15 @@ _myimpl::EffectButton::EffectButton(Widget *parent_, const Rect<double> &region_
             return true;
         }
 
-        // TODO: Finish as well
-        DBG("Not implemented yet");
+        Effect &effect = MyApp::getInstance().toolMgr.getEffect(inst->handle);
+
+        if (!effect.supportsSettings()) {
+            DBG("Effect doesn't support settings");
+
+            return false;
+        }
+
+        effect.showSettings();
 
         return false;
     };
@@ -346,10 +353,10 @@ ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
     Base(parent_, region_, nullptr, nullptr, nullptr, nullptr) {
 
     const double height = region.h();
-    const double width = region.w();
+    const double width  = region.w();
 
-    const double _col1W = std::min(width * 0.4, 80.);
-    const double colW[2] = {_col1W, width - _col1W};
+    const double _col1W = std::min(width * 0.4, 120.);
+    const double colW[2] = {_col1W, std::min(width - _col1W, 180.)};
     const double colX[2] = {0, colW[0]};
 
     const double sliderHeight = widgets::Thumb::DEFAULT_SIZE * 1.15;
@@ -365,7 +372,7 @@ ToolsWidget::ToolsWidget(Widget *parent_, const Rect<double> &region_) :
     toolButtons(new _tool_buttons_type(nullptr, regionTools, 0));
     effectButtons(new _effect_buttons_type(nullptr, regionEffects, 0));
 
-    buttonSize = Rect<double>::wh(0, 0, colW[1] * 0.9, 26);
+    buttonSize = Rect<double>::wh(0, 0, colW[1] * 0.85, 26);
 
     addToolButton(MyApp::getInstance().toolMgr
                       .getBasicToolHandle(ToolManager::BTT_BRUSH),
