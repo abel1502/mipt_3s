@@ -217,7 +217,7 @@ public:
     }
 
     constexpr operator bool() const noexcept {
-        return isEmpty();
+        return !isEmpty();
     }
 
     constexpr unsigned getSize() const noexcept {

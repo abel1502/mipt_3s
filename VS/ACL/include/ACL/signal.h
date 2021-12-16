@@ -24,8 +24,9 @@ public:
     void invoke(As ... args) {
         REQUIRE(!beingInvoked);
 
-        if (!callbacks && !funcCallbacks)
+        if (!callbacks && !funcCallbacks) {
             return;
+        }
 
         beingInvoked = true;
 
