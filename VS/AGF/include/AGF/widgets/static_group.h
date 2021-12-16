@@ -246,7 +246,9 @@ protected:
     template <unsigned I = 0>
     void killChildren() {
         if constexpr (I < Types::size) {
-            child<I>().die();
+            if (childPtr<I>()) {
+                child<I>().die();
+            }
 
             killChildren<I + 1>();
         }
