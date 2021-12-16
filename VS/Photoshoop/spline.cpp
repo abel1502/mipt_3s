@@ -372,6 +372,8 @@ unsigned Spline::addPoint(const Vector2d &value) {
         std::swap(points[i - 1], points[i]);
     }
 
+    invalidateSamplesCache();
+
     return i;
 }
 
@@ -384,6 +386,8 @@ void Spline::removePoint(unsigned idx) {
     std::move(points.begin() + idx + 1, points.end(), points.begin() + idx);
 
     points.pop();
+
+    invalidateSamplesCache();
 }
 
 void Spline::moveActivePoint(const Vector2d &valueTo) {
