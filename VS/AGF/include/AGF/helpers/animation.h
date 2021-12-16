@@ -14,6 +14,7 @@ namespace abel::gui {
 class Animation {
 public:
     static constexpr Style::ElementState BAD_STATE = (Style::ElementState)-1;
+    static constexpr double OVERDUE_COEFF = 0.5;
 
 
     Animation() = default;
@@ -83,6 +84,8 @@ public:
             static_assert(false, "Index should be 0 or 1");
         }
     }
+
+    bool onTickUpdate();
 
 protected:
     unique_ptr<Texture> tex0 = nullptr,

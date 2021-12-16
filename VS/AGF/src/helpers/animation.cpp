@@ -18,6 +18,13 @@ Animation::Animation(unique_ptr<Texture> &&tex0_, unique_ptr<Texture> &&tex1_, d
 void Animation::render(Texture &target, const Rect<double> &at) {
     assert(state >= 0);
 
+    double curTime = Application::getInstance().getTime();
+
+    if (curTime - startTime > (OVERDUE_COEFF + 1) * duration) {
+        // We assume it is too late to pretend we're on time
+        state = duration;
+    }
+
     // Intentionally in this order, because with duration == 0 we want to render the final texture
     if (cmpDbl(state, duration) >= 0) {
         target.embed(at, *tex1);
