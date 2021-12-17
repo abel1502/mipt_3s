@@ -48,8 +48,9 @@ public:
 
     virtual child_type &addChild(child_type *child) {
         assert(child);
-        children.insertFrontEmplace(child);
+        children.insertBackEmplace(child);
         child->updateParent(this);
+        focusChild(--children.end());
 
         return *child;
     }
