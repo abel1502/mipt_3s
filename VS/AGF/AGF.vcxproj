@@ -39,6 +39,7 @@
     <ClCompile Include="src\widgets\scrollable_layout.cpp" />
     <ClCompile Include="src\widgets\scrollbar.cpp" />
     <ClCompile Include="src\widgets\slider.cpp" />
+    <ClCompile Include="src\widgets\textbox.cpp" />
     <ClCompile Include="src\widgets\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +69,7 @@
     <ClInclude Include="include\AGF\widgets\scrollbar.h" />
     <ClInclude Include="include\AGF\widgets\slider.h" />
     <ClInclude Include="include\AGF\widgets\static_group.h" />
+    <ClInclude Include="include\AGF\widgets\textbox.h" />
     <ClInclude Include="include\AGF\widgets\window.h" />
     <ClInclude Include="include\AGF\widget_event.h" />
     <ClInclude Include="include\AGF\widget_pos.h" />
