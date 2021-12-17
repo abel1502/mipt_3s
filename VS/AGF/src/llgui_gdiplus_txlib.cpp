@@ -85,6 +85,8 @@ Window::Window(const Rect<unsigned> &pos) :
 
     Gdiplus::GdiplusStartupInput gdiplusStartupInput{};
     Gdiplus::GdiplusStartup(&gdiToken, &gdiplusStartupInput, NULL);
+
+    setlocale(LC_ALL, "");
 }
 
 Window::Window(Window &&other) noexcept :
