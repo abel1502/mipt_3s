@@ -5,6 +5,7 @@
 #include <ACL/general.h>
 #include <AGF/llgui_pre.h>
 #include <AGF/mouse.h>
+#include <AGF/kbd.h>
 
 
 #define EVENT_CLS_NAME(EVENT_NAME) \
@@ -138,9 +139,36 @@ EVENT_CLS_DECL_(MouseScroll) {
         pos{pos_}, attrs{attrs_}, delta{delta_} {}
 };
 
-EVENT_CLS_DECL_(KeyPress) {};
+EVENT_CLS_DECL_(KeyPress) {
+    Key key;
+    KeyPressType type;
+    unsigned repeatCnt;
 
-EVENT_CLS_DECL_(KeyboardInput) {};
+
+    constexpr KeyPressEvent(Key key_, KeyPressType type_, unsigned repeatCnt_) :
+        key{key_}, type{type_}, repeatCnt{repeatCnt_} {}
+
+};
+
+EVENT_CLS_DECL_(KeyboardInput) {
+    wchar_t wchr;
+    unsigned repeatCnt;
+
+
+    constexpr KeyboardInputEvent(wchar_t wchr_, unsigned repeatCnt_) :
+        wchr{wchr_}, repeatCnt{repeatCnt_} {}
+
+    bool isAscii() const {
+        return (wchr & (128 - 1)) == wchr;
+    }
+
+    char getAscii() const {
+        REQUIRE(isAscii());
+
+        return wchr & (128 - 1);
+    }
+
+};
 
 // TODO: Use type erasure here to allow the users to customize this
 EVENT_CLS_DECL_(User) {};

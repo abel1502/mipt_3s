@@ -72,6 +72,7 @@
     <ClInclude Include="include\AGF\widget_event.h" />
     <ClInclude Include="include\AGF\widget_pos.h" />
     <ClInclude Include="include\AGF\style.h" />
+    <ClInclude Include="include\AGF\kbd.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

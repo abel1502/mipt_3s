@@ -144,7 +144,6 @@ void Application::deinit() {
     wnd.reset();
 }
 
-// TODO: Maybe remove
 void Application::releaseMouse() {
     mouseCaptureHolder = nullptr;
     wantSysMouseCapture = false;
@@ -168,6 +167,27 @@ void Application::captureMouse(Widget *widget) {
     mouseCaptureHolder = widget;
     wantSysMouseCapture = true;
     ++mouseCaptureDeg;
+}
+
+void Application::releaseKbd() {
+    kbdCaptureHolder = nullptr;
+    kbdCaptureDeg = 0;
+}
+
+void Application::releaseKbd(Widget *widget) {
+    REQUIRE(widget == kbdCaptureHolder);
+    REQUIRE(kbdCaptureDeg > 0);
+
+    if (!--kbdCaptureDeg) {
+        releaseMouse();
+    }
+}
+
+void Application::captureKbd(Widget *widget) {
+    REQUIRE(!kbdCaptureHolder || kbdCaptureHolder == widget);
+
+    kbdCaptureHolder = widget;
+    ++kbdCaptureDeg;
 }
 
 void Application::demandRedraw() {
@@ -325,6 +345,12 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         enqueueEvent(MouseScrollEvent{pos, MouseAttrs{GET_KEYSTATE_WPARAM(wParam)}, delta});
     } return 0;
+
+    case WM_CHAR: {
+        enqueueEvent(KeyboardInputEvent{getKeyCharacter(wParam), getKeyRepeatCount(lParam)});
+    } return 0;
+
+    // TODO: WM_KEYDOWN, WM_KEYUP!!!
 
     case WM_CLOSE: {
         DBG("Closing");

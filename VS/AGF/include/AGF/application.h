@@ -68,8 +68,11 @@ public:
     template <typename T>
     inline void dispatchEvent(const T &event) {
         static_assert(std::is_base_of_v<WidgetEvent, T>);
-        static_assert(!std::is_same_v<MouseClickEvent, T>);
-        static_assert(!std::is_same_v<MouseMoveEvent, T>);
+        static_assert(!std::is_same_v<MouseClickEvent, T> &&
+                      !std::is_same_v<MouseMoveEvent, T> &&
+                      !std::is_same_v<MouseScrollEvent, T> &&
+                      !std::is_same_v<KeyPressEvent, T> &&
+                      !std::is_same_v<KeyboardInputEvent, T>);
 
         getMainWidget().dispatchEvent(event);
     }
@@ -82,6 +85,24 @@ public:
 
     inline void dispatchEvent(const MouseMoveEvent &event) {
         Widget &target = isMouseCaptured() ? *mouseCaptureHolder : getMainWidget();
+
+        target.dispatchEvent(event);
+    }
+
+    inline void dispatchEvent(const MouseScrollEvent &event) {
+        Widget &target = isMouseCaptured() ? *mouseCaptureHolder : getMainWidget();
+
+        target.dispatchEvent(event);
+    }
+
+    inline void dispatchEvent(const KeyPressEvent &event) {
+        Widget &target = isKbdCaptured() ? *kbdCaptureHolder : getMainWidget();
+
+        target.dispatchEvent(event);
+    }
+
+    inline void dispatchEvent(const KeyboardInputEvent &event) {
+        Widget &target = isKbdCaptured() ? *kbdCaptureHolder : getMainWidget();
 
         target.dispatchEvent(event);
     }
@@ -122,11 +143,17 @@ public:
     constexpr bool isInitialized() const noexcept { return initialized; }
        inline bool isFinished   () const noexcept { return finished;    }
 
-    constexpr bool isMouseCaptured()               const noexcept { return mouseCaptureHolder; }
-    constexpr bool isMouseCaptured(Widget *widget) const noexcept { return mouseCaptureHolder == widget; }
+    constexpr bool isMouseCaptured()                     const noexcept { return mouseCaptureHolder; }
+    constexpr bool isMouseCaptured(const Widget *widget) const noexcept { return mouseCaptureHolder == widget; }
     void releaseMouse();  // TODO: Perhaps private?
     void releaseMouse(Widget *widget);
     void captureMouse(Widget *widget);
+
+    constexpr bool isKbdCaptured()                     const noexcept { return kbdCaptureHolder; }
+    constexpr bool isKbdCaptured(const Widget *widget) const noexcept { return kbdCaptureHolder == widget; }
+    void releaseKbd();  // TODO: Perhaps private?
+    void releaseKbd(Widget *widget);
+    void captureKbd(Widget *widget);
 
     void demandRedraw();
 
@@ -145,6 +172,9 @@ protected:
     std::atomic<bool> wantSysMouseCapture = false;
     Widget *mouseCaptureHolder = nullptr;
     unsigned mouseCaptureDeg = 0;
+
+    Widget *kbdCaptureHolder = nullptr;
+    unsigned kbdCaptureDeg = 0;
 
     std::mutex actionQueueMutex{};
     std::mutex actionExecMutex{};

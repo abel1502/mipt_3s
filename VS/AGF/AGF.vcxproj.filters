@@ -170,6 +170,12 @@
     <ClInclude Include="include\AGF\widgets\icon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AGF\widgets\textbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AGF\kbd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
