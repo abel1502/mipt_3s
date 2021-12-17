@@ -73,6 +73,8 @@ public:
         WT_REBAR,
         WT_SCROLLBAR,
         WT_TRACKBAR,
+        WT_MENU,
+        WT_EDIT,
 
         WT_COUNT,  ///< Not a valid enum value!
     };

@@ -40,8 +40,9 @@ public:
     Color textColor{};
     double textSize = 13;
     // TODO: Some text formatting attributes
-    double wndHeaderHeight = 30;
-    double wndBorderWidth  = 5;
+    double wndHeaderHeight   = 30;
+    double wndBorderWidth    = 5;
+    double caretFlashPeriod = 0.5;
 
 
     constexpr Style() noexcept = default;  // Warning: requires some tilemaps to be set manually

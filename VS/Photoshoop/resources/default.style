@@ -24,11 +24,17 @@
 "SLIDER_HBODY"    "*";
 "SLIDER_VBODY"    "*";
 
-"SB_ARR_UP"		  "*";
-"SB_ARR_DOWN"	  "*";
-"SB_ARR_LEFT"	  "*";
-"SB_ARR_RIGHT"	  "*";
-"SB_HTHUMB"		  "*";
-"SB_VTHUMB"		  "*";
-"SB_HTRACK"	      "*";
-"SB_VTRACK"	      "*";
+"SB_ARR_UP"       "*";
+"SB_ARR_DOWN"     "*";
+"SB_ARR_LEFT"     "*";
+"SB_ARR_RIGHT"    "*";
+"SB_HTHUMB"       "*";
+"SB_VTHUMB"       "*";
+"SB_HTRACK"       "*";
+"SB_VTRACK"       "*";
+
+"MENUBAR_BG"      "*";
+"MENUBAR_ITEM"    "*";
+
+"TEXTBOX_BODY"    "*";
+"TEXTBOX_CARET"   "*";

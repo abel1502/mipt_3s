@@ -80,6 +80,8 @@ Window::Window(const Rect<unsigned> &pos) :
     themes[WT_REBAR]     = WinTheme{L"Rebar"};
     themes[WT_SCROLLBAR] = WinTheme{L"Scrollbar"};
     themes[WT_TRACKBAR]  = WinTheme{L"Trackbar"};
+    themes[WT_MENU]      = WinTheme{L"Menu"};
+    themes[WT_EDIT]      = WinTheme{L"Edit"};
 
     Gdiplus::GdiplusStartupInput gdiplusStartupInput{};
     Gdiplus::GdiplusStartup(&gdiToken, &gdiplusStartupInput, NULL);

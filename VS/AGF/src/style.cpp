@@ -1,6 +1,7 @@
 #include <AGF/llgui.h>
 #include <AGF/style.h>
 #include <AGF/helpers/animation.h>
+#include <AGF/application.h>
 #include <ACL/type_traits.h>
 #include <cctype>
 #include <fstream>
@@ -227,6 +228,7 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
         case ELS_NORMAL:
         case ELS_HOVERED:
         case ELS_PRESSED:
+        case ELS_ACTIVE:
             sysState = CS_ACTIVE;
             break;
 
@@ -266,8 +268,13 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
             sysState = PBS_PRESSED;
             break;
 
+        case ELS_ACTIVE:
+            sysState = PBS_DEFAULTED;
+            break;
+
         case ELS_INACTIVE:
             sysState = PBS_DISABLED;
+            break;
 
         NODEFAULT
         }
@@ -288,6 +295,7 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
 
     caseHeaderButton: {
         switch (state) {
+        case ELS_ACTIVE:
         case ELS_NORMAL:
             sysState = CBS_NORMAL;
             break;
@@ -349,6 +357,13 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
             sysState = TUS_PRESSED;
             break;
 
+        case ELS_ACTIVE:
+            static_assert(TUS_FOCUSED ==   TUS_FOCUSED &&
+                          TUS_FOCUSED ==  TUTS_FOCUSED &&
+                          TUS_FOCUSED == TUVRS_FOCUSED);
+            sysState = TUS_FOCUSED;
+            break;
+
         case ELS_INACTIVE:
             static_assert(TUS_DISABLED ==   TUS_DISABLED &&
                           TUS_DISABLED ==  TUTS_DISABLED &&
@@ -405,6 +420,7 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
                       ABS_RIGHTNORMAL - 12, "Assumption about slider arrows was wrong");
 
         switch (state) {
+        case ELS_ACTIVE:
         case ELS_NORMAL:
             sysState = ABS_UPNORMAL;
             break;
@@ -442,6 +458,7 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
 
     caseScrollbarThumb: {
         switch (state) {
+        case ELS_ACTIVE:
         case ELS_NORMAL:
             sysState = SCRBS_NORMAL;
             break;
@@ -500,6 +517,92 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
 
         target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_SCROLLBAR>(),
                                  SBP_UPPERTRACKVERT, SCRBS_NORMAL);
+    } break;
+
+    case EL_MENUBAR_BACKGROUND: {
+        switch (state) {
+        case ELS_NORMAL:
+        case ELS_HOVERED:
+        case ELS_PRESSED:
+            sysState = MB_ACTIVE;
+            break;
+
+        case ELS_INACTIVE:
+            sysState = MB_INACTIVE;
+            break;
+
+        NODEFAULT
+        }
+
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_MENU>(),
+                                 MENU_BARBACKGROUND, sysState);
+    } break;
+
+    case EL_MENUBAR_ITEM: {
+        switch (state) {
+        case ELS_NORMAL:
+            sysState = MBI_NORMAL;
+            break;
+
+        case ELS_ACTIVE:  // TODO: ?
+        case ELS_HOVERED:
+            sysState = MBI_HOT;
+            break;
+
+        case ELS_PRESSED:
+            sysState = MBI_PUSHED;
+            break;
+
+        case ELS_INACTIVE:
+            sysState = MBI_DISABLED;
+            break;
+
+        NODEFAULT
+        }
+
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_MENU>(),
+                                 MENU_BARITEM, sysState);
+    } break;
+
+    case EL_TEXTBOX_BODY: {
+        switch (state) {
+        case ELS_NORMAL:
+            sysState = EPSN_NORMAL;
+            break;
+
+        case ELS_PRESSED:
+        case ELS_HOVERED:
+            sysState = EPSN_HOT;
+            break;
+
+        case ELS_ACTIVE:
+            sysState = EPSN_FOCUSED;
+            break;
+
+        case ELS_INACTIVE:
+            sysState = EPSN_DISABLED;
+            break;
+
+        NODEFAULT
+        }
+
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_MENU>(),
+                                 MENU_BARITEM, sysState);
+    } break;
+
+    case EL_TEXTBOX_CARET: {
+        // TODO: Perhaps another way, this will fail after long enough running time
+        double curTime = Application::getInstance().getTime();
+        bool parity = (unsigned)(curTime / caretFlashPeriod) % 2;
+
+        if (parity) {
+            Vector2d pos = dest.getPos();
+            Vector2d height{0, dest.h()};
+
+            target.setLineColor(Color::BLACK);
+            target.setLineWidth(1);
+            target.drawLine(pos, pos + height);
+        }
     } break;
 
     NODEFAULT
