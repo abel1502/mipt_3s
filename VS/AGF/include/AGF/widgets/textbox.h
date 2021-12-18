@@ -20,13 +20,13 @@ public:
     public:
         Caret(TextBox &textBox_);
 
-        constexpr Caret &operator++() {
+        inline Caret &operator++() {
             shift(1);
 
             return *this;
         }
 
-        constexpr Caret &operator--() {
+        inline Caret &operator--() {
             shift(-1);
 
             return *this;
