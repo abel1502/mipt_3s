@@ -140,6 +140,7 @@ EVENT_CLS_DECL_(MouseScroll) {
 };
 
 EVENT_CLS_DECL_(KeyPress) {
+    // Might have a different value, not specified in the enum - remember to specify the default case!
     Key key;
     KeyPressType type;
     unsigned repeatCnt;

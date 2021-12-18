@@ -138,7 +138,8 @@ enum class Key : unsigned short {
 
     LShift = VK_LSHIFT,
     RShift = VK_RSHIFT,
-    Shift = LShift,
+    // Already defined above
+    // Shift = LShift,
     LCtrl = VK_LCONTROL,
     RCtrl = VK_RCONTROL,
     Ctrl = LCtrl,
@@ -160,7 +161,7 @@ constexpr wchar_t getKeyCharacter(WPARAM wParam) {
 }
 
 constexpr Key keyCodeFromVk(unsigned vk) {
-    return Key{vk};
+    return static_cast<Key>(vk);
 }
 
 constexpr unsigned getKeyRepeatCount(LPARAM lParam) {
