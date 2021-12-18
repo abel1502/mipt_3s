@@ -350,7 +350,13 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
         enqueueEvent(KeyboardInputEvent{getKeyCharacter(wParam), getKeyRepeatCount(lParam)});
     } return 0;
 
-    // TODO: WM_KEYDOWN, WM_KEYUP!!!
+    case WM_KEYDOWN: {
+        enqueueEvent(KeyPressEvent{keyCodeFromVk(wParam), KeyPressType::Down, getKeyRepeatCount(lParam)});
+    } return 0;
+
+    case WM_KEYUP: {
+        enqueueEvent(KeyPressEvent{keyCodeFromVk(wParam), KeyPressType::Up, getKeyRepeatCount(lParam)});
+    } return 0;
 
     case WM_CLOSE: {
         DBG("Closing");
