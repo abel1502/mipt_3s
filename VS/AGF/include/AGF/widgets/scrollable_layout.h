@@ -57,15 +57,6 @@ public:
             return false;
         };
 
-        mt.setScrollable();
-        mt.sigScroll += [this](const MouseScrollEvent &event) {
-            double containerSize = layout().getRegion().h();
-
-            scrollbar().setValue(scrollbar().getValue() - (double)event.delta / 120. / 5.);
-
-            return false;
-        };
-
         onSizeChanged();
     }
 
@@ -103,16 +94,18 @@ public:
         Application::getInstance().demandRedraw();
     }
 
-    EVENT_HANDLER_OVERRIDE(MouseClick) {
-        return mt.processEvent(event, Base::dispatchEvent(event));
-    }
-
-    EVENT_HANDLER_OVERRIDE(MouseMove) {
-        return mt.processEvent(event, Base::dispatchEvent(event));
-    }
-
     EVENT_HANDLER_OVERRIDE(MouseScroll) {
-        return mt.processEvent(event, Base::dispatchEvent(event));
+        EventStatus status = Base::dispatchEvent(event);
+
+        if (!status.shouldHandle(status.NODE)) {
+            return status;
+        }
+
+        double containerSize = layout().getRegion().h();
+
+        scrollbar().setValue(scrollbar().getValue() - (double)event.delta / 120. / 5.);
+
+        return status;
     }
 
 protected:
