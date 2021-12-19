@@ -126,6 +126,9 @@ public:
     #include <ACL/list_iterator.tpl.h>
 
     #undef ACL_LIST_ITERATOR_TPL_GUARD
+
+    using       reverse_iterator = std::reverse_iterator<      iterator>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
     //--------------------------------------------------------------------------------
 
 
@@ -151,6 +154,10 @@ public:
     const_iterator begin() const noexcept { return ++end(); }
           iterator end  ()       noexcept { return       iterator(this, 0); }
     const_iterator end  () const noexcept { return const_iterator(this, 0); }
+          reverse_iterator rbegin()       noexcept { return       reverse_iterator{end  ()}; }
+    const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator{end  ()}; }
+          reverse_iterator rend  ()       noexcept { return       reverse_iterator{begin()}; }
+    const_reverse_iterator rend  () const noexcept { return const_reverse_iterator{begin()}; }
     const T &front() const { return *++end(); }
           T &front()       { return *++end(); }
     const T &back () const { return *--end(); }

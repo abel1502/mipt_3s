@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <memory>
+#include <iterator>
 
 
 namespace abel {
@@ -22,6 +23,8 @@ public:
     using type = T;
     using iterator = T *;
     using const_iterator = const T *;
+    using       reverse_iterator = std::reverse_iterator<      iterator>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     static constexpr unsigned DEFAULT_CAPACITY = 4;
 
@@ -267,6 +270,11 @@ public:
     constexpr iterator end() noexcept {
         return buf + size;
     }
+
+    constexpr const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator{end  ()}; }
+    constexpr       reverse_iterator rbegin()       noexcept { return       reverse_iterator{end  ()}; }
+    constexpr const_reverse_iterator rend  () const noexcept { return const_reverse_iterator{begin()}; }
+    constexpr       reverse_iterator rend  ()       noexcept { return       reverse_iterator{begin()}; }
 
     /// Returns whether the buffer was moved
     bool reserve(unsigned new_capacity) {
