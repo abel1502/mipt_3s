@@ -48,9 +48,15 @@ public:
 
     virtual child_type &addChild(child_type *child) {
         assert(child);
-        children.insertBackEmplace(child);
+
         child->updateParent(this);
-        focusChild(--children.end());
+
+        if (suppressRefocus) {
+            children.insertFrontEmplace(child);
+        } else {
+            children.insertBackEmplace(child);
+            focusChild(--children.end());
+        }
 
         return *child;
     }
@@ -119,6 +125,7 @@ protected:
             event.target.clipPush(region);
         }
 
+        // TODO: rbegin, rend?
         auto childrenEnd = children.end();  // We rely on our loop being cyclic
         for (auto iter = --children.end(); iter != childrenEnd; --iter) {
             auto &child = *iter;
