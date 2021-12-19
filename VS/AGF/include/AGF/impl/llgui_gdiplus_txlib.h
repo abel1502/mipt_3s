@@ -20,6 +20,10 @@
 #include <algorithm>
 #include <cstdint>
 
+// Apparently, necessary
+#undef min
+#undef max
+
 #include <AGF/llgui_pre.h>
 #include <AGF/impl/llgui_wintheme.h>
 #include <ACL/vector.h>
@@ -354,6 +358,8 @@ public:
                         TextTrimming trimming = TTR_CHAR_ELLIPSIS, unsigned format = 0);
     #pragma endregion Draw functions
 
+    Vector2d getTextSize(const char *text) const;
+
     inline void embed(const Rect<double> &at, const Texture &other);
 
     void embedPart(Rect<double> at, const Texture &other, Rect<double> part);
@@ -373,6 +379,8 @@ public:
     void flushBuf();
 
     PackedColor getPixelColor(Vector2d pos) const;
+
+    void setPixelColor(Vector2d pos, const PackedColor &color);
 
     // void resize(const Vector2d &newSize);
 

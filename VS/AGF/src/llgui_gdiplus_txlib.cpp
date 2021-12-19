@@ -548,6 +548,19 @@ void Texture::drawThemedText(Rect<double> at, const char *text, const WinTheme &
 }
 #pragma endregion Draw Functions
 
+Vector2d Texture::getTextSize(const char *text) const {
+    Gdiplus::Font font{fontName.data(), (float)fontSize, Gdiplus::FontStyleRegular};
+
+    Gdiplus::PointF gdiOrigin{0, 0};
+    Gdiplus::RectF gdiResult{};
+
+    if (graphics.MeasureString(strToWstr(text).data(), -1, &font, gdiOrigin, &gdiResult) != Gdiplus::Ok) {
+        throw llgui_error("GDI+ MeasureString failed");
+    }
+
+    return Vector2d{gdiResult.Width, gdiResult.Height};
+}
+
 unsigned Texture::convertTextFmt(TextAlign hAlign, TextAlign vAlign, TextTrimming trimming, unsigned format) {
     unsigned result = 0;
 
@@ -757,6 +770,23 @@ PackedColor Texture::getPixelColor(Vector2d pos) const {
                        gdiColor.GetG(),
                        gdiColor.GetB(),
                        gdiColor.GetA());
+}
+
+void Texture::setPixelColor(Vector2d pos, const PackedColor &color) {
+    pos -= offset();
+
+    Gdiplus::Color gdiColor{
+        gdiColor.GetR(),
+        gdiColor.GetG(),
+        gdiColor.GetB(),
+        gdiColor.GetA()
+    };
+
+    Gdiplus::Status status = bitmap.SetPixel((int)pos.x(), (int)pos.y(), gdiColor);
+
+    if (status != Gdiplus::Ok) {
+        throw llgui_error("GDI+ SetPixel failed");
+    }
 }
 
 void Texture::clipPush(Rect<double> rect, bool overwrite) {
