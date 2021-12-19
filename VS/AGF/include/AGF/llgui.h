@@ -1,3 +1,4 @@
+#pragma once
 #ifndef AGF_LLGUI_H
 #define AGF_LLGUI_H
 
