@@ -77,13 +77,22 @@ protected:
 
     Rect<double> getTextRect() const;
 
+    inline Rect<double> getCaretRect() const {
+        return getCharRect(caret.getPos());
+    }
+
     void shiftToShowCaret();
 
     void addChar(char chr);
 
-    void remChar();
+    void remChar(bool fwd = false);
 
     void maybeChangeActive(bool active);
+
+    // Returns whether the event should be handled by us
+    bool maybeCaptureKbd();
+
+    void maybeReleaseKbd();
 
 };
 
