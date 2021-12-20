@@ -79,17 +79,17 @@ public:
 
 protected:
     CONST_ list *lst;
-    CONST_ idx_t idx;
+    idx_t idx;
 
     friend class list;
 
-    inline CONST_ Node &node() {
+    inline CONST_ Node &node() const {
         validate();
 
         return lst->buf[idx];
     }
 
-    inline void validate() {
+    inline void validate() const {
         assert(lst && idx < lst->buf.getSize());
     }
 
