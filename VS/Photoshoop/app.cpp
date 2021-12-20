@@ -8,6 +8,7 @@
 #include "physics/widget.h"
 #include "tools/invert_eff.h"
 #include "tools/spline_eff.h"
+#include "plugin/loader.h"
 #include <ACL/debug.h>
 
 
@@ -192,6 +193,14 @@ void MyApp::init(int argc, const char **argv) {
 
             return false;
         };
+
+        lay.createChild<TextBox>(Rect<double>::wh(0, 0, 140, 30), "Default")
+            .sigSubmit += [](const char *text) {
+
+            DBG("Got \"%s\"", text);
+
+            return false;
+        };
     }
 
     // Spline *spline = new Spline(nullptr, Rect<double>::wh(0, 0, 175, 150));
@@ -208,13 +217,12 @@ void MyApp::init(int argc, const char **argv) {
             /*.markEssential() */ ;
     }
 
-    pluginMgr.loadAll();
-
     // palette->setColor(Color::BLACK);
     // palette->setAlpha(1);
 
+    mainWidget = new MainWidget(mgr->getRegion(), pluginMgr.createOverlay(mgr->getRegion()), mgr);
 
-    mainWidget = mgr;
+    pluginMgr.loadAll();
 }
 
 

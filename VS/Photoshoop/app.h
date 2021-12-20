@@ -11,6 +11,21 @@
 
 class MyApp final : public abel::gui::Application {
 public:
+    class MainWidget : public widgets::StaticGroup<abel::gui::Widget, widgets::WindowManager> {
+    public:
+        using Base = widgets::StaticGroup<abel::gui::Widget, widgets::WindowManager>;
+        EVENT_HANDLER_USING(Base);
+
+
+        inline MainWidget(const Rect<double> &region_, Widget *overlay, widgets::WindowManager *wmgr) :
+            Base(nullptr, region_, overlay, wmgr) {}
+
+        SGRP_DECLARE_BINDING_I(overlay, 0);
+        SGRP_DECLARE_BINDING_I(wmgr, 1);
+
+    };
+
+
     ToolManager toolMgr{};
     PluginMgr pluginMgr{};
 
@@ -33,7 +48,11 @@ public:
     }
 
     widgets::WindowManager &getWindowMgrWidget() {
-        return *dynamic_cast<widgets::WindowManager *>(mainWidget.get());
+        return dynamic_cast<MainWidget *>(mainWidget.get())->wmgr();
+    }
+
+    abel::gui::Widget &getOverlay() {
+        return dynamic_cast<MainWidget *>(mainWidget.get())->overlay();
     }
 
 protected:
