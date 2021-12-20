@@ -133,7 +133,7 @@ void ColorSliderA::renderBackground(Texture &target, const Rect<double> &at) {
 }
 
 
-ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
+ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_, bool global) :
     Base(parent_, region_,
          nullptr,
          nullptr,
@@ -154,23 +154,55 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
     sliderH (new _myimpl::ColorSliderH (nullptr, regionH , 0, 1));
     sliderA (new _myimpl::ColorSliderA (nullptr, regionA , 0, 1));
 
-    MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(this)](ToolManager &mgr) {
-        if (!inst) {
-            return true;
-        }
+    if (global) {
+        MyApp::getInstance().toolMgr.sigConfigChanged += [inst = WidgetRefTo(this)](ToolManager &mgr) {
+            if (!inst) {
+                return true;
+            }
 
-        inst->setColor(mgr.getColor());
-        inst->setAlpha(mgr.getAlpha());
+            inst->setColor(mgr.getColor());
+            inst->setAlpha(mgr.getAlpha());
 
-        return false;
-    };
+            return false;
+        };
+
+        sliderSV().sigChanged += [inst = WidgetRefTo(this)](Vector2d value) {
+            if (!inst) {
+                return true;
+            }
+
+            MyApp::getInstance().toolMgr.setColor(inst->getColor());
+
+            return false;
+        };
+
+        sliderH().sigChanged += [inst = WidgetRefTo(this)](Vector2d value) {
+            if (!inst) {
+                return true;
+            }
+
+            MyApp::getInstance().toolMgr.setColor(inst->getColor());
+
+            return false;
+        };
+
+        sliderA().sigChanged += [inst = WidgetRefTo(this)](Vector2d value) {
+            if (!inst) {
+                return true;
+            }
+
+            MyApp::getInstance().toolMgr.setAlpha(inst->getAlpha());
+
+            return false;
+        };
+    }
 
     sliderSV().sigChanged += [inst = WidgetRefTo(this)](Vector2d value) {
         if (!inst) {
             return true;
         }
 
-        MyApp::getInstance().toolMgr.setColor(inst->getColor());
+        inst->sigChanged(inst->getColor(), (float)inst->getAlpha());
 
         return false;
     };
@@ -180,7 +212,7 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
             return true;
         }
 
-        MyApp::getInstance().toolMgr.setColor(inst->getColor());
+        inst->sigChanged(inst->getColor(), (float)inst->getAlpha());
 
         return false;
     };
@@ -190,7 +222,7 @@ ColorPicker::ColorPicker(Widget *parent_, const Rect<double> &region_) :
             return true;
         }
 
-        MyApp::getInstance().toolMgr.setAlpha(inst->getAlpha());
+        inst->sigChanged(inst->getColor(), (float)inst->getAlpha());
 
         return false;
     };

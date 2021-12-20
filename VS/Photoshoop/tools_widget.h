@@ -110,7 +110,11 @@ public:
                  >;
     EVENT_HANDLER_USING(Base);
 
-    ColorPicker(Widget *parent_, const Rect<double> &region_);
+
+    abel::Signal<bool (const Color &color, float alpha)> sigChanged{};
+
+
+    ColorPicker(Widget *parent_, const Rect<double> &region_, bool global = true);
 
     Color getColor() const;
     void setColor(const Color &value);
