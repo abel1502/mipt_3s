@@ -100,6 +100,8 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\ACL\include;$(SolutionDir)\AGF\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -126,6 +128,8 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\ACL\include;$(SolutionDir)\AGF\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,6 +157,8 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\ACL\include;$(SolutionDir)\AGF\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -179,6 +185,8 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableSpecificWarnings>4201;4146;4100;4189;26812;33011</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir)\ACL\include;$(SolutionDir)\AGF\include;$(SolutionDir)\..\..\TXLib\TX</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -203,6 +211,20 @@
     <ClInclude Include="plugin\impl\loader_v2.h" />
     <ClInclude Include="plugin\impl\plugin_tool.h" />
     <ClInclude Include="plugin\impl\v1\plugin_std.hpp" />
+    <ClInclude Include="plugin\impl\v2\lib_std\events_std.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\extensioner_std.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\keyboard_std.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\types_std.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\widgets\button.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\widgets\collection.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\widgets\color_picker.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\widgets\label.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\widgets\slider.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\widgets\text_field.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\widgets\window.h" />
+    <ClInclude Include="plugin\impl\v2\lib_std\widget_std.h" />
+    <ClInclude Include="plugin\impl\v2\plugin_std.hpp" />
+    <ClInclude Include="plugin\impl\v2\widgets.h" />
     <ClInclude Include="plugin\loader.h" />
     <ClInclude Include="tools\spline_eff.h" />
     <ClInclude Include="tools_widget.h" />
@@ -230,6 +252,7 @@
     <ClCompile Include="plugin\impl\loader_v1.cpp" />
     <ClCompile Include="plugin\impl\loader_v2.cpp" />
     <ClCompile Include="plugin\impl\plugin_tool.cpp" />
+    <ClCompile Include="plugin\impl\v2\widgets.cpp" />
     <ClCompile Include="tools\spline_eff.cpp" />
     <ClCompile Include="tools_widget.cpp" />
     <ClCompile Include="donut.cpp" />

@@ -6,7 +6,6 @@
 
 
 #if PHOTOSHOOP_PLUGINS_VER == 1
-
 #include <AGF/llgui_pre.h>
 #include <AGF/impl/windows.h>
 #include <ACL/gui/rect.h>
@@ -34,6 +33,7 @@ namespace fs = filesystem;
 
 class Plugin;
 class PluginMgr;
+class Layer;
 
 
 class Plugin {
@@ -65,7 +65,7 @@ public:
 
     void onEffectApply() const;
 
-    void applyFlushPolicy(abel::gui::Texture &texture) const;
+    void applyFlushPolicy(Layer &layer) const;
 
     void deinit();
 

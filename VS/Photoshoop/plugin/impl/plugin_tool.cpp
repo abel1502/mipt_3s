@@ -6,12 +6,12 @@
 void PluginTool::applyLine(Layer &layer, const Vector2d &pos0, const Vector2d &pos1) {
     plugin.onToolMove(pos0, pos1);
 
-    applyFlushPolicy(layer.getTexture());
+    applyFlushPolicy(layer);
 }
 
 void PluginTool::applyPoint(Layer &layer, const Vector2d &pos) {
     // Does nothing, heh
-    applyFlushPolicy(layer.getTexture());
+    applyFlushPolicy(layer);
 }
 
 void PluginTool::onBegin(const Vector2d &pos) {
@@ -22,16 +22,16 @@ void PluginTool::onEnd(const Vector2d &pos) {
     plugin.onToolRelease(pos);
 }
 
-void PluginTool::applyFlushPolicy(abel::gui::Texture &texture) {
-    plugin.applyFlushPolicy(texture);
+void PluginTool::applyFlushPolicy(Layer &layer) {
+    plugin.applyFlushPolicy(layer);
 }
 
 
 void PluginEffect::apply(Layer &layer) {
     plugin.onEffectApply();
-    applyFlushPolicy(layer.getTexture());
+    applyFlushPolicy(layer);
 }
 
-void PluginEffect::applyFlushPolicy(abel::gui::Texture &texture) {
-    plugin.applyFlushPolicy(texture);
+void PluginEffect::applyFlushPolicy(Layer &layer) {
+    plugin.applyFlushPolicy(layer);
 }

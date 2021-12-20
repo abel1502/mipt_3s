@@ -1,7 +1,10 @@
-#include <AGF/llgui.h>
+#define JUST_DEFINE_PLUGINS_VER
 #include "../loader.h"
 
+
 #if PHOTOSHOOP_PLUGINS_VER == 1
+#include <AGF/llgui.h>
+#include "../loader.h"
 #include <string_view>
 #include <cstdint>
 #include <cstdarg>
@@ -13,6 +16,7 @@
 #include "../../app.h"
 #include "../../canvas.h"
 #include "plugin_tool.h"
+#include "../../layer.h"
 
 
 #pragma region nativeApp
@@ -436,13 +440,11 @@ void Plugin::init(const plugin::PAppInterface *nativeApp) {
         info->description);
 }
 
-void Plugin::applyFlushPolicy(abel::gui::Texture &texture) const {
+void Plugin::applyFlushPolicy(Layer &layer) const {
     assert(nativePlugin);
     REQUIRE(nativePlugin->general.get_flush_policy);
 
-    if (nativePlugin->general.get_flush_policy() == plugin::PPLP_COPY) {
-        texture.setOverwrite();
-    }
+    layer.setFlushPolicy(nativePlugin->general.get_flush_policy() == plugin::PPLP_COPY);
 }
 
 void Plugin::deinit() {
@@ -476,7 +478,14 @@ void Plugin::onToolMove(const Vector2d &pos0, const Vector2d &pos1) const {
 void Plugin::onEffectApply() const {
     assert(info->type == plugin::PPT_EFFECT);
 
+    Canvas *activeCanvas = MyApp::getInstance().toolMgr.getActiveCanvas();
+
+    if (!activeCanvas)
+        return;
+
+    // activeCanvas->activeLayer().beginPreview();
     nativePlugin->effect.apply();
+    // activeCanvas->activeLayer().endPreview(true);
 }
 #pragma endregion Plugin
 
