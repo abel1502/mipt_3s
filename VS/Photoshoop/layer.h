@@ -70,7 +70,7 @@ inline void Layer::endPreview(bool apply) {
     if (apply) {
         flushPreview();
     } else {
-        // clearPreview();
+        clearPreview();
     }
 
     flushPolicyOverwrite = false;

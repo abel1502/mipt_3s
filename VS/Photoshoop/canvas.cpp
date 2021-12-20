@@ -167,7 +167,9 @@ void Canvas::selectLayer(unsigned idx) {
 }
 
 void Canvas::applyEffect(Effect &effect) {
+    activeLayer().beginPreview();
     effect.apply(activeLayer());
+    activeLayer().endPreview(true);
 }
 
 void Canvas::loadImage(const std::filesystem::path &path) {
