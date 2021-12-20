@@ -351,11 +351,11 @@ LRESULT Application::dispatchWindowsEvent(HWND hWnd, UINT uMsg, WPARAM wParam, L
     } return 0;
 
     case WM_KEYDOWN: {
-        enqueueEvent(KeyPressEvent{keyCodeFromVk(wParam), KeyPressType::Down, getKeyRepeatCount(lParam)});
+        enqueueEvent(KeyPressEvent{keyCodeFromVk((unsigned)wParam), KeyPressType::Down, getKeyRepeatCount(lParam)});
     } return 0;
 
     case WM_KEYUP: {
-        enqueueEvent(KeyPressEvent{keyCodeFromVk(wParam), KeyPressType::Up, getKeyRepeatCount(lParam)});
+        enqueueEvent(KeyPressEvent{keyCodeFromVk((unsigned)wParam), KeyPressType::Up, getKeyRepeatCount(lParam)});
     } return 0;
 
     case WM_CLOSE: {
