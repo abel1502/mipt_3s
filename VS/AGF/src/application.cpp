@@ -179,7 +179,7 @@ void Application::releaseKbd(Widget *widget) {
     REQUIRE(kbdCaptureDeg > 0);
 
     if (!--kbdCaptureDeg) {
-        releaseMouse();
+        releaseKbd();
     }
 }
 
