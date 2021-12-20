@@ -586,8 +586,8 @@ void Style::sysDrawElement(Texture &target, const Rect<double> &dest,
         NODEFAULT
         }
 
-        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_MENU>(),
-                                 MENU_BARITEM, sysState);
+        target.drawThemedControl(dest, Window::getInstance().getTheme<Window::WT_EDIT>(),
+                                 EP_EDITBORDER_NOSCROLL, sysState);
     } break;
 
     case EL_TEXTBOX_CARET: {
