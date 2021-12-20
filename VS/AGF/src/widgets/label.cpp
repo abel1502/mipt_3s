@@ -31,7 +31,7 @@ EVENT_HANDLER_IMPL(Label, Render) {
 
     event.target.setFillColor(Color::BLACK);
     event.target.setFont("Segoe UI", getStyle().textSize);
-    event.target.drawText(region, text);
+    event.target.drawText(region, text.data());
     return EventStatus::done();
 }
 

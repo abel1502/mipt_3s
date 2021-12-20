@@ -2,6 +2,7 @@
 #define AGF_WIDGETS_LABEL_H
 
 #include <AGF/widget.h>
+#include <string>
 
 
 namespace abel::gui::widgets {
@@ -13,13 +14,13 @@ public:
 
     Label(Widget *parent_, const Rect<double> &region_, const char *text_ = "");
 
-    constexpr const char *getText() const noexcept { return text; }
+    inline const char *getText() const noexcept { return text.data(); }
     void setText(const char *text_);
 
     EVENT_HANDLER_OVERRIDE(Render);
 
 protected:
-    const char *text;
+    std::string text;
     unsigned format;
 
     void updated();
