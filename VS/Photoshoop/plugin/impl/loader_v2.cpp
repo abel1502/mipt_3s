@@ -150,18 +150,18 @@ plugin::RGBA *ProxyRenderTarget::get_pixels() const {
 
     uint32_t *buf = texture.getBufRGBA(true, false);
     size_t size = (size_t)texture.width() * (size_t)texture.height();
-    uint32_t *copy = new uint32_t[size];
+    plugin::RGBA *copy = new plugin::RGBA[size];
     if (!copy) {
         texture.flushBuf();
 
         return nullptr;
     }
 
-    memcpy(copy, buf, size * sizeof(uint32_t));
+    memcpy(copy, buf, size * sizeof(plugin::RGBA));
 
     texture.flushBuf();
 
-    return (plugin::RGBA *)copy;
+    return copy;
 }
 
 namespace {
@@ -299,6 +299,10 @@ bool MyAppInterface::ext_enable(const char *name) const {
         return true;
     }
 
+    if (name == EXT_FREE) {
+        return true;
+    }
+
     if (MyApp::getInstance().pluginMgr.hasExt(name)) {
         return true;
     }
@@ -328,11 +332,39 @@ void *dispatchAbelExt(const char *name, bool isInterface) {
 
     return nullptr;
 }
+
+void ext_free_release_pixels(plugin::RGBA *pixels) {
+    delete[] pixels;
+}
+
+void ext_free_release_rt(plugin::RenderTarget *rt) {
+    delete[] rt;
+}
+
+void *dispatchFreeExt(const char *name, bool isInterface) {
+    if (isInterface) {
+        return nullptr;
+    }
+
+    if (name == "release_pixels"sv) {
+        return &ext_free_release_pixels;
+    }
+
+    if (name == "release_rt"sv) {
+        return &ext_free_release_rt;
+    }
+
+    return nullptr;
+}
 }
 
 void *MyAppInterface::ext_get_func(const char *extension, const char *func) const {
     if (extension == EXT_ABEL) {
         return dispatchAbelExt(func, false);
+    }
+
+    if (extension == EXT_FREE) {
+        return dispatchFreeExt(func, false);
     }
 
     PluginMgr &pluginMgr = MyApp::getInstance().pluginMgr;
@@ -349,6 +381,10 @@ void *MyAppInterface::ext_get_interface(const char *extension, const char *name)
         return dispatchAbelExt(name, true);
     }
 
+    if (extension == EXT_FREE) {
+        return dispatchFreeExt(name, true);
+    }
+
     PluginMgr &pluginMgr = MyApp::getInstance().pluginMgr;
 
     if (!pluginMgr.hasExt(extension)) {
@@ -361,6 +397,11 @@ void *MyAppInterface::ext_get_interface(const char *extension, const char *name)
 void MyAppInterface::ext_register_as(const char *extension) const {
     if (extension == EXT_ABEL) {
         ERR("Such audacity!");
+        return;
+    }
+
+    if (extension == EXT_FREE) {
+        ERR("Already used");
         return;
     }
 
@@ -440,12 +481,21 @@ void MyAppInterface::set_size(float size) const {
 }
 
 const std::vector<plugin::WBody> MyAppInterface::get_windows() const {
-    return std::vector<plugin::WBody>();
+    widgets::WindowManager &wmgr = MyApp::getInstance().getWindowMgrWidget();
+
+    auto regions = wmgr.getWindowRegions();
+
+    std::vector<plugin::WBody> pRegions{};
+
+    for (const auto &reg : regions) {
+        pRegions.push_back(reg);
+    }
+
+    return pRegions;
 }
 
 plugin::Widget *MyAppInterface::get_root_widget() const {
-    // TODO: Implement
-    return nullptr;
+    return dynamic_cast<plugin::Widget *>(&MyApp::getInstance().getOverlay());
 }
 
 plugin::RenderTarget *MyAppInterface::get_target() const {
@@ -540,18 +590,29 @@ plugin::Slider *MyWF::slider(plugin::Slider::Type type,
 
 plugin::TextField *MyWF::text_field(const plugin::WBody &body,
                                     plugin::Widget *parent) const {
-    return nullptr;
+    Vector2d size{};
+
+    PluginProxyWidget *ppw = new PluginProxyWidget(nullptr, body, nullptr, true);
+
+    MyPTextField *result = new MyPTextField(ppw);
+
+    if (parent) {
+        parent->add_child(result);
+    }
+
+    return result;
 }
 
 plugin::Window *MyWF::window(const char *name,
                              const plugin::WBody &body,
                              plugin::Widget *parent) const {
 
-    PluginProxyWidget *ppw = new PluginProxyWidget(nullptr, body, nullptr, true);
+    PluginProxyWidget *ppw = new PluginProxyWidget(nullptr, Rect<double>::wh(Vector2d{}, body.size), nullptr, true);
 
     MyPWindow *result = new MyPWindow(ppw, name);
 
-    MyApp::getInstance().getWindowMgrWidget().createWindow(body, ppw);
+    auto &wnd = MyApp::getInstance().getWindowMgrWidget().createWindow(body, name, ppw);
+    wnd.markEssential();
 
     return result;
 }
@@ -581,6 +642,8 @@ plugin::Label *MyWF::label(const plugin::Vec2f &pos,
     }
 
     size *= 1.1;
+
+    DBG("%lg %lg, \"%s\"", size.x(), size.y(), text);
 
     PluginProxyWidget *ppw = new PluginProxyWidget(nullptr, Rect<double>::wh(pos, size), nullptr, true);
 
@@ -793,6 +856,9 @@ void Plugin::init(const std::fs::path &dllPath) {
         );
     } break;
 
+    case plugin::EXTENSION:
+        break;
+
     NODEFAULT
     }
 
@@ -803,6 +869,8 @@ void Plugin::init(const std::fs::path &dllPath) {
         info->type == plugin::TOOL ? "tool" : "effect",
         info->author,
         info->description);
+
+    // nativePlugin->show_settings();
 }
 
 void Plugin::applyFlushPolicy(Layer &layer) const {
@@ -846,6 +914,10 @@ void Plugin::onEffectApply() const {
     // activeCanvas->activeLayer().beginPreview();
     nativePlugin->effect_apply();
     // activeCanvas->activeLayer().endPreview(true);
+}
+
+void Plugin::showSettings() const {
+    nativePlugin->show_settings();
 }
 #pragma endregion Plugin
 
@@ -901,6 +973,14 @@ bool PluginMgr::registerExt(PluginExtension *ext) {
     extensions[ext->getName()] = ext;
 
     return true;
+}
+
+abel::gui::Widget *PluginMgr::createOverlay(const Rect<double> &region) {
+    auto *result = new PluginProxyWidget(nullptr, region, nullptr, true);
+
+    MyPWidget *myw = new MyPWidget(result);
+
+    return result;
 }
 #pragma endregion PluginMgr
 

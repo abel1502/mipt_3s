@@ -33,6 +33,10 @@ public:
 
     virtual void apply(Layer &layer) override;
 
+    virtual bool supportsSettings() const;
+
+    virtual void showSettings(bool hidden = false);
+
 protected:
     const Plugin &plugin;
 

@@ -35,3 +35,16 @@ void PluginEffect::apply(Layer &layer) {
 void PluginEffect::applyFlushPolicy(Layer &layer) {
     plugin.applyFlushPolicy(layer);
 }
+
+bool PluginEffect::supportsSettings() const {
+    return true;
+}
+
+void PluginEffect::showSettings(bool hidden) {
+    if (hidden) {
+        // Can't force the plugin to hide its settings
+        return;
+    }
+
+    plugin.showSettings();
+}

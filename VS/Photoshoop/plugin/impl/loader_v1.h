@@ -69,6 +69,8 @@ public:
 
     void deinit();
 
+    inline void showSettings() const {}
+
 protected:
     HMODULE dllHandle = NULL;
     const plugin::PPluginInterface *nativePlugin = nullptr;

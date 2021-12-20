@@ -31,7 +31,17 @@ PluginProxyWidget::PluginProxyWidget(abel::gui::Widget *parent_,
 
         inst->getPWidget().on_tick(plugin::Event::Tick{deltaT});
 
+        if (inst->knownChild && inst->knownChild->isDead()) {
+            inst->die();
+        }
+
         return false;
+    };
+
+    sigDeath += [this](abel::gui::Widget &) {
+        if (knownChild) {
+            knownChild->die();
+        }
     };
 }
 
@@ -56,7 +66,7 @@ EVENT_HANDLER_IMPL(PluginProxyWidget, abel::gui::Render) {
 
         status = dispatchToChild(**it, event);
 
-        if (!status.update()) {
+        if (status.update()) {
             return status;
         }
     }
@@ -74,24 +84,27 @@ EVENT_HANDLER_IMPL(PluginProxyWidget, abel::gui::MouseClick) {
     constexpr plugin::MouseButton BTN_CVT[3] = {plugin::left, plugin::middle, plugin::right};
     plugin::MouseButton btn = BTN_CVT[(unsigned)event.button];
 
+    Vector2d localPos = event.pos - region.getPos();
+
     if (hitTest(event.pos) ||
         MyApp::getInstance().isMouseCaptured(this)) {
 
         if (event.type == abel::gui::MouseClickType::Down) {
-            pwidget->on_mouse_press(plugin::Event::MousePress{event.pos, btn});
-            try {
-                MyApp::getInstance().captureMouse(this);
-            } catch (abel::require_error) {
-            }
+            pwidget->on_mouse_press(plugin::Event::MousePress{localPos, btn});
+            // try {
+            //     MyApp::getInstance().captureMouse(this);
+            // } catch (abel::require_error) {
+            // }
         } else {
-            pwidget->on_mouse_release(plugin::Event::MouseRelease{event.pos, btn});
-            try {
-                MyApp::getInstance().releaseMouse(this);
-            } catch (abel::require_error) {
-            }
+            pwidget->on_mouse_release(plugin::Event::MouseRelease{localPos, btn});
+            // try {
+            //     MyApp::getInstance().releaseMouse(this);
+            // } catch (abel::require_error) {
+            // }
         }
 
-        return EventStatus::stop(EventStatus::TREE);
+        // return EventStatus::stop(EventStatus::TREE);
+        return EventStatus::done();
     }
 
     return status;
@@ -109,7 +122,8 @@ EVENT_HANDLER_IMPL(PluginProxyWidget, abel::gui::MouseMove) {
         hitTest(event.pos1) ||
         MyApp::getInstance().isMouseCaptured(this)) {
 
-        pwidget->on_mouse_move(plugin::Event::MouseMove{event.pos0, event.pos1});
+        pwidget->on_mouse_move(plugin::Event::MouseMove{event.pos0 - region.getPos(),
+                                                        event.pos1 - region.getPos()});
 
         return EventStatus::done();
     }
@@ -127,7 +141,8 @@ EVENT_HANDLER_IMPL(PluginProxyWidget, abel::gui::MouseScroll) {
     if (hitTest(event.pos) ||
         MyApp::getInstance().isMouseCaptured(this)) {
 
-        pwidget->on_scroll(plugin::Event::Scroll{Vector2d{0, (double)event.delta / 120.}, event.pos});
+        pwidget->on_scroll(plugin::Event::Scroll{Vector2d{0, (double)event.delta / 120.},
+                                                 event.pos - region.getPos()});
     }
 
     return status;
@@ -319,6 +334,14 @@ void PluginProxyWidget::registerKnownChild(abel::gui::Widget *knownChild_) {
     assert(children.isEmpty());
     knownChild = knownChild_;
     addChild(knownChild);
+}
+
+PluginProxyWidget::~PluginProxyWidget() {
+    // Screw cleanup, it won't work half the times
+
+    // if (owning) {
+    //     delete[] pwidget;
+    // }
 }
 #pragma endregion PluginProxy
 
@@ -729,7 +752,43 @@ void MyPSlider::set_fraction(float frac) {
 #pragma endregion MyPSlider
 
 #pragma region MyPTextField
-// TODO: Implement
+MyPTextField::MyPTextField(PluginProxyWidget *proxyWidget_) :
+    MyPWidget(proxyWidget_) {
+
+    native_wt *field = new native_wt(
+        nullptr,
+        Rect<double>::wh(Vector2d{}, proxyWidget->getRegion().getDiag()),
+        ""
+    );
+
+    proxyWidget->registerKnownChild(field);
+}
+
+void MyPTextField::set_handler(const HandlerType &handler_) {
+    handler = handler_;
+}
+
+MyPTextField::HandlerType &MyPTextField::get_handler() {
+    return handler;
+}
+
+std::string_view MyPTextField::get_text() const {
+    native_wt *field = proxyWidget->getKnownChild<native_wt>();
+
+    assert(field);
+
+    return field->getText();
+}
+
+void MyPTextField::set_text(std::string_view text) {
+    native_wt *field = proxyWidget->getKnownChild<native_wt>();
+
+    assert(field);
+
+    // A temporary copy
+    std::string tmp{text};
+    field->setText(tmp.data());
+}
 #pragma endregion MyPTextField
 
 #pragma region MyPWindow
@@ -793,6 +852,29 @@ void MyPWindow::on_show(const plugin::Event::Show &) {
     }
 }
 
+void MyPWindow::hide() {
+    auto *wnd = getTrueWindow();
+
+    if (wnd) {
+        wnd->setHidden(true);
+    }
+}
+
+void MyPWindow::show() {
+    auto *wnd = getTrueWindow();
+
+    if (wnd) {
+        wnd->setHidden(false);
+    }
+}
+
+void MyPWindow::focus() {
+    auto *wnd = getTrueWindow();
+
+    if (wnd) {
+        wnd->bringToFront();
+    }
+}
 
 abel::gui::widgets::Window *MyPWindow::getTrueWindow() {
     return dynamic_cast<abel::gui::widgets::Window *>(proxyWidget->getParent());

@@ -28,6 +28,8 @@ using abel::math::Vector2d;
 #include "v2/plugin_std.hpp"
 #include "v2/lib_std/widget_std.h"
 
+#include <AGF/widget.h>
+
 namespace std {
 namespace fs = filesystem;
 }
@@ -147,6 +149,7 @@ inline const abel::gui::Texture *extractTexture(const plugin::RenderTarget &rt) 
 class MyAppInterface : public plugin::AppInterface {
 public:
     static constexpr std::string_view EXT_ABEL = "abel";
+    static constexpr std::string_view EXT_FREE = "free";
 
 
     class MyWidgetFactory : public plugin::WidgetFactory {
@@ -307,6 +310,8 @@ public:
 
     void deinit();
 
+    void showSettings() const;
+
 protected:
     HMODULE dllHandle = NULL;
     MyAppInterface nativeApp{*this};
@@ -378,6 +383,8 @@ public:
     inline const PluginExtension &getExt(const char *name) const {
         return const_cast<PluginMgr *>(this)->getExt(name);
     }
+
+    abel::gui::Widget *createOverlay(const Rect<double> &region);
 
 protected:
     abel::vector<abel::unique_ptr<Plugin>> plugins{};

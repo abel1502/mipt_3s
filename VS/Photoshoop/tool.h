@@ -48,7 +48,7 @@ public:
 
     virtual void apply(Layer &layer) = 0;
 
-    void showSettings(bool hidden = false);
+    virtual void showSettings(bool hidden = false);
 
     inline void hideSettings() {
         return showSettings(false);

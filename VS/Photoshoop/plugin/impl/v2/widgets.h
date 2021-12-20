@@ -77,6 +77,8 @@ public:
 
     void registerKnownChild(abel::gui::Widget *knownChild_);
 
+    virtual ~PluginProxyWidget() override;
+
 protected:
     static constexpr uint64_t MAGIC = ((uint64_t)'ABEL' << 32) | (uint64_t)'PROX';
     const uint64_t magic = MAGIC;
@@ -224,7 +226,24 @@ protected:
 
 };
 
-// class MyPTextField
+class MyPTextField : public MyPWidget, public virtual plugin::TextField {
+public:
+    // A replacement for now
+    using native_wt = abel::gui::widgets::Label;
+
+
+    MyPTextField(PluginProxyWidget *proxyWidget_);
+
+    virtual void set_handler(const HandlerType &handler_) override;
+    virtual HandlerType &get_handler() override;
+
+    virtual std::string_view get_text() const override;
+    virtual void set_text(std::string_view text) override;
+
+protected:
+    HandlerType handler{};
+
+};
 
 class MyPWindow : public MyPWidget, public virtual plugin::Window {
 public:
@@ -241,6 +260,10 @@ public:
 
     virtual void on_hide(const plugin::Event::Hide &) override;
     virtual void on_show(const plugin::Event::Show &) override;
+
+    virtual void hide() override;
+    virtual void show() override;
+    virtual void focus() override;
 
     abel::gui::widgets::Window *getTrueWindow();
 
