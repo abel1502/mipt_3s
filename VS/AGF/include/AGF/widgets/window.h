@@ -145,6 +145,8 @@ public:
         ));
     }
 
+    vector<Rect<double>> getWindowRegions() const;
+
 protected:
     using Base::createChild;
 

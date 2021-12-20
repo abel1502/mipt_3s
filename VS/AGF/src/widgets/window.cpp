@@ -95,6 +95,16 @@ EVENT_HANDLER_IMPL(Borders, Render) {
 WindowManager::WindowManager(Widget *parent_, const Rect<double> &region_) :
     Base(parent_, region_) {}
 
+vector<Rect<double>> WindowManager::getWindowRegions() const {
+    vector<Rect<double>> result{};
+
+    for (const auto &child : children) {
+        result.append(child->getRegion());
+    }
+
+    return result;
+}
+
 
 Window::Window(WindowManager *parent_, const Rect<double> &region_,
        const char *title_, Content *contents_) :
