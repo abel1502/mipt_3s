@@ -160,7 +160,7 @@ EVENT_CLS_DECL_(KeyboardInput) {
         wchr{wchr_}, repeatCnt{repeatCnt_} {}
 
     bool isAscii() const {
-        return (wchr & (128 - 1)) == wchr;
+        return (wchr & (128 - 1)) == wchr && wchr >= ' ';
     }
 
     char getAscii() const {
